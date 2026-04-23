@@ -1,6 +1,7 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "./lib/theme";
 import Onboarding from "./pages/Onboarding";
 import Lock from "./pages/Lock";
 import Home from "./pages/Home";
@@ -35,8 +36,9 @@ function Entry() {
 
 export default function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
+    <ThemeProvider>
+      <div className="App">
+        <BrowserRouter>
         <Toaster
           theme="dark"
           position="top-center"
@@ -68,6 +70,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }

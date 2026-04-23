@@ -80,7 +80,7 @@ export default function Store() {
           style={{ background: "linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%)", color: "#0A0A0F" }}
           data-testid="store-balance"
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#0A0A0F" }}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center">
             <span className="font-bold text-[#D4FF4F]">$</span>
           </div>
           <div className="flex-1">
@@ -100,7 +100,7 @@ export default function Store() {
               style={
                 cat === c.k
                   ? { background: "#D4FF4F", color: "#0A0A0F" }
-                  : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }
+                  : { background: "var(--surface)", color: "rgba(255,255,255,0.6)", border: "1px solid var(--surface-border)" }
               }
             >
               {c.label}
@@ -121,7 +121,7 @@ export default function Store() {
                 whileHover={{ y: -2 }}
                 onClick={() => nav(`/store/${item.id}`)}
                 className="rounded-[24px] overflow-hidden flex flex-col cursor-pointer"
-                style={{ background: "#141420", border: "1px solid rgba(255,255,255,0.06)" }}
+                style={{ background: "#141420", border: "1px solid var(--surface-border)" }}
                 data-testid={`store-item-${item.id}`}
               >
                 <div

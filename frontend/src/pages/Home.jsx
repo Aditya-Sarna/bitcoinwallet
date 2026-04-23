@@ -10,8 +10,9 @@ import PriceChart from "../components/PriceChart";
 import BitcoinScore from "../components/BitcoinScore";
 import TxnItem from "../components/TxnItem";
 import BalanceStatRow from "../components/BalanceStatRow";
-import ColorCardStack from "../components/ColorCardStack";
+import AbstractBalanceArt from "../components/AbstractBalanceArt";
 import SplashCard from "../components/SplashCard";
+import ThemeToggle from "../components/ThemeToggle";
 import { TreasureChest, GiftStack, BillEnvelope, ProductShelf, LaptopPrize } from "../components/Illustrations";
 import Logo from "../components/Logo";
 import { api } from "../lib/api";
@@ -86,7 +87,7 @@ export default function Home() {
               fontWeight: 700,
               letterSpacing: "0.22em",
               fontSize: 12,
-              color: "#fff",
+              color: "var(--ink)",
               textTransform: "uppercase",
             }}
           >
@@ -94,31 +95,53 @@ export default function Home() {
           </span>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={() => nav("/security")}
-          data-testid="home-security-btn"
-          className="w-11 h-11 rounded-full flex items-center justify-center relative"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-        >
-          <Gear size={16} className="text-white/80" />
-          {security && !security.seed_backed_up && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF3E8A] animate-pulse" />
-          )}
-        </motion.button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle size={36} />
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => nav("/security")}
+            data-testid="home-security-btn"
+            className="w-11 h-11 rounded-full flex items-center justify-center relative"
+            style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
+          >
+            <Gear size={16} style={{ color: "var(--ink-2)" }} />
+            {security && !security.seed_backed_up && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF3E8A] animate-pulse" />
+            )}
+          </motion.button>
+        </div>
       </div>
 
-      {/* Welcome greeting */}
+      {/* Welcome greeting — with cursive flourish */}
       <div className="px-5 pt-3">
-        <div
-          className="leading-[1.02] tracking-[-0.035em] lowercase text-white"
-          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 32 }}
-          data-testid="home-greeting"
-        >
-          welcome, <span style={{ color: "#D4FF4F" }}>{firstName || (loading ? "…" : "friend")}</span>
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <span
+            style={{
+              fontFamily: "Italianno, cursive",
+              fontSize: 44,
+              color: "var(--ink-2)",
+              lineHeight: 0.9,
+            }}
+          >
+            welcome,
+          </span>
+          <span
+            className="lowercase tracking-[-0.035em]"
+            style={{
+              fontFamily: "Clash Display, sans-serif",
+              fontWeight: 700,
+              fontSize: 36,
+              color: "#D4FF4F",
+              lineHeight: 0.95,
+            }}
+            data-testid="home-greeting"
+          >
+            {firstName || (loading ? "…" : "friend")}.
+          </span>
         </div>
-        <div className="text-white/50 text-[13px] mt-1.5 leading-snug font-medium">
-          let's make your bitcoin work harder today.
+        <div className="text-[13px] mt-1.5 leading-snug" style={{ color: "var(--ink-3)" }}>
+          <span style={{ fontFamily: "Italianno, cursive", fontSize: 20 }}>let's</span>{" "}
+          make your bitcoin work harder today.
         </div>
       </div>
 
@@ -132,8 +155,8 @@ export default function Home() {
         />
       </div>
 
-      {/* Colorful card stack */}
-      <ColorCardStack
+      {/* Abstract balance art — editorial composition replaces the card stack */}
+      <AbstractBalanceArt
         name={wallet?.name}
         balance={wallet?.balance_btc}
         fiat={fiatValue}
@@ -184,8 +207,8 @@ export default function Home() {
             <ShieldCheck size={18} weight="fill" className="text-[#FF3E8A]" />
           </div>
           <div className="flex-1">
-            <div className="text-sm font-bold lowercase">secure your vault</div>
-            <div className="text-[11px] text-white/60">back up your 12-word phrase · earn <span className="text-[#D4FF4F] font-bold">+250 coins</span></div>
+            <div className="text-sm font-bold lowercase" style={{ color: "var(--ink)" }}>secure your vault</div>
+            <div className="text-[11px]" style={{ color: "var(--ink-2)" }}>back up your 12-word phrase · earn <span className="font-bold" style={{ color: "#FF3E8A" }}>+250 coins</span></div>
           </div>
           <div className="text-[11px] text-[#FF3E8A] font-bold">→</div>
         </motion.button>
@@ -226,7 +249,7 @@ export default function Home() {
                 style={
                   c.active
                     ? { background: "#D4FF4F", color: "#000" }
-                    : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                    : { background: "var(--surface)", border: "1px solid var(--surface-border)" }
                 }
               >
                 <c.Icon size={18} weight="bold" color={c.active ? "#000" : "#fff"} />
@@ -292,15 +315,20 @@ export default function Home() {
       {/* Live price + chart */}
       <div
         className="mx-5 mt-6 rounded-3xl p-5"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         data-testid="chart-card"
       >
         <div className="flex items-center justify-between mb-1">
           <div>
-            <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 font-semibold">bitcoin · live</div>
+            <div className="flex items-baseline gap-2">
+              <span style={{ fontFamily: "Italianno, cursive", fontSize: 26, color: "var(--ink-2)" }}>
+                the tape
+              </span>
+              <span className="text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "#D4FF4F" }}>· live</span>
+            </div>
             <div
-              className="text-white mt-1"
-              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em" }}
+              className="mt-1"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em", color: "var(--ink)" }}
               data-testid="btc-price-usd"
             >
               ${price ? fmtUSD(price.price_usd, 2) : "—"}
@@ -317,7 +345,7 @@ export default function Home() {
       {/* Bitcoin Score */}
       <div
         className="mx-5 mt-5 rounded-3xl p-5"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         data-testid="score-card"
       >
         <BitcoinScore score={wallet?.btc_score || 742} />
@@ -345,27 +373,27 @@ export default function Home() {
       <div className="mx-5 mt-6">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 font-semibold">recent</div>
-            <div
-              className="text-white mt-0.5 leading-none"
-              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 22, letterSpacing: "-0.03em" }}
-            >
-              your activity
+            <div className="flex items-baseline gap-2">
+              <span style={{ fontFamily: "Italianno, cursive", fontSize: 28, color: "var(--ink-2)" }}>
+                your story
+              </span>
+              <span className="text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "var(--ink-3)" }}>· recent</span>
             </div>
           </div>
           <button
             onClick={() => nav("/transactions")}
             data-testid="home-see-all"
-            className="text-[10px] tracking-[0.18em] uppercase text-white/60 font-semibold"
+            className="text-[10px] tracking-[0.18em] uppercase font-semibold"
+            style={{ color: "var(--ink-2)" }}
           >
             view all →
           </button>
         </div>
         <div>
           {loading ? (
-            <div className="py-8 text-center text-white/30 text-xs font-mono">loading…</div>
+            <div className="py-8 text-center text-xs font-mono" style={{ color: "var(--ink-4)" }}>loading…</div>
           ) : txns.length === 0 ? (
-            <div className="text-white/40 text-sm py-6 text-center">no activity yet</div>
+            <div className="text-sm py-6 text-center" style={{ color: "var(--ink-3)" }}>no activity yet</div>
           ) : (
             txns.slice(0, 4).map((t) => <TxnItem key={t.id} t={t} />)
           )}

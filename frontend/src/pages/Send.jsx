@@ -76,7 +76,7 @@ export default function Send() {
   }, [pin]);
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <div className="relative z-10 min-h-screen flex flex-col">
         <AnimatePresence mode="wait">
           {step === 0 && (
@@ -125,7 +125,7 @@ export default function Send() {
                       style={
                         tier === t.k
                           ? { background: `${t.color}22`, border: `1px solid ${t.color}` }
-                          : { background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }
+                          : { background: "var(--surface)", border: "1px solid var(--surface-border)" }
                       }
                     >
                       <t.Icon size={14} color={tier === t.k ? t.color : "#ffffff99"} weight="bold" />
@@ -138,7 +138,7 @@ export default function Send() {
 
                 <div
                   className="mt-8 rounded-2xl p-4 space-y-2"
-                  style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+                  style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
                 >
                   <Row label="amount" value={`${fmtBTC(parseFloat(amount) || 0, 8)} BTC`} />
                   <Row label="network fee" value={`${fmtBTC(fee, 8)} BTC`} />

@@ -47,7 +47,7 @@ export default function Onboarding() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="relative min-h-screen flex flex-col overflow-hidden"
-            style={{ background: "#0A0A0F" }}
+            style={{ background: "var(--bg)" }}
             data-testid="onboarding-welcome"
           >
             {/* Electric radial glows */}
@@ -161,7 +161,7 @@ export default function Onboarding() {
             exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.4 }}
             className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
-            style={{ background: "#0A0A0F" }}
+            style={{ background: "var(--bg)" }}
           >
             <div
               className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl opacity-40 pointer-events-none"
@@ -229,7 +229,7 @@ export default function Onboarding() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
             className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
-            style={{ background: "#0A0A0F" }}
+            style={{ background: "var(--bg)" }}
           >
             <div
               className="absolute top-10 -left-20 w-64 h-64 rounded-full blur-3xl opacity-40 pointer-events-none"
@@ -284,7 +284,7 @@ export default function Onboarding() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
             className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
-            style={{ background: "#0A0A0F" }}
+            style={{ background: "var(--bg)" }}
           >
             <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-3 font-semibold">step 2 of 2</div>
             <h2
@@ -318,7 +318,7 @@ export default function Onboarding() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
             className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
-            style={{ background: "#0A0A0F" }}
+            style={{ background: "var(--bg)" }}
           >
             <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-3 font-semibold">almost there</div>
             <h2
@@ -360,7 +360,7 @@ function Pillar({ num, Icon, title, desc, color }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.1 + Number(num) * 0.08 }}
       className="flex items-center gap-4 p-4 rounded-2xl"
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--surface-border)" }}
     >
       <div
         className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"

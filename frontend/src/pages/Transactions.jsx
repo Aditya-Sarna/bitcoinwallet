@@ -27,12 +27,12 @@ export default function Transactions() {
   ];
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <Header title="activity" subtitle={`${txns.length} transactions`} />
       <div className="px-6">
         <div
           className="flex gap-1 rounded-full p-1"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         >
           {tabs.map((t) => (
             <button

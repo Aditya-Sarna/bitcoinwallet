@@ -20,7 +20,7 @@ export default function BalanceStatRow({ balance, coins, gems, vouchers }) {
           <div key={i.label} className="flex-1 flex flex-col items-start gap-1" data-testid={i.testid}>
             <div
               className="flex items-center gap-1.5 rounded-full px-2 py-1 max-w-full"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+              style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
             >
               <div
                 className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"

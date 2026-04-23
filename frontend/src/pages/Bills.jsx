@@ -63,7 +63,7 @@ export default function Bills() {
   const activeBiller = BILLERS.find((b) => b.k === biller);
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <Header title="pay bills" subtitle="with bitcoin" />
       <div className="px-6">
         <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold mb-3">select biller</div>
@@ -78,7 +78,7 @@ export default function Bills() {
               style={
                 biller === b.k
                   ? { background: `${b.color}22`, border: `1px solid ${b.color}` }
-                  : { background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }
+                  : { background: "var(--surface)", border: "1px solid var(--surface-border)" }
               }
             >
               <b.Icon size={18} color={b.color} weight="fill" />

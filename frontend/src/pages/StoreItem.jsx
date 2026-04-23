@@ -43,7 +43,7 @@ export default function StoreItem() {
 
   if (!item) {
     return (
-      <div className="shell" style={{ background: "#0A0A0F" }}>
+      <div className="shell">
         <Header title="loading…" />
         <div className="px-6 py-20 text-center text-white/40 text-xs tracking-widest uppercase">fetching voucher…</div>
       </div>
@@ -85,7 +85,7 @@ export default function StoreItem() {
   };
 
   return (
-    <div className="shell pad-bottom" style={{ background: "#0A0A0F" }}>
+    <div className="shell pad-bottom">
       <Header title={item.brand} />
 
       <div className="px-5">
@@ -143,7 +143,7 @@ export default function StoreItem() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="mt-4 rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
           data-testid="voucher-balance"
         >
           <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#D4FF4F" }}>
@@ -164,7 +164,7 @@ export default function StoreItem() {
         {/* Perks */}
         <div
           className="mt-5 rounded-3xl p-5"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         >
           <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3 font-bold">what's inside</div>
           {perks.map((p, i) => (
@@ -187,7 +187,7 @@ export default function StoreItem() {
         {/* Terms */}
         <div
           className="mt-5 rounded-2xl p-4"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         >
           <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-white/45 mb-2 font-bold">
             <Lock size={10} /> terms

@@ -70,7 +70,7 @@ export default function PriceChart() {
           </ResponsiveContainer>
         )}
       </div>
-      <div className="flex gap-1 mt-3 rounded-full p-1" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <div className="flex gap-1 mt-3 rounded-full p-1" style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}>
         {RANGES.map((r) => (
           <motion.button
             key={r.k}

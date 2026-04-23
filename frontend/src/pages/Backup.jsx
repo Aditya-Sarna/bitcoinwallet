@@ -84,7 +84,7 @@ export default function Backup() {
   };
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <Header title="backup vault" />
       <div className="px-6 pb-20">
         <AnimatePresence mode="wait">
@@ -112,7 +112,7 @@ export default function Backup() {
 
               <div
                 className="mt-6 rounded-3xl p-5"
-                style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+                style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
                 data-testid="seed-phrase-grid"
               >
                 <div className="grid grid-cols-2 gap-3">
@@ -174,7 +174,7 @@ export default function Backup() {
 
               <div
                 className="mt-6 rounded-3xl p-4 min-h-[140px]"
-                style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+                style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
               >
                 <div className="text-[9px] tracking-[0.2em] uppercase text-white/40 mb-2 font-bold">your order</div>
                 <div className="flex flex-wrap gap-2">
@@ -208,8 +208,8 @@ export default function Backup() {
                       className="py-2.5 rounded-xl text-xs font-mono font-semibold transition-all"
                       style={
                         isPicked
-                          ? { opacity: 0.2, background: "rgba(255,255,255,0.05)" }
-                          : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                          ? { opacity: 0.2, background: "var(--surface)" }
+                          : { background: "var(--surface)", border: "1px solid var(--surface-border)" }
                       }
                     >
                       {w}

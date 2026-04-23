@@ -11,7 +11,7 @@ export default function Header({ title, onBack, right = null, subtitle }) {
         onClick={() => (onBack ? onBack() : nav(-1))}
         data-testid="header-back"
         className="w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+        style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
       >
         <ArrowLeft size={18} weight="bold" />
       </motion.button>

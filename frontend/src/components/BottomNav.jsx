@@ -19,10 +19,10 @@ export default function BottomNav() {
         transition={{ delay: 0.1, type: "spring", stiffness: 220, damping: 24 }}
         className="rounded-full py-2 px-2 flex items-center justify-between pointer-events-auto"
         style={{
-          background: "rgba(20,20,32,0.85)",
+          background: "var(--nav-bg)",
           backdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.07)",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+          border: "1px solid var(--surface-border-2)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
         }}
         data-testid="bottom-nav"
       >
@@ -32,7 +32,7 @@ export default function BottomNav() {
               <motion.div
                 whileTap={{ scale: 0.9 }}
                 className="flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-full relative"
-                style={{ color: isActive ? "#D4FF4F" : "rgba(255,255,255,0.5)" }}
+                style={{ color: isActive ? "#D4FF4F" : "var(--ink-3)" }}
               >
                 {isActive && (
                   <motion.div

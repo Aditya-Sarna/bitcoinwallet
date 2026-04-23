@@ -1,0 +1,51 @@
+{
+  "summary": "Iteration 4 frontend-only testing of NOVA wallet redesign (CRED-style): AbstractBalanceArt, theme toggle, cursive flourishes, and full flows. All critical user-facing flows PASS. Tests split per flow per note from previous iteration.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Bottom nav in light theme", "issues": ["Nav item labels ('home', 'rewards', etc.) render very faintly on the cream (#F5F2EA) background — contrast is borderline readable. Verify --ink-3 override for light theme yields sufficient contrast. No white-on-cream detected (whiteOnLight=0), but the greyscale still feels too light."]},
+      {"screen": "Preview environment (not an app bug)", "issues": ["'Made with Emergent' badge (fixed bottom-right) overlaps the last two bottom-nav items (nav-vault and nav-profile). Playwright hit-testing lands on the badge anchor, not the NavLink. Real users on deployed env (no badge) are unaffected; JS .click() confirms navigation works. No app change required."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Optional) Boost --ink-3 (or secondary nav text color) darkness in light theme for better contrast of bottom-nav labels.",
+    "(Testability) Add data-testid to the biometric toggle on /security (currently no [data-testid*=biometric] element exposed)."
+  ],
+  "critical_code_review_comments": [
+    "ThemeProvider (/app/frontend/src/lib/theme.jsx) is clean — uses data-theme on <html>, localStorage key 'nova_theme', default 'dark'. Persistence verified across reload.",
+    "AbstractBalanceArt is truly containerless — verified balance-art element has bg=rgba(0,0,0,0), border=0, borderRadius=0. Art layer is SVG only; type layer uses var(--ink)/--ink-2/--ink-3 so it re-themes. Gradient shapes (sun-grad orange→pink→indigo, blob-grad lime→cyan) remain saturated in both themes as intended.",
+    "All 5 success kinds (sent/backed_up/paid/claimed/redeemed) route correctly. Send success page shows 'sent.' with PaymentOrbit animation, to/network fee/total/txid receipt rows, back-to-home + view-all-transactions CTAs.",
+    "No #D4AF37 (gold) detected in live DOM across /home, /security, /store — score card uses lime gradient linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%). Confetti.jsx still has '#D4AF37' as one of 8 random colors which is acceptable (ephemeral particles, not a brand color).",
+    "BottomNav uses NavLink + data-testid for each of 5 items. Labels: home, rewards, store, vault (→/security), you (→/profile). The 'vault' item routes to /security even though testid is nav-vault — matches spec.",
+    "No Instrument Serif italic or oxblood references found in src/. Italianno cursive confirmed as accent only (eyebrow 'the vault of', signature 'a quiet rebellion.', 'the tape', 'your story', 'welcome,'). Headlines use Clash Display."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% of user-facing flows"},
+  "test_credentials": "Created fresh wallet per run: name='Aditya', PIN=123456 (cleared localStorage first).",
+  "seed_data_creation": "None. Each test run onboards a fresh wallet; starting state 0.5 BTC / 25,000 coins / 12 gems supplied by backend mock.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All tests split per flow as requested. Testids verified: onboarding uses onboarding-pillars-next / onboarding-name-input / onboarding-name-next / onb-pin-key-{0-9} / onb-confirm-key-{0-9}. Home: balance-art, art-fiat, art-btc, art-change, art-name, home-greeting, theme-toggle. Profile: theme-toggle (1 instance) + 'the vault of' cursive. Send: send-address, send-amount, wheel-preset-{amt}, send-tier-{slow|average|fast}, send-next-btn, send-pin-key-{0-9}. Store cat pills: store-cat-{all|luxury|shop|travel|food|play} (NOT cat-*). Deep link /store?cat=food activates green lime pill bg=rgb(212,255,79). Transactions filter tabs: txn-filter-{all|sent|received|rewards}. Rewards claim: rewards-claim-btn. Bills: bill-biller-{Electricity|Internet|Mobile|Water|Rent}, bill-account, bill-amount, bill-pay-btn. Receive: receive-qr, receive-address, receive-amount, receive-copy, receive-share. Security: score-card uses lime gradient. PREVIEW-ONLY: Made-with-Emergent badge overlaps nav-vault/nav-profile — use `page.evaluate('() => document.querySelector(\"[data-testid=nav-profile]\").click()')` or plain JS click instead of page.click for those two testids.",
+  "verified_flows": {
+    "onboarding": "PASS — start → get-started → pillars → name=Aditya → pin 123456 → confirm → lands on /backup",
+    "balance_art": "PASS — SVG art layer + type layer with all 4 art-* testids, no card container (bg transparent, border 0, radius 0)",
+    "cursive_flourishes_home": "PASS — 'welcome,', 'the vault of', 'a quiet rebellion.', 'the tape', 'your story' all present",
+    "theme_toggle_home": "PASS — dark→light→dark, localStorage nova_theme set, persists across reload",
+    "theme_toggle_profile": "PASS — 1 theme-toggle on /profile; toggles and persists; profile also has cursive 'the vault of'",
+    "light_theme_contrast": "MOSTLY PASS — no white-on-cream text detected across home/rewards/store/vault/profile; minor concern about faded bottom-nav labels",
+    "backup_flow": "PASS — 12 seed words → 'i wrote them down · verify' → tap 12 shuffled words in correct order (duplicate-safe first-unused-match) → 'confirm backup' → /success kind=backed_up with +250 coins",
+    "bottom_nav": "PASS — nav-home/rewards/store/vault(→/security)/profile all route correctly (preview badge overlay caused playwright hit-test confusion on last two but real app works fine)",
+    "send_flow": "PASS — addr (bc1qxy...) + 0.001 preset + average tier + continue + PIN 123456 → /success with transaction receipt + orbit animation",
+    "receive": "PASS — receive-qr + receive-address + receive-amount + receive-copy + receive-share all present",
+    "store": "PASS — lime balance card (25,250 coins), category pills, voucher cards visible (amazon orange, starbucks green, uber, dior, etc.)",
+    "deep_link_store_food": "PASS — /store?cat=food activates store-cat-food pill with lime background",
+    "rewards_claim": "PASS — rewards-claim-btn → /success kind=claimed",
+    "bills": "PASS — all 5 biller testids + account + amount + pay button present",
+    "security": "PASS — score card uses lime gradient (NOT gold #D4AF37); no gold anywhere in live DOM",
+    "transactions_tabs": "PASS — 4 filter tabs (all/sent/received/rewards) clickable",
+    "no_gold_oxblood_instrument_serif": "PASS — only remnant of #D4AF37 is in Confetti random-color array (acceptable ephemeral particles, not brand)"
+  }
+}

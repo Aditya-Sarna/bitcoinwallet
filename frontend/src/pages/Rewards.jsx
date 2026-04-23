@@ -75,7 +75,7 @@ export default function Rewards() {
               animate={{ rotate: coinBurst ? [0, -15, 15, -8, 0] : 0, scale: coinBurst ? [1, 1.2, 1] : 1 }}
               transition={{ duration: 0.8 }}
               className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: "#0A0A0F" }}
+             
             >
               <span className="font-bold text-2xl" style={{ color: "#D4FF4F" }}>$</span>
             </motion.div>
@@ -104,7 +104,7 @@ export default function Rewards() {
         {/* Streak */}
         <div
           className="mt-5 rounded-3xl p-5"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
           data-testid="streak-card"
         >
           <div className="flex items-center justify-between">
@@ -130,7 +130,7 @@ export default function Rewards() {
               style={
                 daily?.can_claim
                   ? { background: "#D4FF4F", color: "#0A0A0F" }
-                  : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", cursor: "not-allowed" }
+                  : { background: "var(--surface)", color: "rgba(255,255,255,0.4)", cursor: "not-allowed" }
               }
             >
               {claiming ? "…" : daily?.can_claim ? `claim +${daily?.next_reward}` : "claimed"}
@@ -144,7 +144,7 @@ export default function Rewards() {
                   style={
                     on
                       ? { background: "#D4FF4F", color: "#0A0A0F" }
-                      : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)" }
+                      : { background: "var(--surface)", color: "rgba(255,255,255,0.3)" }
                   }
                 >
                   {i + 1}
@@ -191,7 +191,7 @@ export default function Rewards() {
         {/* How to earn */}
         <div
           className="mt-6 rounded-3xl p-5"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         >
           <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3 font-bold">how to earn</div>
           <Earn title="send bitcoin" reward="+50" />

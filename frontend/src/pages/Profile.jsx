@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Copy, SignOut, Bell, ShieldCheck, Question, Gift, CaretRight } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import BitcoinScore from "../components/BitcoinScore";
+import ThemeToggle from "../components/ThemeToggle";
 import Logo from "../components/Logo";
 import { api } from "../lib/api";
 import { shortAddr, fmtBTC, fmtCoins } from "../lib/format";
@@ -60,16 +61,21 @@ export default function Profile() {
             {(wallet?.name || "N").charAt(0).toUpperCase()}
           </div>
           <div className="flex-1">
-            <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">the vault of</div>
+            <div className="flex items-baseline gap-2">
+              <span style={{ fontFamily: "Italianno, cursive", fontSize: 28, color: "var(--ink-2)" }}>
+                the vault of
+              </span>
+            </div>
             <div
-              className="text-white mt-1 tracking-[-0.03em] leading-none lowercase"
-              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 34 }}
+              className="mt-0.5 tracking-[-0.03em] leading-none lowercase"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 34, color: "var(--ink)" }}
               data-testid="profile-name"
             >
               {wallet?.name || "…"}
             </div>
-            <div className="text-[10px] text-white/45 font-mono mt-1.5">{shortAddr(wallet?.btc_address, 8, 8)}</div>
+            <div className="text-[10px] font-mono mt-1.5" style={{ color: "var(--ink-3)" }}>{shortAddr(wallet?.btc_address, 8, 8)}</div>
           </div>
+          <ThemeToggle size={40} />
         </div>
         <div className="text-[10px] text-white/35 mt-3 font-semibold uppercase tracking-[0.2em]">
           member since {memberSince}
@@ -83,7 +89,7 @@ export default function Profile() {
 
         <div
           className="mt-5 rounded-3xl p-5"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         >
           <BitcoinScore score={wallet?.btc_score || 742} />
         </div>
@@ -127,7 +133,7 @@ export default function Profile() {
         {/* Items */}
         <div
           className="mt-5 rounded-3xl overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
         >
           {items.map(({ Icon, label, desc, warn, testid, to, color }, i) => (
             <button
@@ -174,7 +180,7 @@ function Stat({ label, value, unit }) {
   return (
     <div
       className="rounded-2xl p-3 text-center"
-      style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
     >
       <div className="text-[8px] tracking-[0.2em] uppercase text-white/45 font-semibold">{label}</div>
       <div className="font-display text-base font-bold mt-0.5">{value}</div>

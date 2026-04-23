@@ -38,7 +38,7 @@ export default function Lock() {
   };
 
   return (
-    <div className="shell relative overflow-hidden" style={{ background: "#0A0A0F" }}>
+    <div className="shell relative overflow-hidden">
       <div className="bg-radial-gold" />
       <div className="relative z-10 min-h-screen px-6 py-14 flex flex-col">
         <motion.div

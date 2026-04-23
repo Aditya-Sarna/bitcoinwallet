@@ -1,18 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Italianno&family=Instrument+Serif:ital@0;1&display=swap');
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   NOVA — theme tokens (dark default, light via [data-theme='light'])
+   ============================================================ */
+:root,
+[data-theme='dark'] {
+  --bg: #0A0A0F;
+  --bg-raise: #141420;
+  --ink: #FFFFFF;
+  --ink-2: rgba(255,255,255,0.65);
+  --ink-3: rgba(255,255,255,0.45);
+  --ink-4: rgba(255,255,255,0.25);
+  --surface: rgba(255,255,255,0.035);
+  --surface-2: rgba(255,255,255,0.07);
+  --surface-border: rgba(255,255,255,0.06);
+  --surface-border-2: rgba(255,255,255,0.1);
+  --nav-bg: rgba(20,20,32,0.85);
+
+  --nova-lime: #D4FF4F;
+  --nova-lime-soft: #E5FF7A;
+  --nova-pink: #FF3E8A;
+  --nova-indigo: #6B5CFC;
+  --nova-cyan: #34D8FF;
+  --nova-orange: #FF7A3A;
+}
+
+[data-theme='light'] {
+  --bg: #F5F2EA;
+  --bg-raise: #FFFFFF;
+  --ink: #0A0A0F;
+  --ink-2: rgba(10,10,15,0.65);
+  --ink-3: rgba(10,10,15,0.45);
+  --ink-4: rgba(10,10,15,0.2);
+  --surface: rgba(10,10,15,0.04);
+  --surface-2: rgba(10,10,15,0.07);
+  --surface-border: rgba(10,10,15,0.08);
+  --surface-border-2: rgba(10,10,15,0.12);
+  --nav-bg: rgba(255,255,255,0.85);
+}
+
 body {
   margin: 0;
   font-family: 'Manrope', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0A0A0F;
-  color: #fff;
+  background: var(--bg);
+  color: var(--ink);
   overscroll-behavior: none;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 code, .font-mono {
@@ -24,13 +64,17 @@ code, .font-mono {
   letter-spacing: -0.025em;
 }
 
-/* legacy classes kept as no-ops / fallbacks to avoid broken references */
-.font-cursive, .font-serif-italic {
-  font-family: 'Clash Display', 'Manrope', sans-serif;
+.font-cursive {
+  font-family: 'Italianno', 'Instrument Serif', cursive;
   font-style: normal;
 }
 
-/* Hide scrollbars on mobile frame */
+.font-serif-italic {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+}
+
+/* Hide scrollbars */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 
@@ -45,58 +89,62 @@ code, .font-mono {
   mix-blend-mode: overlay;
 }
 
-/* ========== NOVA electric theme tokens ========== */
-:root {
-  --nova-lime: #D4FF4F;
-  --nova-lime-soft: #E5FF7A;
-  --nova-pink: #FF3E8A;
-  --nova-indigo: #6B5CFC;
-  --nova-cyan: #34D8FF;
-  --nova-orange: #FF7A3A;
-  --nova-ink: #0A0A0F;
-  --nova-card: #141420;
-}
-
-/* legacy .gold-* classes remapped to electric palette so any leftover refs work */
-.glow-gold {
-  box-shadow: 0 0 60px rgba(212,255,79,0.35), inset 0 0 20px rgba(212,255,79,0.12);
-}
+/* Legacy mapped to electric */
+.glow-gold { box-shadow: 0 0 60px rgba(212,255,79,0.35), inset 0 0 20px rgba(212,255,79,0.12); }
 .text-gold { color: var(--nova-lime); }
-.bg-gold { background: var(--nova-lime); }
+.bg-gold  { background: var(--nova-lime); }
 .gold-gradient {
   background: linear-gradient(135deg, var(--nova-lime) 0%, var(--nova-lime-soft) 60%, #FDFFB8 100%);
 }
 
-/* Nova-specific utilities */
-.nova-gradient-lime {
-  background: linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%);
-}
-.nova-gradient-pink {
-  background: linear-gradient(135deg, #FF3E8A 0%, #FF7A3A 100%);
-}
-.nova-gradient-indigo {
-  background: linear-gradient(135deg, #6B5CFC 0%, #A855F7 100%);
-}
-.nova-gradient-hero {
-  background: linear-gradient(135deg, #FF7A3A 0%, #FF3E8A 35%, #6B5CFC 70%, #34D8FF 100%);
-}
+.nova-gradient-lime   { background: linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%); }
+.nova-gradient-pink   { background: linear-gradient(135deg, #FF3E8A 0%, #FF7A3A 100%); }
+.nova-gradient-indigo { background: linear-gradient(135deg, #6B5CFC 0%, #A855F7 100%); }
+
 .glow-lime { box-shadow: 0 0 48px rgba(212,255,79,0.5), inset 0 0 20px rgba(212,255,79,0.15); }
 .glow-pink { box-shadow: 0 0 48px rgba(255,62,138,0.45), inset 0 0 20px rgba(255,62,138,0.15); }
 
 .glass {
-  background: rgba(255,255,255,0.035);
+  background: var(--surface);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid var(--surface-border);
 }
 
-.hairline { border: 1px solid rgba(255,255,255,0.08); }
+.hairline { border: 1px solid var(--surface-border); }
+
+/* ============================================================
+   Light theme overrides for Tailwind white-tone utilities
+   ============================================================ */
+[data-theme='light'] .text-white { color: #0A0A0F !important; }
+[data-theme='light'] .text-white\/95 { color: rgba(10,10,15,0.95) !important; }
+[data-theme='light'] .text-white\/90 { color: rgba(10,10,15,0.9)  !important; }
+[data-theme='light'] .text-white\/85 { color: rgba(10,10,15,0.85) !important; }
+[data-theme='light'] .text-white\/80 { color: rgba(10,10,15,0.8)  !important; }
+[data-theme='light'] .text-white\/75 { color: rgba(10,10,15,0.75) !important; }
+[data-theme='light'] .text-white\/70 { color: rgba(10,10,15,0.7)  !important; }
+[data-theme='light'] .text-white\/60 { color: rgba(10,10,15,0.6)  !important; }
+[data-theme='light'] .text-white\/55 { color: rgba(10,10,15,0.6)  !important; }
+[data-theme='light'] .text-white\/50 { color: rgba(10,10,15,0.55) !important; }
+[data-theme='light'] .text-white\/45 { color: rgba(10,10,15,0.5)  !important; }
+[data-theme='light'] .text-white\/40 { color: rgba(10,10,15,0.45) !important; }
+[data-theme='light'] .text-white\/35 { color: rgba(10,10,15,0.4)  !important; }
+[data-theme='light'] .text-white\/30 { color: rgba(10,10,15,0.35) !important; }
+[data-theme='light'] .text-white\/25 { color: rgba(10,10,15,0.3)  !important; }
+[data-theme='light'] .text-white\/20 { color: rgba(10,10,15,0.22) !important; }
+
+[data-theme='light'] .border-white\/5  { border-color: rgba(10,10,15,0.06) !important; }
+[data-theme='light'] .border-white\/8  { border-color: rgba(10,10,15,0.08) !important; }
+[data-theme='light'] .border-white\/10 { border-color: rgba(10,10,15,0.1)  !important; }
+[data-theme='light'] .border-white\/15 { border-color: rgba(10,10,15,0.15) !important; }
+[data-theme='light'] .bg-white\/5  { background-color: rgba(10,10,15,0.04) !important; }
+[data-theme='light'] .bg-white\/10 { background-color: rgba(10,10,15,0.07) !important; }
 
 /* PIN dot */
 .pin-dot {
   width: 16px; height: 16px; border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border-2);
   transition: all 0.2s ease;
 }
 .pin-dot.filled {
@@ -112,14 +160,16 @@ code, .font-mono {
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
-  background: #0A0A0F;
+  background: var(--bg);
   overflow: hidden;
+  color: var(--ink);
+  transition: background 0.3s ease;
 }
 .pad-bottom { padding-bottom: 96px; }
 
-/* CRED-style dotted bg for onboarding */
+/* CRED-style dotted bg */
 .dot-grid {
-  background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-image: radial-gradient(var(--ink-4) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 
@@ -167,5 +217,5 @@ code, .font-mono {
 
 @layer base {
   * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  body { background: var(--bg); color: var(--ink); }
 }

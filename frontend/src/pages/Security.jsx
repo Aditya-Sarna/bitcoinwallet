@@ -23,7 +23,7 @@ export default function Security() {
   const hasData = status !== null;
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <Header title="security" />
       <div className="px-6">
         {/* Security Score Hero */}
@@ -58,7 +58,7 @@ export default function Security() {
                 animate={{ width: hasData ? `${score}%` : 0 }}
                 transition={{ duration: 1.2 }}
                 className="h-full"
-                style={{ background: "#0A0A0F" }}
+               
               />
             </div>
             <div className="text-[12px] opacity-70 mt-2 font-bold uppercase tracking-wide">
@@ -98,7 +98,7 @@ export default function Security() {
 
         <div
           className="mt-8 rounded-3xl p-5"
-          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
           data-testid="security-tips"
         >
           <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] mb-2 font-bold">pro tip</div>
@@ -124,7 +124,7 @@ function Row({ icon, title, desc, onClick, warning, testid, color }) {
       onClick={onClick}
       data-testid={testid}
       className="w-full rounded-2xl p-4 flex items-center gap-3 text-left"
-      style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
     >
       <div
         className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
@@ -148,7 +148,7 @@ function Toggle({ icon, title, desc, value, onChange, testid, color }) {
   return (
     <div
       className="rounded-2xl p-4 flex items-center gap-3"
-      style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
       data-testid={testid}
     >
       <div

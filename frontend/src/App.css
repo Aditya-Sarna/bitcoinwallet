@@ -1,21 +1,9 @@
 /* App-level styles */
 .App {
   min-height: 100vh;
-  background: #000;
+  background: var(--bg);
+  transition: background 0.3s ease;
 }
-
-/* Shell (mobile container) */
-.shell {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
-  position: relative;
-  background: #000;
-  box-shadow: 0 0 120px rgba(212,175,55,0.06);
-  overflow: hidden;
-}
-
-.pad-bottom { padding-bottom: 120px; }
 
 /* Radial backgrounds */
 .bg-radial-gold::before {
@@ -25,12 +13,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212,255,79,0.18) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
-}
-
-/* Score gauge */
-.score-gauge-bg {
-  background: conic-gradient(from 180deg, #D4AF37, #F0C850, #9B7F2A, rgba(255,255,255,0.08) 60%);
 }

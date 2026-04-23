@@ -10,7 +10,7 @@ export default function Scan() {
   const [manual, setManual] = useState("");
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <Header title="scan & pay" />
       <div className="px-6">
         <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">scan any bitcoin qr</div>
@@ -90,7 +90,7 @@ export default function Scan() {
             onClick={() => toast("pick from gallery · demo")}
             data-testid="scan-gallery"
             className="rounded-2xl py-3 flex items-center justify-center gap-2 text-xs font-bold"
-            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
           >
             <ImageIcon size={14} /> gallery
           </motion.button>
@@ -99,7 +99,7 @@ export default function Scan() {
             onClick={() => document.getElementById("manual-input")?.focus()}
             data-testid="scan-manual"
             className="rounded-2xl py-3 flex items-center justify-center gap-2 text-xs font-bold"
-            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
           >
             <Keyboard size={14} /> manual
           </motion.button>

@@ -40,7 +40,7 @@ export default function Success() {
   const receiverInitial = state.receiverInitial || (state.title || "·").charAt(0).toUpperCase();
 
   return (
-    <div className="shell relative overflow-hidden" style={{ background: "#0A0A0F" }} data-testid="success-screen">
+    <div className="shell relative overflow-hidden" data-testid="success-screen">
       {/* Soft electric glow */}
       <div
         className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-50 blur-3xl pointer-events-none"
@@ -148,8 +148,8 @@ export default function Success() {
             transition={{ delay: 0.8 }}
             className="mt-7 rounded-3xl p-5 space-y-3"
             style={{
-              background: "rgba(255,255,255,0.035)",
-              border: "1px solid rgba(255,255,255,0.07)",
+              background: "var(--surface)",
+              border: "1px solid var(--surface-border)",
             }}
             data-testid="success-receipt"
           >

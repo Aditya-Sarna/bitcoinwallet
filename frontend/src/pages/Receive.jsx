@@ -36,7 +36,7 @@ export default function Receive() {
   const initial = (wallet?.name || "N").charAt(0).toUpperCase();
 
   return (
-    <div className="shell" style={{ background: "#0A0A0F" }}>
+    <div className="shell">
       <Header title="receive" />
       <div className="px-6 text-center pb-10">
         <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">your address</div>
@@ -71,7 +71,7 @@ export default function Receive() {
         {/* Address */}
         <div
           className="mt-6 rounded-3xl p-4"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
           data-testid="receive-address-card"
         >
           <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-2 font-semibold text-left">address</div>
@@ -102,7 +102,7 @@ export default function Receive() {
             onClick={copy}
             data-testid="receive-copy"
             className="flex-1 rounded-full py-3 flex items-center justify-center gap-2 text-sm font-bold"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--surface-border)" }}
           >
             <Copy size={14} /> copy
           </motion.button>
@@ -125,7 +125,7 @@ function StoryStat({ label, value, unit }) {
   return (
     <div
       className="rounded-2xl p-3"
-      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--surface)", border: "1px solid var(--surface-border)" }}
     >
       <div className="text-[8px] tracking-[0.2em] uppercase text-white/45 font-semibold">{label}</div>
       <div className="font-display text-base font-bold mt-0.5">{value}</div>
