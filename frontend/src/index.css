@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Italianno&family=Instrument+Serif:ital@0;1&display=swap');
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 
 @tailwind base;
@@ -22,6 +22,15 @@ code, .font-mono {
 .font-display {
   font-family: 'Clash Display', 'Manrope', sans-serif;
   letter-spacing: -0.02em;
+}
+
+.font-cursive {
+  font-family: 'Italianno', 'Instrument Serif', cursive;
+}
+
+.font-serif-italic {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
 }
 
 /* Hide scrollbars on mobile frame */

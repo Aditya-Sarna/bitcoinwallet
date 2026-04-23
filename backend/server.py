@@ -50,7 +50,7 @@ async def get_current_wallet(authorization: Optional[str] = Header(None)):
     session = await db.sessions.find_one({"token": token}, {"_id": 0})
     if not session:
         raise HTTPException(status_code=401, detail="Invalid token")
-    wallet = await db.wallets.find_one({"id": session["wallet_id"]}, {"_id": 0, "pin_hash": 0})
+    wallet = await db.wallets.find_one({"id": session["wallet_id"]}, {"_id": 0, "pin_hash": 0, "seed_phrase": 0})
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
     return wallet
@@ -82,6 +82,28 @@ class BillBody(BaseModel):
     account: str
     amount_usd: float
 
+class VerifySeedBody(BaseModel):
+    words: List[str]
+
+class ChangePinBody(BaseModel):
+    old_pin: str
+    new_pin: str
+
+# 64-word list for mock 12-word seed generation (BIP39-inspired)
+SEED_WORDS = [
+    "abandon", "ability", "abstract", "access", "acid", "acorn", "acoustic", "across",
+    "action", "adapt", "advance", "alpha", "amber", "ancient", "angel", "anchor",
+    "anvil", "apollo", "arcade", "arrow", "artisan", "atlas", "aurora", "beacon",
+    "beyond", "blade", "bloom", "bolt", "bravo", "bridge", "bronze", "canyon",
+    "cascade", "cedar", "cipher", "citadel", "comet", "crystal", "delta", "divine",
+    "echo", "ember", "epoch", "essence", "falcon", "fortune", "galaxy", "golden",
+    "harbor", "helix", "horizon", "ignite", "infinite", "jasper", "kinetic", "legacy",
+    "luminous", "marble", "monarch", "nebula", "obsidian", "oracle", "phoenix", "zenith",
+]
+
+def generate_seed_phrase() -> List[str]:
+    return [random.choice(SEED_WORDS) for _ in range(12)]
+
 # ---------- Auth ----------
 @api_router.post("/auth/register")
 async def register(body: RegisterBody):
@@ -91,6 +113,7 @@ async def register(body: RegisterBody):
         raise HTTPException(status_code=400, detail="Name required")
 
     wallet_id = str(uuid.uuid4())
+    seed_phrase = generate_seed_phrase()
     wallet = {
         "id": wallet_id,
         "name": body.name.strip(),
@@ -98,11 +121,17 @@ async def register(body: RegisterBody):
         "btc_address": gen_btc_address(),
         "balance_btc": 0.5,  # starting demo balance
         "coins": 1000,  # rewards coins (Satoshi bonus)
+        "gems": 3,  # rare gems (CRED-style)
+        "vouchers": 0,
         "btc_score": 742,  # CRED-style score out of 900
         "streak": 1,
         "last_claim": None,
         "referral_code": gen_referral_code(body.name),
         "referred_by": body.referral_code,
+        "seed_phrase": seed_phrase,  # shown once, never again
+        "seed_backed_up": False,
+        "biometric_enabled": False,
+        "auto_lock_minutes": 5,
         "created_at": now_iso(),
     }
     await db.wallets.insert_one(wallet.copy())
@@ -131,6 +160,7 @@ async def register(body: RegisterBody):
         "name": wallet["name"],
         "btc_address": wallet["btc_address"],
         "referral_code": wallet["referral_code"],
+        "seed_phrase": seed_phrase,  # returned ONCE for user to backup
     }
 
 @api_router.post("/auth/login")
@@ -387,6 +417,62 @@ async def bills_pay(body: BillBody, wallet=Depends(get_current_wallet)):
         "created_at": now_iso(),
     })
     return {"ok": True, "amount_btc": amount_btc, "new_balance": new_balance}
+
+# ---------- Security / Backup ----------
+@api_router.get("/security/status")
+async def security_status(wallet=Depends(get_current_wallet)):
+    return {
+        "seed_backed_up": wallet.get("seed_backed_up", False),
+        "biometric_enabled": wallet.get("biometric_enabled", False),
+        "auto_lock_minutes": wallet.get("auto_lock_minutes", 5),
+        "security_score": (
+            (60 if wallet.get("seed_backed_up") else 0)
+            + (25 if wallet.get("biometric_enabled") else 0)
+            + 15  # PIN always set
+        ),
+    }
+
+@api_router.post("/security/seed/verify")
+async def verify_seed(body: VerifySeedBody, authorization: Optional[str] = Header(None)):
+    # Re-fetch wallet WITH seed_phrase
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing token")
+    token = authorization.replace("Bearer ", "", 1)
+    session = await db.sessions.find_one({"token": token}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    wallet = await db.wallets.find_one({"id": session["wallet_id"]}, {"_id": 0})
+    if not wallet:
+        raise HTTPException(status_code=404, detail="Wallet not found")
+    if wallet.get("seed_phrase") != body.words:
+        raise HTTPException(status_code=400, detail="Seed phrase does not match")
+    await db.wallets.update_one(
+        {"id": wallet["id"]},
+        {"$set": {"seed_backed_up": True, "coins": wallet.get("coins", 0) + 250}}
+    )
+    return {"ok": True, "bonus_coins": 250}
+
+@api_router.post("/security/biometric/toggle")
+async def toggle_biometric(wallet=Depends(get_current_wallet)):
+    new_val = not wallet.get("biometric_enabled", False)
+    await db.wallets.update_one({"id": wallet["id"]}, {"$set": {"biometric_enabled": new_val}})
+    return {"biometric_enabled": new_val}
+
+@api_router.post("/security/pin/change")
+async def change_pin(body: ChangePinBody, authorization: Optional[str] = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing token")
+    token = authorization.replace("Bearer ", "", 1)
+    session = await db.sessions.find_one({"token": token}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    wallet = await db.wallets.find_one({"id": session["wallet_id"]}, {"_id": 0})
+    if not wallet or wallet["pin_hash"] != hash_pin(body.old_pin):
+        raise HTTPException(status_code=401, detail="Incorrect current PIN")
+    if len(body.new_pin) < 4 or not body.new_pin.isdigit():
+        raise HTTPException(status_code=400, detail="New PIN must be at least 4 digits")
+    await db.wallets.update_one({"id": wallet["id"]}, {"$set": {"pin_hash": hash_pin(body.new_pin)}})
+    return {"ok": True}
 
 # ---------- Health ----------
 @api_router.get("/")

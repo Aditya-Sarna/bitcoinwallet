@@ -24,6 +24,10 @@ def registered(session):
     data = r.json()
     assert "token" in data and "wallet_id" in data and "btc_address" in data and "referral_code" in data
     assert data["btc_address"].startswith("bc1q")
+    # NEW: seed_phrase must be returned once on register
+    assert "seed_phrase" in data
+    assert isinstance(data["seed_phrase"], list) and len(data["seed_phrase"]) == 12
+    assert all(isinstance(w, str) and len(w) > 0 for w in data["seed_phrase"])
     return data
 
 
@@ -76,6 +80,9 @@ class TestWallet:
         assert w["balance_btc"] == 0.5
         assert w["coins"] == 1000
         assert w["btc_score"] == 742
+        # NEW: sensitive fields must never leak
+        assert "seed_phrase" not in w
+        assert "pin_hash" not in w
 
     def test_receive(self, session, auth_headers):
         r = session.post(f"{API}/wallet/receive", json={"amount_btc": 0.01}, headers=auth_headers)
@@ -202,3 +209,104 @@ class TestBills:
     def test_bill_insufficient(self, session, auth_headers):
         r = session.post(f"{API}/bills/pay", json={"biller": "X", "account": "Y", "amount_usd": 10_000_000}, headers=auth_headers)
         assert r.status_code == 400
+
+
+# ---------- Security / Backup (NEW) ----------
+class TestSecurity:
+    """Fresh wallet per test class for independent security flow."""
+
+    @pytest.fixture(scope="class")
+    def sec_wallet(self):
+        s = requests.Session()
+        s.headers.update({"Content-Type": "application/json"})
+        r = s.post(f"{API}/auth/register", json={"name": "TEST_Sec", "pin": "112233"}, timeout=15)
+        assert r.status_code == 200, r.text
+        data = r.json()
+        headers = {"Authorization": f"Bearer {data['token']}", "Content-Type": "application/json"}
+        return {"session": s, "data": data, "headers": headers}
+
+    def test_status_initial(self, sec_wallet):
+        r = sec_wallet["session"].get(f"{API}/security/status", headers=sec_wallet["headers"])
+        assert r.status_code == 200
+        d = r.json()
+        assert d["seed_backed_up"] is False
+        assert d["biometric_enabled"] is False
+        assert d["auto_lock_minutes"] == 5
+        # PIN always 15 => only base score present
+        assert d["security_score"] == 15
+
+    def test_verify_seed_wrong_words(self, sec_wallet):
+        r = sec_wallet["session"].post(
+            f"{API}/security/seed/verify",
+            json={"words": ["wrong"] * 12},
+            headers=sec_wallet["headers"],
+        )
+        assert r.status_code == 400
+
+    def test_verify_seed_correct(self, sec_wallet):
+        seed = sec_wallet["data"]["seed_phrase"]
+        r = sec_wallet["session"].post(
+            f"{API}/security/seed/verify",
+            json={"words": seed},
+            headers=sec_wallet["headers"],
+        )
+        assert r.status_code == 200, r.text
+        d = r.json()
+        assert d["ok"] is True and d["bonus_coins"] == 250
+        # Status reflects backed up now + coins increased
+        status = sec_wallet["session"].get(f"{API}/security/status", headers=sec_wallet["headers"]).json()
+        assert status["seed_backed_up"] is True
+        assert status["security_score"] == 75  # 60 + 15
+        me = sec_wallet["session"].get(f"{API}/wallet/me", headers=sec_wallet["headers"]).json()
+        assert me["coins"] == 1250
+
+    def test_biometric_toggle(self, sec_wallet):
+        r = sec_wallet["session"].post(f"{API}/security/biometric/toggle", headers=sec_wallet["headers"])
+        assert r.status_code == 200
+        assert r.json()["biometric_enabled"] is True
+        status = sec_wallet["session"].get(f"{API}/security/status", headers=sec_wallet["headers"]).json()
+        assert status["biometric_enabled"] is True
+        assert status["security_score"] == 100  # 60 + 25 + 15
+        # Toggle back
+        r2 = sec_wallet["session"].post(f"{API}/security/biometric/toggle", headers=sec_wallet["headers"])
+        assert r2.json()["biometric_enabled"] is False
+
+    def test_change_pin_wrong_old(self, sec_wallet):
+        r = sec_wallet["session"].post(
+            f"{API}/security/pin/change",
+            json={"old_pin": "000000", "new_pin": "445566"},
+            headers=sec_wallet["headers"],
+        )
+        assert r.status_code == 401
+
+    def test_change_pin_success_and_login(self, sec_wallet):
+        r = sec_wallet["session"].post(
+            f"{API}/security/pin/change",
+            json={"old_pin": "112233", "new_pin": "445566"},
+            headers=sec_wallet["headers"],
+        )
+        assert r.status_code == 200, r.text
+        # Old PIN should now fail
+        r_old = sec_wallet["session"].post(
+            f"{API}/auth/login",
+            json={"wallet_id": sec_wallet["data"]["wallet_id"], "pin": "112233"},
+        )
+        assert r_old.status_code == 401
+        # New PIN should succeed
+        r_new = sec_wallet["session"].post(
+            f"{API}/auth/login",
+            json={"wallet_id": sec_wallet["data"]["wallet_id"], "pin": "445566"},
+        )
+        assert r_new.status_code == 200
+
+    def test_change_pin_short(self, sec_wallet):
+        r = sec_wallet["session"].post(
+            f"{API}/security/pin/change",
+            json={"old_pin": "445566", "new_pin": "12"},
+            headers=sec_wallet["headers"],
+        )
+        assert r.status_code == 400
+
+    def test_security_requires_auth(self, session):
+        r = session.get(f"{API}/security/status")
+        assert r.status_code == 401

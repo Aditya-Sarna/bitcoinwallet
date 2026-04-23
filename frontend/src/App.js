@@ -11,6 +11,8 @@ import Rewards from "./pages/Rewards";
 import Store from "./pages/Store";
 import Profile from "./pages/Profile";
 import Bills from "./pages/Bills";
+import Backup from "./pages/Backup";
+import Security from "./pages/Security";
 
 function Guard({ children }) {
   const token = localStorage.getItem("btc_token");
@@ -55,6 +57,8 @@ export default function App() {
           <Route path="/store" element={<Guard><Store /></Guard>} />
           <Route path="/profile" element={<Guard><Profile /></Guard>} />
           <Route path="/bills" element={<Guard><Bills /></Guard>} />
+          <Route path="/backup" element={<Guard><Backup /></Guard>} />
+          <Route path="/security" element={<Guard><Security /></Guard>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

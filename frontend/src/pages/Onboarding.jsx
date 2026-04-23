@@ -28,7 +28,7 @@ export default function Onboarding() {
       localStorage.setItem("btc_wallet_id", data.wallet_id);
       localStorage.setItem("btc_name", data.name);
       toast.success(`Welcome, ${data.name}`);
-      nav("/home");
+      nav("/backup", { state: { seedPhrase: data.seed_phrase } });
     } catch (e) {
       toast.error(e?.response?.data?.detail || "Failed to create wallet");
     } finally {

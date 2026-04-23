@@ -1,0 +1,37 @@
+{
+  "summary": "Iteration 2 full-stack testing complete for SatVault CRED-style Bitcoin wallet. Backend: 37/37 pytest tests pass — covers register (now with seed_phrase), login, wallet CRUD, market price/chart ranges, rewards daily/claim/store/redeem, bills, and the NEW security flow (seed verify correct + wrong, biometric toggle, PIN change, security status scoring, auth-required). /wallet/me confirmed to NOT leak seed_phrase or pin_hash. Frontend: End-to-end Onboarding→Backup→Verify→Home flow works, StyledQR renders, /security score & toggles work, /store shows branded vouchers, /profile shows security entry with warning, BottomNav has 5 tabs (home/rewards/store/vault/profile). Hydration fix verified — /home shows 0.5 BTC and $33,716.06 within ~2s, the previously reported '$0.00 / 0 BTC' initial-render bug does NOT reproduce.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Security page initial load", "issues": ["Score briefly flashes '0/100 vulnerable' before security/status response arrives (~300ms). Minor cosmetic; consider a skeleton/loading state to avoid false 'vulnerable' flash."]},
+      {"screen": "Home greeting on first paint", "issues": ["Greeting shows 'welcome, …' for a split second before wallet.name hydrates. Not blocking; ChipRow/CardStack balance hydrate correctly."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_wallet_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional polish) Add small loading/skeleton on Security page so score doesn't flash 0/100 vulnerable before API returns.",
+    "(Optional polish) Cache/pre-render wallet.name in Home greeting using localStorage btc_name to avoid 'welcome, …' flicker."
+  ],
+  "critical_code_review_comments": [
+    "Security: /api/security/seed/verify uses strict list equality against stored seed_phrase — order-sensitive as required, good. However it accepts arbitrary-length List[str]; trivial but consider enforcing len==12 with explicit error.",
+    "Security: generate_seed_phrase uses random.choice with replacement → duplicates possible (observed: ['marble','marble',...]). For real BIP39 this must be random.sample + entropy. Acceptable for mock but flag for production.",
+    "server.py: get_current_wallet correctly projects out pin_hash and seed_phrase — confirmed via test. verify_seed and change_pin correctly re-fetch full doc only when needed.",
+    "Frontend Backup.jsx: verify flow re-reads seed from navigation state only; if user refreshes /backup before verifying, state is lost and phrase cannot be reshown (by design). Consider a warning banner if navigation state is missing.",
+    "server.py is 498 lines — approaching split threshold; consider splitting into routers (auth, wallet, market, rewards, security) for maintainability."
+  ],
+  "updated_files": ["/app/backend/tests/test_wallet_api.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Created via API: POST /api/auth/register {name:'TEST_Emma', pin:'123456'} and {name:'TEST_Sec', pin:'112233'} for pytest; {name:'Sofia', pin:'112233'} + {name:'Mia', pin:'445566'} for Playwright runs.",
+  "seed_data_creation": "Fresh wallets created per test run; no persistent seeding.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend and frontend are fully functional for iteration 2. test_wallet_api.py now has 37 tests including new TestSecurity class. If future iterations add seed regeneration or biometric persistence across sessions, add corresponding tests. The Backup verify flow requires clicking shuffled words in the order they appear in seed-word-{0..11}; use match-by-text-first-unused-index strategy."
+}
