@@ -135,7 +135,12 @@ export default function Profile() {
           <SignOut size={14} /> sign out
         </motion.button>
 
-        <div className="text-center font-cursive text-2xl text-white/20 mt-6 pb-4">SatVault · the emergent bitcoin wallet</div>
+        <div
+          className="text-center text-2xl text-white/20 mt-6 pb-4"
+          style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+        >
+          SatVault · the emergent bitcoin wallet
+        </div>
       </div>
     </Shell>
   );

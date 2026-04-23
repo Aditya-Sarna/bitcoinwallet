@@ -86,7 +86,12 @@ export default function Security() {
 
         <div className="mt-8 rounded-3xl p-5 glass" data-testid="security-tips">
           <div className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-2">wisdom</div>
-          <div className="font-cursive text-3xl text-white/90 leading-tight">not your keys,<br />not your coins.</div>
+          <div
+            className="text-3xl text-white/90 leading-tight"
+            style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+          >
+            not your keys,<br />not your coins.
+          </div>
           <p className="text-xs text-white/50 mt-3 leading-relaxed">
             Your recovery phrase is your sovereignty. Store it offline, split it across locations, and never commit it to digital memory.
           </p>

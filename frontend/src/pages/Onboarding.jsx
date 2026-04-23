@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, ShieldCheck, Sparkle, CurrencyBtc } from "@phosphor-icons/react";
 import PinPad from "../components/PinPad";
+import { AmbientDust, Fleuron, FourStar, Compass } from "../components/Ornaments";
 import { api } from "../lib/api";
-import { ART } from "../lib/images";
 
 export default function Onboarding() {
   const nav = useNavigate();
@@ -46,83 +46,121 @@ export default function Onboarding() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="relative min-h-screen flex flex-col"
+            className="relative min-h-screen flex flex-col overflow-hidden"
+            style={{
+              background:
+                "radial-gradient(ellipse at 15% 15%, #2A1013 0%, #1A080A 35%, #0A0406 70%, #000 100%)",
+            }}
           >
-            {/* Hero image background */}
-            <motion.img
-              initial={{ scale: 1.08, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-              src={ART.onboardingHero}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: "saturate(0.7) contrast(1.1)" }}
-            />
-            {/* Tonal scrim */}
-            <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.95) 100%)" }} />
-
-            {/* Subtle grain */}
-            <div className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
+            {/* Editorial grid — very subtle */}
+            <div
+              className="absolute inset-0 opacity-[0.07] pointer-events-none"
               style={{
                 backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")",
+                  "linear-gradient(rgba(212,165,116,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(212,165,116,0.4) 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
               }}
             />
 
+            {/* Grain */}
+            <div
+              className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"
+              style={{
+                backgroundImage:
+                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+              }}
+            />
+
+            {/* Gold ambient dust particles */}
+            <AmbientDust count={14} color="#D4A574" />
+
+            {/* Large background italic watermark "SV" */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                fontFamily: "Instrument Serif, serif",
+                fontStyle: "italic",
+                fontSize: 320,
+                color: "#D4A574",
+                opacity: 0.04,
+                right: -30,
+                bottom: -80,
+                letterSpacing: -10,
+                lineHeight: 1,
+                userSelect: "none",
+              }}
+            >
+              SV
+            </div>
+
             <div className="relative z-10 flex-1 flex flex-col px-7 pt-16 pb-10">
+              {/* Editorial masthead */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CurrencyBtc size={16} weight="bold" className="text-white/85" />
-                  <div className="text-[10px] tracking-[0.32em] uppercase text-white/70">SatVault</div>
+                  <CurrencyBtc size={14} weight="bold" className="text-[#D4A574]" />
+                  <div className="text-[10px] tracking-[0.38em] uppercase text-[#D4A574]/85">SatVault</div>
                 </div>
-                <div className="text-[9px] tracking-[0.3em] uppercase text-white/45">est. 2026</div>
+                <div className="text-[9px] tracking-[0.32em] uppercase text-white/40">est. mmxxvi</div>
+              </div>
+
+              {/* Hairline rule with fleuron */}
+              <div className="flex items-center gap-3 mt-5 mb-8">
+                <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, #D4A574, rgba(212,165,116,0.15))" }} />
+                <Fleuron size={12} color="#D4A574" />
+                <div className="h-px flex-1" style={{ background: "linear-gradient(-90deg, #D4A574, rgba(212,165,116,0.15))" }} />
+              </div>
+
+              {/* Volume / Issue */}
+              <div className="flex items-baseline justify-between text-white/35 mb-6">
+                <div className="text-[9px] tracking-[0.32em] uppercase">volume i</div>
+                <div className="text-[9px] tracking-[0.32em] uppercase">the atlas</div>
+                <div className="text-[9px] tracking-[0.32em] uppercase">№ 01</div>
               </div>
 
               <div className="flex-1" />
 
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="text-[10px] tracking-[0.34em] uppercase text-white/55 mb-5">a quiet vault for bitcoin</div>
                 <h1
-                  className="text-white leading-[0.95] tracking-tight"
-                  style={{
-                    fontFamily: "Instrument Serif, serif",
-                    fontStyle: "italic",
-                    fontSize: "62px",
-                    fontWeight: 400,
-                  }}
+                  className="text-white leading-[0.92] tracking-[-0.02em]"
+                  style={{ fontFamily: "Instrument Serif, serif", fontSize: 80, fontWeight: 400 }}
                 >
-                  fortunes,<br />
-                  <span className="not-italic" style={{ fontFamily: "Instrument Serif, serif" }}>kept</span>{" "}
-                  <span style={{ fontStyle: "italic" }}>quietly.</span>
+                  <span style={{ fontStyle: "italic" }}>fortunes,</span>
+                  <br />
+                  <span>kept</span>{" "}
+                  <span style={{ fontStyle: "italic", color: "#D4A574" }}>quietly.</span>
                 </h1>
-                <p className="text-white/60 text-[13px] mt-5 leading-relaxed max-w-[300px]">
-                  A members-only bitcoin wallet for those who prefer compounding over conversation.
-                </p>
+
+                <div className="flex items-center gap-2 mt-7">
+                  <FourStar size={6} color="#D4A574" />
+                  <p className="text-white/55 text-[12px] leading-relaxed max-w-[260px] tracking-wide">
+                    a members-only bitcoin vault for those who prefer compounding over conversation.
+                  </p>
+                </div>
               </motion.div>
 
               <motion.div
                 initial={{ y: 12, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.7 }}
-                className="mt-10 flex flex-col gap-3"
+                transition={{ delay: 0.8 }}
+                className="mt-12 flex flex-col gap-3"
               >
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setStep(1)}
                   data-testid="get-started-btn"
-                  className="w-full py-4 rounded-full text-sm tracking-[0.22em] uppercase font-medium flex items-center justify-center gap-3"
+                  className="w-full py-4 rounded-full text-[11px] tracking-[0.28em] uppercase font-medium flex items-center justify-center gap-3"
                   style={{ background: "#EFE6D2", color: "#1a1410" }}
                 >
-                  begin <ArrowRight size={14} weight="bold" />
+                  begin <ArrowRight size={13} weight="bold" />
                 </motion.button>
                 <button
                   onClick={() => nav("/lock")}
                   data-testid="existing-member-link"
-                  className="text-[10px] tracking-[0.28em] uppercase text-white/50 py-2"
+                  className="text-[9px] tracking-[0.32em] uppercase text-white/45 py-2"
                 >
                   already a member · enter
                 </button>

@@ -12,7 +12,6 @@ import TxnItem from "../components/TxnItem";
 import BalanceStatRow from "../components/BalanceStatRow";
 import ColorCardStack from "../components/ColorCardStack";
 import SplashCard from "../components/SplashCard";
-import { ART } from "../lib/images";
 import { api } from "../lib/api";
 import { fmtUSD } from "../lib/format";
 
@@ -178,17 +177,18 @@ export default function Home() {
         </motion.button>
       )}
 
-      {/* Splash hero promo — quiet luxury painterly */}
+      {/* Splash hero promo — editorial quiet luxury */}
       <div className="px-5 mt-6">
         <SplashCard
           testid="splash-hero"
-          eyebrow="today · the morning brief"
+          variant="editorial"
+          tone="oxblood"
+          eyebrow="morning brief"
+          index="04"
           title={<>fortunes are not<br />made loudly.</>}
-          subtitle="claim your daily reward · quietly compounding"
-          image={ART.goldenStill}
-          tone="warm"
+          subtitle="a gentle reminder — your daily reward compounds quietly."
           tag="claim"
-          height={260}
+          height={240}
           onClick={() => nav("/rewards")}
         />
       </div>
@@ -214,41 +214,44 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 2-up bento — painterly */}
+      {/* 2-up numeric bento */}
       <div className="px-5 mt-4 grid grid-cols-2 gap-3">
         <SplashCard
-          testid="bento-treasure"
+          testid="bento-10k"
+          variant="numeric"
+          tone="brass"
+          index="i"
           eyebrow="earn upto"
-          title="10,000 coins"
-          image={ART.linen}
-          tone="warm"
+          title="10,000"
+          subtitle="coins · daily spin"
           tag="spin"
-          height={200}
-          size="sm"
+          height={220}
           onClick={() => nav("/rewards")}
         />
         <SplashCard
-          testid="bento-pearls"
+          testid="bento-100k"
+          variant="numeric"
+          tone="oxblood"
+          index="ii"
           eyebrow="earn upto"
-          title="100,000 coins"
-          image={ART.pearls}
-          tone="cool"
+          title="100,000"
+          subtitle="coins · mystery box"
           tag="unlock"
-          height={200}
-          size="sm"
+          height={220}
           onClick={() => nav("/rewards")}
         />
       </div>
 
-      {/* Pay bills splash */}
+      {/* Pay bills — editorial */}
       <div className="px-5 mt-4">
         <SplashCard
           testid="bills-splash"
-          eyebrow="rent · education · everything"
+          variant="editorial"
+          tone="slate"
+          eyebrow="rent · education · utilities"
+          index="02"
           title={<>a quiet home for<br />all your payments.</>}
           subtitle="one click · instantly settled in bitcoin."
-          image={ART.interior}
-          tone="cool"
           tag="pay bills"
           height={240}
           onClick={() => nav("/bills")}

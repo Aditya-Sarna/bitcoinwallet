@@ -87,6 +87,13 @@ code, .font-mono {
   transform: scale(1.08);
 }
 
+/* Ambient dust drift (quiet luxury motif) */
+@keyframes dust-float {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(8px, -14px) scale(1.1); opacity: 0.85; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+}
+
 /* ticker */
 @keyframes ticker {
   from { transform: translateX(0); }
