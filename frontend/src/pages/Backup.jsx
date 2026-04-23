@@ -102,7 +102,12 @@ export default function Backup() {
                 <ShieldCheck size={16} weight="fill" className="text-gold" />
                 <div className="text-[10px] tracking-[0.28em] uppercase text-white/50">recovery phrase</div>
               </div>
-              <h2 className="font-cursive text-6xl text-white/95 leading-none mb-3">twelve words.</h2>
+              <h2
+                className="text-white/95 leading-none mb-3"
+                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 56 }}
+              >
+                twelve words.
+              </h2>
               <p className="text-white/55 text-sm leading-relaxed">
                 These are the <span className="font-serif-italic text-gold">keys to your kingdom</span>. Write them down. Never screenshot. Never share. Whoever has them, owns your bitcoin.
               </p>
@@ -148,7 +153,12 @@ export default function Backup() {
           {step === 1 && !confirmed && (
             <motion.div key="verify" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="text-[10px] tracking-[0.28em] uppercase text-white/40">verify · step 2 of 2</div>
-              <h2 className="font-cursive text-6xl text-white/95 leading-none mt-1 mb-2">prove it.</h2>
+              <h2
+                className="text-white/95 leading-none mt-1 mb-2"
+                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 56 }}
+              >
+                prove it.
+              </h2>
               <p className="text-white/55 text-sm">Tap the words in the <span className="font-serif-italic text-gold">correct order</span>.</p>
 
               <div className="mt-6 glass rounded-3xl p-4 min-h-[140px]">
@@ -220,7 +230,12 @@ export default function Backup() {
               >
                 <CheckCircle size={44} weight="fill" className="text-black" />
               </motion.div>
-              <h2 className="font-cursive text-6xl mt-6">secured.</h2>
+              <h2
+                className="mt-6 leading-none"
+                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 60 }}
+              >
+                secured.
+              </h2>
               <div className="text-white/60 text-sm mt-2">Your vault is fully backed up.</div>
               <div className="text-gold text-xs mt-2 tracking-wider uppercase">+250 coins bonus</div>
             </motion.div>

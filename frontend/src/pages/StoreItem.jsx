@@ -65,6 +65,7 @@ export default function StoreItem() {
           subtitle: item.brand,
           amount: data.redemption.code,
           secondary: `-${fmtCoins(item.cost)} coins · new balance ${fmtCoins(data.coins)}`,
+          receiverInitial: item.brand.charAt(0).toUpperCase(),
           lines: [
             { label: "brand", value: item.brand },
             { label: "voucher", value: item.title },
@@ -114,8 +115,15 @@ export default function StoreItem() {
           <div className="relative h-full p-6 flex flex-col justify-between min-h-[280px]">
             <div>
               <div className="text-[10px] tracking-[0.28em] uppercase opacity-70">SatVault · voucher</div>
-              <div className="font-cursive text-6xl leading-none mt-3 lowercase">{item.brand}</div>
-              <div className="font-serif-italic text-sm mt-2 opacity-80">{style.tagline}</div>
+              <div
+                className="text-[44px] leading-none mt-3 lowercase tracking-tight"
+                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+              >
+                {item.brand}
+              </div>
+              <div className="text-sm mt-2 opacity-80" style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}>
+                {style.tagline}
+              </div>
             </div>
             <div className="flex items-end justify-between">
               <div>

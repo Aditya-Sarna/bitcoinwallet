@@ -52,7 +52,12 @@ export default function Store() {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">satvault store</div>
-            <h1 className="font-cursive text-5xl text-white leading-none mt-1">spend, lavishly.</h1>
+            <h1
+              className="text-white leading-none mt-1 tracking-tight"
+              style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 44 }}
+            >
+              spend, lavishly.
+            </h1>
             <div className="text-white/50 text-sm mt-2 font-serif-italic">
               from luxury goods to utility · your coins, your world.
             </div>
@@ -114,7 +119,12 @@ export default function Store() {
                         "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2) 0%, transparent 50%)",
                     }} />
                   <div className="relative">
-                    <div className="font-cursive text-3xl leading-none opacity-85">{item.brand.toLowerCase()}</div>
+                    <div
+                    className="text-2xl leading-none opacity-85 lowercase"
+                    style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+                  >
+                    {item.brand.toLowerCase()}
+                  </div>
                     <div className="text-[9px] tracking-[0.25em] uppercase mt-2 opacity-70">voucher</div>
                   </div>
                 </div>

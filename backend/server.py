@@ -120,15 +120,15 @@ async def register(body: RegisterBody):
         "pin_hash": hash_pin(body.pin),
         "btc_address": gen_btc_address(),
         "balance_btc": 0.5,  # starting demo balance
-        "coins": 1000,  # rewards coins (Satoshi bonus)
-        "gems": 3,  # rare gems (CRED-style)
+        "coins": 25000,  # generous starter so user can explore the store
+        "gems": 12,
         "vouchers": 0,
-        "btc_score": 742,  # CRED-style score out of 900
+        "btc_score": 742,
         "streak": 1,
         "last_claim": None,
         "referral_code": gen_referral_code(body.name),
         "referred_by": body.referral_code,
-        "seed_phrase": seed_phrase,  # shown once, never again
+        "seed_phrase": seed_phrase,
         "seed_backed_up": False,
         "biometric_enabled": False,
         "auto_lock_minutes": 5,

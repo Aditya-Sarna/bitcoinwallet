@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
-  ArrowUpRight, ArrowDownLeft, Receipt, ShieldCheck, Gear, QrCode,
+  ArrowUpRight, ArrowDownLeft, ShieldCheck, Gear, QrCode,
   ForkKnife, Airplane, ShoppingBag, GameController, Heart, House as HouseIcon, DotsNine
 } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
@@ -11,7 +11,8 @@ import BitcoinScore from "../components/BitcoinScore";
 import TxnItem from "../components/TxnItem";
 import BalanceStatRow from "../components/BalanceStatRow";
 import ColorCardStack from "../components/ColorCardStack";
-import SplashCard, { BitcoinIllustration, ChestIllustration, BillIllustration } from "../components/SplashCard";
+import SplashCard from "../components/SplashCard";
+import { ART } from "../lib/images";
 import { api } from "../lib/api";
 import { fmtUSD } from "../lib/format";
 
@@ -177,24 +178,24 @@ export default function Home() {
         </motion.button>
       )}
 
-      {/* Splash hero promo */}
+      {/* Splash hero promo — quiet luxury painterly */}
       <div className="px-5 mt-6">
         <SplashCard
-          testid="splash-apple"
-          eyebrow="today's bounty"
-          title={<>like winning<br />an entire<br />bitcoin stack</>}
-          bg="#E8DCC0"
-          textColor="#000"
-          accent="#000"
-          tag="claim now"
-          illustration={<BitcoinIllustration size={100} />}
+          testid="splash-hero"
+          eyebrow="today · the morning brief"
+          title={<>fortunes are not<br />made loudly.</>}
+          subtitle="claim your daily reward · quietly compounding"
+          image={ART.goldenStill}
+          tone="warm"
+          tag="claim"
+          height={260}
           onClick={() => nav("/rewards")}
         />
       </div>
 
       {/* Category pills */}
-      <div className="px-5 mt-5">
-        <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-3">pay bills and win cashback</div>
+      <div className="px-5 mt-6">
+        <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-3">pay bills · earn quietly</div>
         <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
           {CATEGORIES.map((c, i) => (
             <motion.button
@@ -213,44 +214,43 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 2-up bento: earn upto */}
+      {/* 2-up bento — painterly */}
       <div className="px-5 mt-4 grid grid-cols-2 gap-3">
         <SplashCard
-          testid="bento-chest-yellow"
+          testid="bento-treasure"
           eyebrow="earn upto"
           title="10,000 coins"
-          bg="#F7B733"
-          textColor="#000"
-          accent="#000"
+          image={ART.linen}
+          tone="warm"
           tag="spin"
-          illustration={<ChestIllustration color="#FDE68A" accent="#92400E" size={82} />}
+          height={200}
+          size="sm"
           onClick={() => nav("/rewards")}
         />
         <SplashCard
-          testid="bento-chest-pink"
+          testid="bento-pearls"
           eyebrow="earn upto"
           title="100,000 coins"
-          bg="#EC4899"
-          textColor="#fff"
-          accent="#fff"
+          image={ART.pearls}
+          tone="cool"
           tag="unlock"
-          illustration={<ChestIllustration color="#FBCFE8" accent="#831843" size={82} />}
+          height={200}
+          size="sm"
           onClick={() => nav("/rewards")}
         />
       </div>
 
-      {/* Pay bills big card */}
+      {/* Pay bills splash */}
       <div className="px-5 mt-4">
         <SplashCard
           testid="bills-splash"
-          eyebrow="rent and education"
-          title="home for all your payments"
-          subtitle="one click away. with instant settlements."
-          bg="#E0F2E9"
-          textColor="#0F172A"
-          accent="#0F172A"
-          tag="view bills"
-          illustration={<BillIllustration size={92} />}
+          eyebrow="rent · education · everything"
+          title={<>a quiet home for<br />all your payments.</>}
+          subtitle="one click · instantly settled in bitcoin."
+          image={ART.interior}
+          tone="cool"
+          tag="pay bills"
+          height={240}
           onClick={() => nav("/bills")}
         />
       </div>
@@ -264,7 +264,12 @@ export default function Home() {
               ${price ? fmtUSD(price.price_usd, 2) : "—"}
             </div>
           </div>
-          <div className="font-cursive text-3xl text-gold leading-none">the tape</div>
+          <div
+            className="text-2xl text-white/70 leading-none"
+            style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+          >
+            the tape
+          </div>
         </div>
         <PriceChart />
       </div>
@@ -279,9 +284,14 @@ export default function Home() {
         <div className="flex items-center justify-between mb-2">
           <div>
             <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">recent</div>
-            <div className="font-cursive text-3xl text-white mt-0.5 leading-none">your story.</div>
+            <div
+              className="text-2xl text-white mt-0.5 leading-none"
+              style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+            >
+              your story.
+            </div>
           </div>
-          <button onClick={() => nav("/transactions")} data-testid="home-see-all" className="text-[10px] tracking-[0.22em] uppercase text-gold">all</button>
+          <button onClick={() => nav("/transactions")} data-testid="home-see-all" className="text-[10px] tracking-[0.22em] uppercase text-white/60">all</button>
         </div>
         <div>
           {loading ? (

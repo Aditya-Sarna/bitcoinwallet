@@ -68,6 +68,18 @@ class TestAuth:
         r = session.get(f"{API}/wallet/me")
         assert r.status_code == 401
 
+    def test_register_returns_25k_coins_and_12_gems(self, session):
+        """Iteration 4: new wallets start with 25,000 coins and 12 gems."""
+        r = session.post(f"{API}/auth/register", json={"name": "TEST_Iter4Starter", "pin": "445566"})
+        assert r.status_code == 200, r.text
+        data = r.json()
+        headers = {"Authorization": f"Bearer {data['token']}", "Content-Type": "application/json"}
+        me = session.get(f"{API}/wallet/me", headers=headers).json()
+        assert me["coins"] == 25000, f"Expected 25000, got {me['coins']}"
+        assert me["gems"] == 12, f"Expected 12 gems, got {me['gems']}"
+        assert me["vouchers"] == 0
+        assert me["balance_btc"] == 0.5
+
 
 # ---------- Wallet ----------
 class TestWallet:
@@ -78,8 +90,9 @@ class TestWallet:
         assert "pin_hash" not in w
         assert "_id" not in w
         assert w["balance_btc"] == 0.5
-        assert w["coins"] == 1000
+        assert w["coins"] == 25000
         assert w["btc_score"] == 742
+        assert w["gems"] == 12
         # NEW: sensitive fields must never leak
         assert "seed_phrase" not in w
         assert "pin_hash" not in w
@@ -120,7 +133,7 @@ class TestWallet:
         # Verify persistence via /wallet/me
         r2 = session.get(f"{API}/wallet/me", headers=auth_headers)
         assert r2.json()["balance_btc"] == d["new_balance"]
-        assert r2.json()["coins"] == 1050
+        assert r2.json()["coins"] == 25050
 
     def test_transactions_list(self, session, auth_headers):
         r = session.get(f"{API}/wallet/transactions", headers=auth_headers)
@@ -182,11 +195,19 @@ class TestRewards:
 
     def test_redeem_insufficient(self, session, auth_headers):
         r = session.post(f"{API}/rewards/redeem", json={"item_id": "air-mile"}, headers=auth_headers)
-        assert r.status_code == 400  # 12000 > wallet coins
+        # With 25k starter coins, 12000 air-mile is now affordable. Create a fresh wallet for true 'insufficient' test.
+        fresh = requests.Session()
+        fresh.headers.update({"Content-Type": "application/json"})
+        reg = fresh.post(f"{API}/auth/register", json={"name": "TEST_Broke", "pin": "000000"}, timeout=15).json()
+        h = {"Authorization": f"Bearer {reg['token']}", "Content-Type": "application/json"}
+        # Redeem two large items to drain below 12000
+        fresh.post(f"{API}/rewards/redeem", json={"item_id": "nike-2000"}, headers=h)  # -9000 → 16000
+        fresh.post(f"{API}/rewards/redeem", json={"item_id": "dior-1000"}, headers=h)  # -7500 → 8500
+        r2 = fresh.post(f"{API}/rewards/redeem", json={"item_id": "air-mile"}, headers=h)  # 12000 > 8500
+        assert r2.status_code == 400
 
     def test_redeem_success(self, session, auth_headers):
-        # Boost coins via a bill payment so 1200-cost voucher is affordable
-        session.post(f"{API}/bills/pay", json={"biller": "Prep", "account": "X", "amount_usd": 5.0}, headers=auth_headers)
+        # 25k starter already covers 1200-cost starb-250 without any top-up
         r = session.post(f"{API}/rewards/redeem", json={"item_id": "starb-250"}, headers=auth_headers)
         assert r.status_code == 200, r.text
         d = r.json()
@@ -258,7 +279,7 @@ class TestSecurity:
         assert status["seed_backed_up"] is True
         assert status["security_score"] == 75  # 60 + 15
         me = sec_wallet["session"].get(f"{API}/wallet/me", headers=sec_wallet["headers"]).json()
-        assert me["coins"] == 1250
+        assert me["coins"] == 25250
 
     def test_biometric_toggle(self, sec_wallet):
         r = sec_wallet["session"].post(f"{API}/security/biometric/toggle", headers=sec_wallet["headers"])

@@ -43,7 +43,12 @@ export default function Receive() {
         <div className="text-[10px] tracking-[0.3em] uppercase text-white/40">
           your story · encoded
         </div>
-        <h2 className="font-cursive text-5xl text-white/95 mt-1 leading-none">scan to gift.</h2>
+        <h2
+          className="text-white/95 mt-2 leading-none"
+          style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 44 }}
+        >
+          scan to gift.
+        </h2>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -60,8 +65,8 @@ export default function Receive() {
           />
         </motion.div>
 
-        <div className="mt-4 font-serif-italic text-sm text-white/55">
-          every satoshi arriving here <span className="text-gold">writes a new chapter</span>
+        <div className="mt-4 text-sm text-white/55" style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}>
+          every satoshi arriving here writes a new chapter.
         </div>
 
         {/* Story strip */}

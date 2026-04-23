@@ -11,43 +11,43 @@ export default function ColorCardStack({ name, balance, fiat, change24h, loading
 
   return (
     <div className="relative h-[280px] mt-3" data-testid="card-stack">
-      {/* Back: Purple gradient */}
+      {/* Back: Deep oxblood / wine */}
       <motion.div
         initial={{ y: 35, opacity: 0, rotate: -8, x: 30 }}
         animate={{ y: 28, opacity: 1, rotate: -7, x: 32 }}
         transition={{ delay: 0.2, type: "spring", stiffness: 150, damping: 22 }}
         className="absolute top-0 left-6 right-6 h-48 rounded-[28px] overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #A855F7 100%)",
-          boxShadow: "0 20px 40px rgba(139,92,246,0.25)",
+          background: "linear-gradient(135deg, #4A1518 0%, #2A0A0C 100%)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
         }}
       >
-        <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4), transparent 50%)" }} />
+        <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3), transparent 50%)" }} />
       </motion.div>
 
-      {/* Middle: Teal-cyan gradient */}
+      {/* Middle: Sage / forest */}
       <motion.div
         initial={{ y: 28, opacity: 0, rotate: 6, x: -30 }}
         animate={{ y: 14, opacity: 1, rotate: 5, x: -28 }}
         transition={{ delay: 0.25, type: "spring", stiffness: 150, damping: 22 }}
         className="absolute top-0 left-6 right-6 h-48 rounded-[28px] overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #06B6D4 0%, #14B8A6 50%, #10B981 100%)",
-          boxShadow: "0 20px 40px rgba(6,182,212,0.25)",
+          background: "linear-gradient(135deg, #3A4A3D 0%, #1F2823 100%)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.35)",
         }}
       >
-        <div className="absolute inset-0 opacity-25" style={{ background: "radial-gradient(circle at 20% 80%, rgba(255,255,255,0.4), transparent 50%)" }} />
+        <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3), transparent 50%)" }} />
       </motion.div>
 
-      {/* Front: Orange-gold hero card with balance */}
+      {/* Front: Aged champagne / brushed bronze hero card */}
       <motion.div
         initial={{ y: 15, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3, type: "spring", stiffness: 180, damping: 22 }}
         className="relative mx-4 h-52 rounded-[28px] p-5 overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #FF9F1C 0%, #F77F00 40%, #D4AF37 100%)",
-          boxShadow: "0 30px 60px rgba(247,127,0,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+          background: "linear-gradient(135deg, #C9A961 0%, #A88547 50%, #6B4F2A 100%)",
+          boxShadow: "0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.25)",
         }}
         data-testid="hero-card"
       >
@@ -65,8 +65,13 @@ export default function ColorCardStack({ name, balance, fiat, change24h, loading
         <div className="relative flex flex-col h-full">
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-[9px] tracking-[0.3em] uppercase text-black/55">the vault</div>
-              <div className="font-cursive text-4xl text-black/85 leading-none mt-1">{name || "—"}</div>
+              <div className="text-[9px] tracking-[0.3em] uppercase text-black/55">the vault of</div>
+              <div
+                className="text-[28px] text-black/85 leading-none mt-1.5 tracking-tight"
+                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+              >
+                {name || "—"}
+              </div>
             </div>
             <div className="flex flex-col items-end gap-1">
               <div className="w-10 h-10 rounded-full bg-black/85 flex items-center justify-center">

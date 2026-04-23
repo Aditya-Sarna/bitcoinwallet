@@ -57,11 +57,17 @@ export default function Profile() {
           </div>
           <div className="flex-1">
             <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">the vault of</div>
-            <div className="font-cursive text-4xl text-white leading-none mt-0.5" data-testid="profile-name">{wallet?.name || "…"}</div>
-            <div className="text-[10px] text-white/50 font-mono mt-1">{shortAddr(wallet?.btc_address, 8, 8)}</div>
+            <div
+              className="text-[36px] text-white leading-none mt-1.5 tracking-tight"
+              style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+              data-testid="profile-name"
+            >
+              {wallet?.name || "…"}
+            </div>
+            <div className="text-[10px] text-white/45 font-mono mt-1.5">{shortAddr(wallet?.btc_address, 8, 8)}</div>
           </div>
         </div>
-        <div className="text-[10px] text-white/30 font-serif-italic mt-3">· member since {memberSince} ·</div>
+        <div className="text-[10px] text-white/30 mt-3" style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}>· member since {memberSince} ·</div>
 
         <div className="grid grid-cols-3 gap-2 mt-5">
           <Stat label="balance" value={`${fmtBTC(wallet?.balance_btc, 4)}`} unit="BTC" />
@@ -85,7 +91,12 @@ export default function Profile() {
             <Gift size={16} weight="fill" className="text-gold" />
             <div className="text-[9px] tracking-[0.28em] uppercase text-gold">invite & earn</div>
           </div>
-          <div className="font-cursive text-3xl text-white/90 leading-tight">share the secret.</div>
+          <div
+            className="text-3xl text-white/90 leading-tight"
+            style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+          >
+            share the secret.
+          </div>
           <div className="text-xs text-white/60 mt-1">Earn <span className="text-gold font-semibold">500 coins</span> per friend who joins.</div>
           <div className="flex items-center gap-2 bg-black/50 rounded-2xl p-3 mt-3">
             <div className="flex-1 font-mono text-base tracking-[0.2em]" data-testid="profile-referral-code">{wallet?.referral_code || "—"}</div>

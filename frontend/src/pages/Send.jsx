@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Header from "../components/Header";
 import PinPad from "../components/PinPad";
+import AmountWheel from "../components/AmountWheel";
 import { api } from "../lib/api";
 import { fmtBTC, fmtUSD } from "../lib/format";
 import { CheckCircle, Lightning, ClockCountdown, Gauge } from "@phosphor-icons/react";
@@ -51,6 +52,7 @@ export default function Send() {
           subtitle: `+${data.coins_earned} reward coins earned`,
           amount: `${fmtBTC(parseFloat(amount), 8)} BTC`,
           secondary: `≈ $${fmtUSD(parseFloat(amount) * price, 2)}`,
+          receiverInitial: address.slice(4, 5).toUpperCase(),
           lines: [
             { label: "to", value: `${address.slice(0, 10)}…${address.slice(-6)}` },
             { label: "network fee", value: `${fmtBTC(fee, 8)} BTC` },
@@ -107,6 +109,9 @@ export default function Send() {
                 <div className="text-xs text-white/40 font-mono">
                   ≈ ${fmtUSD((parseFloat(amount) || 0) * price, 2)}
                 </div>
+
+                <div className="text-[9px] tracking-[0.28em] uppercase text-white/30 mt-5 mb-1">or scroll · presets</div>
+                <AmountWheel onPick={(v) => setAmount(String(v))} current={parseFloat(amount) || 0} />
 
                 <div className="text-[10px] tracking-[0.28em] uppercase text-white/40 mt-8 mb-3">network fee</div>
                 <div className="grid grid-cols-3 gap-2">

@@ -14,7 +14,12 @@ export default function Scan() {
       <Header title="Scan & Pay" />
       <div className="px-6">
         <div className="text-[10px] tracking-[0.3em] uppercase text-white/40">scan any bitcoin QR</div>
-        <h2 className="font-cursive text-6xl text-white/95 leading-none mt-1 mb-4">point. tap. gone.</h2>
+        <h2
+          className="text-white/95 leading-none mt-1 mb-4"
+          style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 50 }}
+        >
+          point. tap. gone.
+        </h2>
 
         {/* Mock viewfinder */}
         <motion.div

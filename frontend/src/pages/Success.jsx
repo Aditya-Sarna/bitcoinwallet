@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { CheckCircle, ArrowRight, House, Receipt, Gift, ShieldCheck } from "@phosphor-icons/react";
+import { House, ArrowRight, Receipt, Gift, ShieldCheck } from "@phosphor-icons/react";
+import PaymentOrbit from "../components/PaymentOrbit";
 import Confetti from "../components/Confetti";
 
-/**
- * Universal animated success/celebration screen.
- * Pass via nav state: { kind, title, subtitle, amount, secondary, lines, ctaLabel, ctaTo }
- *   kind: 'sent' | 'paid' | 'redeemed' | 'backed_up' | 'received' | 'claimed'
- */
 const COPY = {
-  sent: { eyebrow: "transaction · broadcasted", verb: "sent.", Icon: ArrowRight, accent: "#F0C850" },
-  paid: { eyebrow: "bill · settled", verb: "paid.", Icon: Receipt, accent: "#10B981" },
-  redeemed: { eyebrow: "voucher · unlocked", verb: "yours.", Icon: Gift, accent: "#EC4899" },
-  backed_up: { eyebrow: "vault · secured", verb: "secured.", Icon: ShieldCheck, accent: "#F0C850" },
-  received: { eyebrow: "received", verb: "incoming.", Icon: ArrowRight, accent: "#10B981" },
-  claimed: { eyebrow: "reward · claimed", verb: "claimed.", Icon: Gift, accent: "#F0C850" },
+  sent: { eyebrow: "transaction · settled", verb: "sent.", accent: "#C9A961", showOrbit: true },
+  paid: { eyebrow: "bill · paid", verb: "paid.", accent: "#5B7A5C", showOrbit: true },
+  redeemed: { eyebrow: "voucher · unlocked", verb: "yours.", accent: "#A88547", showOrbit: false },
+  backed_up: { eyebrow: "vault · secured", verb: "secured.", accent: "#A88547", showOrbit: false },
+  received: { eyebrow: "received", verb: "incoming.", accent: "#5B7A5C", showOrbit: true },
+  claimed: { eyebrow: "reward · claimed", verb: "claimed.", accent: "#A88547", showOrbit: false },
 };
+
+const ICONS = { sent: ArrowRight, paid: Receipt, redeemed: Gift, backed_up: ShieldCheck, received: ArrowRight, claimed: Gift };
 
 export default function Success() {
   const nav = useNavigate();
   const loc = useLocation();
   const state = loc.state || null;
+  const [revealed, setRevealed] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -31,107 +30,126 @@ export default function Success() {
   }, [state, nav]);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowConfetti(true), 250);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setShowConfetti(true), 250);
+    const t2 = setTimeout(() => setRevealed(true), 1900);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   if (!state) return null;
 
   const kind = state.kind || "sent";
   const meta = COPY[kind] || COPY.sent;
-  const Icon = meta.Icon;
+  const Icon = ICONS[kind] || ArrowRight;
+  const senderInitial = (localStorage.getItem("btc_name") || "U").charAt(0).toUpperCase();
+  const receiverInitial = state.receiverInitial || (state.title || "·").charAt(0).toUpperCase();
 
   return (
-    <div className="shell grain relative overflow-hidden" data-testid="success-screen">
-      {/* Glow background */}
+    <div className="shell relative overflow-hidden bg-black" data-testid="success-screen">
+      {/* Soft glow */}
       <div
-        className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-40 blur-3xl pointer-events-none"
+        className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-30 blur-3xl pointer-events-none"
         style={{ background: `radial-gradient(circle, ${meta.accent}55, transparent 65%)` }}
       />
 
-      <div className="relative z-10 min-h-screen flex flex-col px-6 pt-20 pb-10">
-        {/* Confetti burst */}
-        <div className="relative h-44 flex items-center justify-center">
-          {showConfetti && <Confetti />}
-          <motion.div
-            initial={{ scale: 0, rotate: -45 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.1 }}
-            className="relative w-28 h-28 rounded-full flex items-center justify-center"
-            style={{
-              background: `radial-gradient(circle at 30% 30%, ${meta.accent}, ${meta.accent}aa 70%)`,
-              boxShadow: `0 0 60px ${meta.accent}88, inset 0 0 20px rgba(0,0,0,0.2)`,
-            }}
-          >
-            {/* Pulse ring */}
-            <motion.div
-              initial={{ scale: 1, opacity: 0.4 }}
-              animate={{ scale: 1.8, opacity: 0 }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut", delay: 0.4 }}
-              className="absolute inset-0 rounded-full"
-              style={{ border: `2px solid ${meta.accent}` }}
+      <div className="relative z-10 min-h-screen flex flex-col px-7 pt-14 pb-10">
+        {/* Confetti subtle */}
+        {showConfetti && <Confetti count={20} duration={1.4} />}
+
+        {/* Animation slot */}
+        <div className="relative h-[280px] flex items-center justify-center">
+          {meta.showOrbit ? (
+            <PaymentOrbit
+              sender={{ initial: senderInitial, color: "#7A6CB7" }}
+              receiver={{ initial: receiverInitial, color: meta.accent }}
+              accent={meta.accent}
+              size={320}
             />
+          ) : (
+            // Quiet checkmark medallion for non-payment events (redeem/backup/claim)
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.4, type: "spring", stiffness: 220 }}
+              initial={{ scale: 0, rotate: -30 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 160, damping: 16, delay: 0.1 }}
+              className="relative w-32 h-32 rounded-full flex items-center justify-center"
+              style={{
+                background: `radial-gradient(circle at 30% 30%, #FAF3E0, #C9A961 70%)`,
+                boxShadow: `0 0 60px ${meta.accent}77, inset 0 0 30px rgba(0,0,0,0.15)`,
+              }}
             >
-              <CheckCircle size={56} weight="fill" className="text-black" />
+              <motion.div
+                initial={{ scale: 1, opacity: 0.4 }}
+                animate={{ scale: 1.6, opacity: 0 }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut", delay: 0.4 }}
+                className="absolute inset-0 rounded-full"
+                style={{ border: `1px solid ${meta.accent}` }}
+              />
+              <Icon size={42} weight="duotone" className="text-[#1a1410]" />
             </motion.div>
-          </motion.div>
+          )}
         </div>
 
         {/* Eyebrow + headline */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-4"
+          transition={{ delay: revealed ? 0 : 0.5 }}
+          className="text-center mt-6"
         >
-          <div className="text-[10px] tracking-[0.3em] uppercase text-white/40">{meta.eyebrow}</div>
-          <h1 className="font-cursive text-7xl text-white/95 leading-none mt-3" data-testid="success-headline">
+          <div className="text-[10px] tracking-[0.32em] uppercase text-white/45">{meta.eyebrow}</div>
+          <h1
+            className="text-white/95 leading-none mt-3"
+            style={{
+              fontFamily: "Instrument Serif, serif",
+              fontStyle: "italic",
+              fontSize: 64,
+              letterSpacing: "-0.01em",
+            }}
+            data-testid="success-headline"
+          >
             {meta.verb}
           </h1>
         </motion.div>
 
-        {/* Title + subtitle from state */}
-        {(state.title || state.subtitle) && (
+        {/* Title + amount */}
+        {(state.title || state.amount) && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65 }}
-            className="text-center mt-5"
+            transition={{ delay: 0.7 }}
+            className="text-center mt-4"
           >
-            {state.title && <div className="font-display text-2xl">{state.title}</div>}
-            {state.subtitle && <div className="text-white/55 text-sm mt-1 font-serif-italic">{state.subtitle}</div>}
+            {state.title && (
+              <div className="text-white/85 text-base" style={{ fontFamily: "Instrument Serif, serif" }}>
+                {state.title}
+              </div>
+            )}
+            {state.amount && (
+              <div className="font-display text-3xl font-semibold tracking-tighter text-white mt-3" data-testid="success-amount">
+                {state.amount}
+              </div>
+            )}
+            {state.secondary && (
+              <div className="text-white/40 text-[11px] font-mono mt-1">{state.secondary}</div>
+            )}
           </motion.div>
         )}
 
-        {/* Amount big */}
-        {state.amount && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.75, type: "spring", stiffness: 200 }}
-            className="text-center mt-6"
-          >
-            <div className="font-display text-4xl font-semibold tracking-tighter" data-testid="success-amount">{state.amount}</div>
-            {state.secondary && <div className="text-white/50 text-xs font-mono mt-1">{state.secondary}</div>}
-          </motion.div>
-        )}
-
-        {/* Receipt lines */}
+        {/* Receipt */}
         {state.lines && state.lines.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.85 }}
-            className="mt-8 glass rounded-3xl p-5 space-y-2.5"
+            className="mt-8 rounded-3xl p-5 space-y-3"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+            }}
             data-testid="success-receipt"
           >
             {state.lines.map((l, i) => (
-              <div key={i} className="flex justify-between text-sm">
-                <div className="text-white/50">{l.label}</div>
+              <div key={i} className="flex justify-between text-[13px]">
+                <div className="text-white/45">{l.label}</div>
                 <div className="font-mono text-white/85 truncate ml-3 text-right max-w-[60%]">{l.value}</div>
               </div>
             ))}
@@ -145,13 +163,14 @@ export default function Success() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
-          className="space-y-3 mt-10"
+          className="space-y-2 mt-8"
         >
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => nav(state.ctaTo || "/home")}
             data-testid="success-cta"
-            className="w-full gold-gradient text-black font-semibold rounded-full py-4 uppercase tracking-[0.22em] text-sm flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-full text-sm uppercase tracking-[0.22em] font-medium flex items-center justify-center gap-2"
+            style={{ background: "#EFE6D2", color: "#1a1410" }}
           >
             <House size={14} weight="bold" /> {state.ctaLabel || "back to home"}
           </motion.button>
@@ -159,7 +178,7 @@ export default function Success() {
             <button
               onClick={() => nav(state.secondaryCta.to)}
               data-testid="success-secondary"
-              className="w-full text-[10px] tracking-[0.28em] uppercase text-white/50 py-2"
+              className="w-full text-[10px] tracking-[0.3em] uppercase text-white/45 py-2"
             >
               {state.secondaryCta.label} →
             </button>
