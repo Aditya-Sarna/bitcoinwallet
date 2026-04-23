@@ -20,25 +20,31 @@ export default function Transactions() {
   });
 
   const tabs = [
-    { k: "all", label: "All" },
-    { k: "sent", label: "Sent" },
-    { k: "received", label: "Received" },
-    { k: "rewards", label: "Rewards" },
+    { k: "all", label: "all" },
+    { k: "sent", label: "sent" },
+    { k: "received", label: "received" },
+    { k: "rewards", label: "rewards" },
   ];
 
   return (
-    <div className="shell grain">
-      <Header title="Activity" subtitle={`${txns.length} transactions`} />
+    <div className="shell" style={{ background: "#0A0A0F" }}>
+      <Header title="activity" subtitle={`${txns.length} transactions`} />
       <div className="px-6">
-        <div className="flex gap-1 glass rounded-full p-1">
+        <div
+          className="flex gap-1 rounded-full p-1"
+          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
           {tabs.map((t) => (
             <button
               key={t.k}
               onClick={() => setFilter(t.k)}
               data-testid={`txn-filter-${t.k}`}
-              className={`flex-1 py-2 rounded-full text-[11px] font-semibold tracking-wider uppercase transition-colors ${
-                filter === t.k ? "bg-[#D4AF37] text-black" : "text-white/60"
-              }`}
+              className="flex-1 py-2 rounded-full text-[11px] font-bold tracking-wider uppercase transition-colors"
+              style={
+                filter === t.k
+                  ? { background: "#D4FF4F", color: "#0A0A0F" }
+                  : { color: "rgba(255,255,255,0.6)" }
+              }
             >
               {t.label}
             </button>
@@ -47,7 +53,7 @@ export default function Transactions() {
         <div className="mt-4" data-testid="txn-list">
           {filtered.map((t) => <TxnItem key={t.id} t={t} />)}
           {filtered.length === 0 && (
-            <div className="text-center text-white/40 py-16 text-sm">Nothing here yet.</div>
+            <div className="text-center text-white/40 py-16 text-sm">nothing here yet.</div>
           )}
         </div>
       </div>

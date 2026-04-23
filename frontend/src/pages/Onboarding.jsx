@@ -2,9 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowRight, ShieldCheck, Sparkle, CurrencyBtc } from "@phosphor-icons/react";
+import { ArrowRight, ShieldCheck, Sparkle, Lightning } from "@phosphor-icons/react";
 import PinPad from "../components/PinPad";
-import { AmbientDust, Fleuron, FourStar, Compass } from "../components/Ornaments";
+import Logo, { Wordmark } from "../components/Logo";
 import { api } from "../lib/api";
 
 export default function Onboarding() {
@@ -18,7 +18,7 @@ export default function Onboarding() {
   const submit = async (finalConfirm) => {
     const c = finalConfirm !== undefined ? finalConfirm : confirm;
     if (pin !== c) {
-      toast.error("PINs do not match. Try again.");
+      toast.error("PINs don't match. Try again.");
       setConfirm("");
       return;
     }
@@ -28,7 +28,7 @@ export default function Onboarding() {
       localStorage.setItem("btc_token", data.token);
       localStorage.setItem("btc_wallet_id", data.wallet_id);
       localStorage.setItem("btc_name", data.name);
-      toast.success(`Welcome, ${data.name}`);
+      toast.success(`welcome, ${data.name}`);
       nav("/backup", { state: { seedPhrase: data.seed_phrase } });
     } catch (e) {
       toast.error(e?.response?.data?.detail || "Failed to create wallet");
@@ -38,7 +38,7 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="shell relative overflow-hidden bg-black">
+    <div className="shell relative overflow-hidden">
       <AnimatePresence mode="wait">
         {step === 0 && (
           <motion.div
@@ -47,122 +47,106 @@ export default function Onboarding() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="relative min-h-screen flex flex-col overflow-hidden"
-            style={{
-              background:
-                "radial-gradient(ellipse at 15% 15%, #2A1013 0%, #1A080A 35%, #0A0406 70%, #000 100%)",
-            }}
+            style={{ background: "#0A0A0F" }}
+            data-testid="onboarding-welcome"
           >
-            {/* Editorial grid — very subtle */}
+            {/* Electric radial glows */}
             <div
-              className="absolute inset-0 opacity-[0.07] pointer-events-none"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(212,165,116,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(212,165,116,0.4) 1px, transparent 1px)",
-                backgroundSize: "32px 32px",
-              }}
+              className="absolute -top-24 -left-16 w-80 h-80 rounded-full blur-3xl opacity-60 pointer-events-none"
+              style={{ background: "radial-gradient(circle, #FF3E8A 0%, transparent 65%)" }}
+            />
+            <div
+              className="absolute -bottom-32 -right-16 w-96 h-96 rounded-full blur-3xl opacity-50 pointer-events-none"
+              style={{ background: "radial-gradient(circle, #6B5CFC 0%, transparent 65%)" }}
+            />
+            <div
+              className="absolute top-1/3 right-10 w-40 h-40 rounded-full blur-3xl opacity-40 pointer-events-none"
+              style={{ background: "radial-gradient(circle, #D4FF4F 0%, transparent 65%)" }}
             />
 
-            {/* Grain */}
-            <div
-              className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"
-              style={{
-                backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-              }}
-            />
+            {/* dot grid */}
+            <div className="absolute inset-0 dot-grid opacity-60 pointer-events-none" />
 
-            {/* Gold ambient dust particles */}
-            <AmbientDust count={14} color="#D4A574" />
-
-            {/* Large background italic watermark "SV" */}
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                fontFamily: "Instrument Serif, serif",
-                fontStyle: "italic",
-                fontSize: 320,
-                color: "#D4A574",
-                opacity: 0.04,
-                right: -30,
-                bottom: -80,
-                letterSpacing: -10,
-                lineHeight: 1,
-                userSelect: "none",
-              }}
-            >
-              SV
-            </div>
-
-            <div className="relative z-10 flex-1 flex flex-col px-7 pt-16 pb-10">
-              {/* Editorial masthead */}
+            <div className="relative z-10 flex-1 flex flex-col px-6 pt-12 pb-8">
+              {/* Wordmark top */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CurrencyBtc size={14} weight="bold" className="text-[#D4A574]" />
-                  <div className="text-[10px] tracking-[0.38em] uppercase text-[#D4A574]/85">SatVault</div>
+                <Wordmark size={12} />
+                <div className="text-[10px] tracking-[0.22em] uppercase text-white/40 font-semibold">v1 · beta</div>
+              </div>
+
+              {/* Big hero card — the "money on steroids" style */}
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-8 relative rounded-[32px] overflow-hidden p-6"
+                style={{
+                  background: "linear-gradient(155deg, #FF3E8A 0%, #6B5CFC 55%, #34D8FF 100%)",
+                  minHeight: 380,
+                  boxShadow: "0 30px 60px rgba(107,92,252,0.35)",
+                }}
+              >
+                {/* noise */}
+                <div
+                  className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+                  }}
+                />
+                <div className="absolute -top-6 -right-6 w-40 h-40 rounded-full blur-2xl opacity-70"
+                     style={{ background: "radial-gradient(circle, #FFF 0%, transparent 70%)" }} />
+
+                <div className="relative h-full flex flex-col justify-between" style={{ minHeight: 340 }}>
+                  <div className="flex items-start justify-between">
+                    <Logo size={46} primary="#D4FF4F" secondary="#FFFFFF" />
+                    <div className="text-[10px] tracking-[0.22em] uppercase text-white font-bold opacity-80">
+                      the new way <br /> to hold bitcoin
+                    </div>
+                  </div>
+
+                  <div>
+                    <h1
+                      className="text-white leading-[0.88] tracking-[-0.04em]"
+                      style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 72 }}
+                    >
+                      your<br />
+                      <span style={{ color: "#D4FF4F" }}>bitcoin.</span><br />
+                      on steroids.
+                    </h1>
+                    <div className="flex items-center gap-2 mt-4">
+                      <Lightning size={14} weight="fill" className="text-white" />
+                      <div className="text-[11px] uppercase tracking-[0.2em] text-white/90 font-semibold">
+                        rewards · stores · instant settles
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[9px] tracking-[0.32em] uppercase text-white/40">est. mmxxvi</div>
-              </div>
-
-              {/* Hairline rule with fleuron */}
-              <div className="flex items-center gap-3 mt-5 mb-8">
-                <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, #D4A574, rgba(212,165,116,0.15))" }} />
-                <Fleuron size={12} color="#D4A574" />
-                <div className="h-px flex-1" style={{ background: "linear-gradient(-90deg, #D4A574, rgba(212,165,116,0.15))" }} />
-              </div>
-
-              {/* Volume / Issue */}
-              <div className="flex items-baseline justify-between text-white/35 mb-6">
-                <div className="text-[9px] tracking-[0.32em] uppercase">volume i</div>
-                <div className="text-[9px] tracking-[0.32em] uppercase">the atlas</div>
-                <div className="text-[9px] tracking-[0.32em] uppercase">№ 01</div>
-              </div>
+              </motion.div>
 
               <div className="flex-1" />
 
               <motion.div
-                initial={{ y: 24, opacity: 0 }}
+                initial={{ y: 16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <h1
-                  className="text-white leading-[0.92] tracking-[-0.02em]"
-                  style={{ fontFamily: "Instrument Serif, serif", fontSize: 80, fontWeight: 400 }}
-                >
-                  <span style={{ fontStyle: "italic" }}>fortunes,</span>
-                  <br />
-                  <span>kept</span>{" "}
-                  <span style={{ fontStyle: "italic", color: "#D4A574" }}>quietly.</span>
-                </h1>
-
-                <div className="flex items-center gap-2 mt-7">
-                  <FourStar size={6} color="#D4A574" />
-                  <p className="text-white/55 text-[12px] leading-relaxed max-w-[260px] tracking-wide">
-                    a members-only bitcoin vault for those who prefer compounding over conversation.
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ y: 12, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="mt-12 flex flex-col gap-3"
+                transition={{ delay: 0.5 }}
+                className="mt-6 flex flex-col gap-2.5"
               >
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setStep(1)}
                   data-testid="get-started-btn"
-                  className="w-full py-4 rounded-full text-[11px] tracking-[0.28em] uppercase font-medium flex items-center justify-center gap-3"
-                  style={{ background: "#EFE6D2", color: "#1a1410" }}
+                  className="w-full py-4 rounded-full text-[13px] tracking-[0.12em] uppercase font-bold flex items-center justify-center gap-2"
+                  style={{ background: "#D4FF4F", color: "#0A0A0F" }}
                 >
-                  begin <ArrowRight size={13} weight="bold" />
+                  get started <ArrowRight size={14} weight="bold" />
                 </motion.button>
                 <button
                   onClick={() => nav("/lock")}
                   data-testid="existing-member-link"
-                  className="text-[9px] tracking-[0.32em] uppercase text-white/45 py-2"
+                  className="text-[11px] tracking-[0.18em] uppercase text-white/55 py-2 font-semibold hover:text-white transition-colors"
                 >
-                  already a member · enter
+                  already have an account · sign in
                 </button>
               </motion.div>
             </div>
@@ -175,35 +159,44 @@ export default function Onboarding() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.5 }}
-            className="min-h-screen flex flex-col px-7 pt-16 pb-10 bg-black"
+            transition={{ duration: 0.4 }}
+            className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
+            style={{ background: "#0A0A0F" }}
           >
-            <div className="text-[10px] tracking-[0.32em] uppercase text-white/40 mb-3">three principles</div>
+            <div
+              className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl opacity-40 pointer-events-none"
+              style={{ background: "radial-gradient(circle, #D4FF4F 0%, transparent 70%)" }}
+            />
+            <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-3 font-semibold">three promises</div>
             <h2
-              className="text-white tracking-tight leading-[1] mb-10"
-              style={{ fontFamily: "Instrument Serif, serif", fontSize: 44 }}
+              className="text-white tracking-[-0.035em] leading-[0.95] mb-8"
+              style={{ fontFamily: "Clash Display, sans-serif", fontSize: 52, fontWeight: 700 }}
             >
-              <span style={{ fontStyle: "italic" }}>quiet,</span> by design.
+              built for<br />
+              the <span style={{ color: "#D4FF4F" }}>fast lane.</span>
             </h2>
 
-            <div className="space-y-5">
+            <div className="space-y-3 relative z-10">
               <Pillar
                 num="01"
                 Icon={ShieldCheck}
-                title={<>secured <span style={{ fontStyle: "italic" }}>completely.</span></>}
-                desc="twelve-word recovery, biometric guard, encrypted at rest."
+                color="#D4FF4F"
+                title="locked down tight."
+                desc="12-word recovery, biometrics, encrypted keys."
               />
               <Pillar
                 num="02"
-                Icon={CurrencyBtc}
-                title={<>spent <span style={{ fontStyle: "italic" }}>seamlessly.</span></>}
-                desc="send, receive, settle bills — all in bitcoin."
+                Icon={Lightning}
+                color="#FF3E8A"
+                title="spend anywhere."
+                desc="send, pay, settle — instantly in bitcoin."
               />
               <Pillar
                 num="03"
                 Icon={Sparkle}
-                title={<>rewarded <span style={{ fontStyle: "italic" }}>quietly.</span></>}
-                desc="every transaction earns coins, redeemable at curated brands."
+                color="#6B5CFC"
+                title="earn every tap."
+                desc="coins, gems and vouchers on every transaction."
               />
             </div>
 
@@ -214,12 +207,15 @@ export default function Onboarding() {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setStep(2)}
                 data-testid="onboarding-pillars-next"
-                className="w-full py-4 rounded-full text-sm tracking-[0.22em] uppercase font-medium flex items-center justify-center gap-3"
-                style={{ background: "#EFE6D2", color: "#1a1410" }}
+                className="w-full py-4 rounded-full text-[12px] tracking-[0.16em] uppercase font-bold flex items-center justify-center gap-2"
+                style={{ background: "#D4FF4F", color: "#0A0A0F" }}
               >
                 continue <ArrowRight size={14} weight="bold" />
               </motion.button>
-              <button onClick={() => setStep(0)} className="w-full text-[10px] tracking-[0.28em] uppercase text-white/40 py-2">
+              <button
+                onClick={() => setStep(0)}
+                className="w-full text-[10px] tracking-[0.2em] uppercase text-white/40 py-2 font-semibold"
+              >
                 ← back
               </button>
             </div>
@@ -232,29 +228,33 @@ export default function Onboarding() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
-            className="min-h-screen flex flex-col px-7 pt-16 pb-10 bg-black"
+            className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
+            style={{ background: "#0A0A0F" }}
           >
-            <div className="text-[10px] tracking-[0.32em] uppercase text-white/40 mb-3">step 1 of 2</div>
+            <div
+              className="absolute top-10 -left-20 w-64 h-64 rounded-full blur-3xl opacity-40 pointer-events-none"
+              style={{ background: "radial-gradient(circle, #FF3E8A 0%, transparent 70%)" }}
+            />
+            <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-3 font-semibold">step 1 of 2</div>
             <h2
-              className="text-white tracking-tight leading-[1.05]"
-              style={{ fontFamily: "Instrument Serif, serif", fontSize: 42 }}
+              className="text-white tracking-[-0.035em] leading-[0.95]"
+              style={{ fontFamily: "Clash Display, sans-serif", fontSize: 48, fontWeight: 700 }}
             >
-              what shall we<br />
-              <span style={{ fontStyle: "italic" }}>call you?</span>
+              what should<br />
+              we <span style={{ color: "#D4FF4F" }}>call you?</span>
             </h2>
-            <p className="text-white/45 text-[13px] mt-3">your address inside the vault.</p>
+            <p className="text-white/50 text-[13px] mt-3">this is your name inside nova.</p>
 
-            <div className="mt-12 relative">
+            <div className="mt-10 relative">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Aditya"
+                placeholder="type your name"
                 data-testid="onboarding-name-input"
-                className="w-full bg-transparent border-b border-white/15 focus:border-[#EFE6D2] outline-none py-4 placeholder:text-white/15 transition-colors"
-                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 36 }}
+                className="w-full bg-transparent border-b-2 border-white/15 focus:border-[#D4FF4F] outline-none py-4 placeholder:text-white/20 transition-colors text-white"
+                style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 600, fontSize: 32 }}
                 autoFocus
               />
-              <div className="text-[9px] tracking-[0.28em] uppercase text-white/30 mt-2">type your name</div>
             </div>
 
             <div className="flex-1" />
@@ -263,12 +263,15 @@ export default function Onboarding() {
               onClick={() => name.trim() && setStep(3)}
               disabled={!name.trim()}
               data-testid="onboarding-name-next"
-              className="w-full py-4 rounded-full text-sm tracking-[0.22em] uppercase font-medium flex items-center justify-center gap-3 disabled:opacity-30"
-              style={{ background: "#EFE6D2", color: "#1a1410" }}
+              className="w-full py-4 rounded-full text-[12px] tracking-[0.16em] uppercase font-bold flex items-center justify-center gap-2 disabled:opacity-30"
+              style={{ background: "#D4FF4F", color: "#0A0A0F" }}
             >
               continue <ArrowRight size={14} weight="bold" />
             </motion.button>
-            <button onClick={() => setStep(1)} className="w-full text-[10px] tracking-[0.28em] uppercase text-white/40 py-2 mt-1">
+            <button
+              onClick={() => setStep(1)}
+              className="w-full text-[10px] tracking-[0.2em] uppercase text-white/40 py-2 mt-1 font-semibold"
+            >
               ← back
             </button>
           </motion.div>
@@ -280,17 +283,18 @@ export default function Onboarding() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
-            className="min-h-screen flex flex-col px-7 pt-16 pb-10 bg-black"
+            className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
+            style={{ background: "#0A0A0F" }}
           >
-            <div className="text-[10px] tracking-[0.32em] uppercase text-white/40 mb-3">step 2 of 2</div>
+            <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-3 font-semibold">step 2 of 2</div>
             <h2
-              className="text-white tracking-tight leading-[1.05]"
-              style={{ fontFamily: "Instrument Serif, serif", fontSize: 42 }}
+              className="text-white tracking-[-0.035em] leading-[0.95]"
+              style={{ fontFamily: "Clash Display, sans-serif", fontSize: 48, fontWeight: 700 }}
             >
               create your<br />
-              <span style={{ fontStyle: "italic" }}>secret pin.</span>
+              <span style={{ color: "#D4FF4F" }}>secret pin.</span>
             </h2>
-            <p className="text-white/45 text-[13px] mt-3">six digits · used to unlock the vault.</p>
+            <p className="text-white/50 text-[13px] mt-3">six digits · used to unlock your vault.</p>
 
             <div className="mt-10 flex-1 flex items-center">
               <div className="w-full">
@@ -313,17 +317,18 @@ export default function Onboarding() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
-            className="min-h-screen flex flex-col px-7 pt-16 pb-10 bg-black"
+            className="min-h-screen flex flex-col px-6 pt-14 pb-8 relative overflow-hidden"
+            style={{ background: "#0A0A0F" }}
           >
-            <div className="text-[10px] tracking-[0.32em] uppercase text-white/40 mb-3">final step</div>
+            <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-3 font-semibold">almost there</div>
             <h2
-              className="text-white tracking-tight leading-[1.05]"
-              style={{ fontFamily: "Instrument Serif, serif", fontSize: 42 }}
+              className="text-white tracking-[-0.035em] leading-[0.95]"
+              style={{ fontFamily: "Clash Display, sans-serif", fontSize: 48, fontWeight: 700 }}
             >
               confirm your<br />
-              <span style={{ fontStyle: "italic" }}>pin.</span>
+              <span style={{ color: "#D4FF4F" }}>pin.</span>
             </h2>
-            <p className="text-white/45 text-[13px] mt-3">enter it once more to lock it in.</p>
+            <p className="text-white/50 text-[13px] mt-3">enter it once more to lock it in.</p>
 
             <div className="mt-10 flex-1 flex items-center">
               <div className="w-full">
@@ -339,7 +344,7 @@ export default function Onboarding() {
             </div>
 
             {loading && (
-              <div className="text-center text-white/55 text-[10px] tracking-[0.3em] uppercase">creating your vault…</div>
+              <div className="text-center text-[#D4FF4F] text-[10px] tracking-[0.26em] uppercase font-semibold">creating your vault…</div>
             )}
           </motion.div>
         )}
@@ -348,23 +353,26 @@ export default function Onboarding() {
   );
 }
 
-function Pillar({ num, Icon, title, desc }) {
+function Pillar({ num, Icon, title, desc, color }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.15 + Number(num) * 0.08 }}
-      className="flex items-start gap-4 py-3 border-b border-white/8"
-      style={{ borderBottomWidth: 0.5, borderBottomColor: "rgba(255,255,255,0.07)" }}
+      transition={{ delay: 0.1 + Number(num) * 0.08 }}
+      className="flex items-center gap-4 p-4 rounded-2xl"
+      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
     >
-      <div className="text-[10px] font-mono text-white/30 mt-2">{num}</div>
-      <div className="w-9 h-9 rounded-full border border-white/12 flex items-center justify-center mt-1 shrink-0">
-        <Icon size={14} className="text-white/80" />
+      <div
+        className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+        style={{ background: `${color}22`, border: `1px solid ${color}55` }}
+      >
+        <Icon size={18} weight="fill" color={color} />
       </div>
       <div className="flex-1">
-        <div className="text-white text-base" style={{ fontFamily: "Instrument Serif, serif" }}>{title}</div>
-        <div className="text-white/45 text-[12px] mt-0.5">{desc}</div>
+        <div className="text-white text-[15px] font-semibold leading-tight">{title}</div>
+        <div className="text-white/50 text-[12px] mt-0.5">{desc}</div>
       </div>
+      <div className="text-[10px] font-mono text-white/25">{num}</div>
     </motion.div>
   );
 }

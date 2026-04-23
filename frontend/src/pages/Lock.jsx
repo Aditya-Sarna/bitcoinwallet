@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { LockKey } from "@phosphor-icons/react";
 import PinPad from "../components/PinPad";
+import Logo from "../components/Logo";
 import { api } from "../lib/api";
 
 export default function Lock() {
@@ -30,7 +30,7 @@ export default function Lock() {
       toast.success("unlocked");
       nav("/home");
     } catch (e) {
-      toast.error("Wrong PIN");
+      toast.error("wrong pin");
       setPin("");
     } finally {
       setLoading(false);
@@ -38,21 +38,26 @@ export default function Lock() {
   };
 
   return (
-    <div className="shell grain">
+    <div className="shell relative overflow-hidden" style={{ background: "#0A0A0F" }}>
       <div className="bg-radial-gold" />
-      <div className="relative z-10 min-h-screen px-6 py-16 flex flex-col">
+      <div className="relative z-10 min-h-screen px-6 py-14 flex flex-col">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="mx-auto w-16 h-16 rounded-full gold-gradient flex items-center justify-center glow-gold"
+          className="mx-auto"
         >
-          <LockKey size={26} weight="fill" className="text-black" />
+          <Logo size={56} />
         </motion.div>
 
         <div className="text-center mt-6">
-          <div className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-2">welcome back</div>
-          <h2 className="font-display text-3xl tracking-tight">hi, {name}</h2>
-          <p className="text-white/50 mt-2 text-sm">enter your 6-digit PIN to unlock</p>
+          <div className="text-[10px] tracking-[0.24em] uppercase text-white/45 mb-2 font-semibold">welcome back</div>
+          <h2
+            className="text-white tracking-[-0.03em]"
+            style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 36 }}
+          >
+            hi, <span style={{ color: "#D4FF4F" }}>{name.toLowerCase()}</span>
+          </h2>
+          <p className="text-white/50 mt-2 text-[13px]">enter your 6-digit pin to unlock</p>
         </div>
 
         <div className="flex-1 flex items-center">
@@ -68,7 +73,7 @@ export default function Lock() {
               nav("/onboarding");
             }}
             data-testid="logout-link"
-            className="text-[10px] tracking-[0.25em] uppercase text-white/40 hover:text-white/70 transition-colors"
+            className="text-[10px] tracking-[0.22em] uppercase text-white/40 hover:text-white/80 transition-colors font-semibold"
           >
             not you? start over
           </button>

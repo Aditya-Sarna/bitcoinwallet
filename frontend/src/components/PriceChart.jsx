@@ -30,7 +30,7 @@ export default function PriceChart() {
   const first = data[0]?.p || 0;
   const last = data[data.length - 1]?.p || 0;
   const up = last >= first;
-  const color = up ? "#00D09C" : "#FF443A";
+  const color = up ? "#D4FF4F" : "#FF3E8A";
 
   return (
     <div className="relative">
@@ -49,8 +49,8 @@ export default function PriceChart() {
               <YAxis hide domain={["dataMin - 50", "dataMax + 50"]} />
               <Tooltip
                 contentStyle={{
-                  background: "#121212",
-                  border: "1px solid rgba(212,175,55,0.3)",
+                  background: "#141420",
+                  border: "1px solid rgba(212,255,79,0.3)",
                   borderRadius: 12,
                   fontFamily: "Space Grotesk",
                   fontSize: 12,
@@ -70,16 +70,19 @@ export default function PriceChart() {
           </ResponsiveContainer>
         )}
       </div>
-      <div className="flex gap-1 mt-3 glass rounded-full p-1">
+      <div className="flex gap-1 mt-3 rounded-full p-1" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
         {RANGES.map((r) => (
           <motion.button
             key={r.k}
             whileTap={{ scale: 0.94 }}
             onClick={() => setRange(r.k)}
             data-testid={`chart-range-${r.k}`}
-            className={`flex-1 py-1.5 rounded-full text-xs font-semibold tracking-wider transition-colors ${
-              range === r.k ? "bg-[#D4AF37] text-black" : "text-white/60 hover:text-white"
-            }`}
+            className="flex-1 py-1.5 rounded-full text-xs font-bold tracking-wider transition-colors"
+            style={
+              range === r.k
+                ? { background: "#D4FF4F", color: "#0A0A0F" }
+                : { color: "rgba(255,255,255,0.6)" }
+            }
           >
             {r.label}
           </motion.button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Copy, Share, Scan } from "@phosphor-icons/react";
+import { Copy, Share } from "@phosphor-icons/react";
 import Header from "../components/Header";
 import StyledQR from "../components/StyledQR";
 import { api } from "../lib/api";
@@ -23,31 +23,28 @@ export default function Receive() {
 
   const copy = () => {
     navigator.clipboard.writeText(wallet.btc_address);
-    toast.success("Address copied");
+    toast.success("address copied");
   };
 
   const share = async () => {
     if (navigator.share) {
-      try { await navigator.share({ text: uri, title: "My Bitcoin Address" }); } catch {}
+      try { await navigator.share({ text: uri, title: "my bitcoin address" }); } catch {}
     } else copy();
   };
 
   const receivedCount = txns.filter((t) => t.type === "received").length;
-  const initial = (wallet?.name || "B").charAt(0).toUpperCase();
-  const memberSince = wallet?.created_at ? new Date(wallet.created_at).getFullYear() : 2026;
+  const initial = (wallet?.name || "N").charAt(0).toUpperCase();
 
   return (
-    <div className="shell grain">
-      <Header title="Receive" />
-      <div className="px-6 text-center">
-        <div className="text-[10px] tracking-[0.3em] uppercase text-white/40">
-          your story · encoded
-        </div>
+    <div className="shell" style={{ background: "#0A0A0F" }}>
+      <Header title="receive" />
+      <div className="px-6 text-center pb-10">
+        <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">your address</div>
         <h2
-          className="text-white/95 mt-2 leading-none"
-          style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 44 }}
+          className="text-white mt-1.5 leading-[0.95]"
+          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 42, letterSpacing: "-0.035em" }}
         >
-          scan to gift.
+          scan to <span style={{ color: "#D4FF4F" }}>receive.</span>
         </h2>
 
         <motion.div
@@ -60,33 +57,32 @@ export default function Receive() {
             value={uri}
             size={280}
             initial={initial}
-            topText={`${wallet?.name?.toLowerCase() || "your"}'s vault`}
-            bottomText={`· member since ${memberSince} ·`}
+            topText={`${(wallet?.name || "your").toLowerCase()} · nova vault`}
+            bottomText={`· scan · send · secured ·`}
           />
         </motion.div>
 
-        <div className="mt-4 text-sm text-white/55" style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}>
-          every satoshi arriving here writes a new chapter.
-        </div>
-
-        {/* Story strip */}
         <div className="mt-5 grid grid-cols-3 gap-2">
           <StoryStat label="received" value={receivedCount} unit="txns" />
           <StoryStat label="balance" value={fmtBTC(wallet?.balance_btc, 4)} unit="BTC" />
-          <StoryStat label="coins earned" value={fmtCoins(wallet?.coins)} unit="" />
+          <StoryStat label="coins" value={fmtCoins(wallet?.coins)} unit="" />
         </div>
 
         {/* Address */}
-        <div className="mt-6 glass rounded-2xl p-4" data-testid="receive-address-card">
-          <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-2">address</div>
-          <div className="font-mono text-xs break-all text-white/80" data-testid="receive-address">
+        <div
+          className="mt-6 rounded-3xl p-4"
+          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+          data-testid="receive-address-card"
+        >
+          <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-2 font-semibold text-left">address</div>
+          <div className="font-mono text-xs break-all text-white/85 text-left" data-testid="receive-address">
             {wallet?.btc_address}
           </div>
         </div>
 
         {/* Request amount */}
         <div className="mt-4 text-left">
-          <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-1">request (optional)</div>
+          <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-1 font-semibold">request (optional)</div>
           <div className="flex items-end gap-2 border-b border-white/10 py-1">
             <input
               type="number"
@@ -94,17 +90,29 @@ export default function Receive() {
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.0000"
               data-testid="receive-amount"
-              className="flex-1 bg-transparent outline-none text-2xl font-display"
+              className="flex-1 bg-transparent outline-none text-2xl font-display font-bold"
             />
             <div className="text-sm text-white/40 font-mono pb-1">BTC</div>
           </div>
         </div>
 
         <div className="flex gap-3 mt-6">
-          <motion.button whileTap={{ scale: 0.96 }} onClick={copy} data-testid="receive-copy" className="flex-1 glass rounded-full py-3 flex items-center justify-center gap-2 text-sm font-semibold">
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            onClick={copy}
+            data-testid="receive-copy"
+            className="flex-1 rounded-full py-3 flex items-center justify-center gap-2 text-sm font-bold"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+          >
             <Copy size={14} /> copy
           </motion.button>
-          <motion.button whileTap={{ scale: 0.96 }} onClick={share} data-testid="receive-share" className="flex-1 gold-gradient text-black rounded-full py-3 flex items-center justify-center gap-2 text-sm font-semibold">
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            onClick={share}
+            data-testid="receive-share"
+            className="flex-1 rounded-full py-3 flex items-center justify-center gap-2 text-sm font-bold"
+            style={{ background: "#D4FF4F", color: "#0A0A0F" }}
+          >
             <Share size={14} /> share
           </motion.button>
         </div>
@@ -115,10 +123,13 @@ export default function Receive() {
 
 function StoryStat({ label, value, unit }) {
   return (
-    <div className="glass rounded-2xl p-3">
-      <div className="text-[8px] tracking-[0.22em] uppercase text-white/40">{label}</div>
-      <div className="font-display text-base font-semibold mt-0.5">{value}</div>
-      {unit && <div className="text-[9px] text-white/30 uppercase tracking-wider">{unit}</div>}
+    <div
+      className="rounded-2xl p-3"
+      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+    >
+      <div className="text-[8px] tracking-[0.2em] uppercase text-white/45 font-semibold">{label}</div>
+      <div className="font-display text-base font-bold mt-0.5">{value}</div>
+      {unit && <div className="text-[9px] text-white/40 uppercase tracking-wider">{unit}</div>}
     </div>
   );
 }

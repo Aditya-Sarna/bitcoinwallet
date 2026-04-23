@@ -9,27 +9,30 @@ const ICONS = {
   bill: Receipt,
 };
 
-const TITLE = {
-  sent: "Sent",
-  received: "Received",
-  reward: "Reward",
-  redeem: "Redeemed",
-  bill: "Bill Payment",
+const META = {
+  sent:     { title: "sent",       color: "#FF3E8A" },
+  received: { title: "received",   color: "#D4FF4F" },
+  reward:   { title: "reward",     color: "#D4FF4F" },
+  redeem:   { title: "redeemed",   color: "#6B5CFC" },
+  bill:     { title: "bill paid",  color: "#34D8FF" },
 };
 
 export default function TxnItem({ t }) {
   const Icon = ICONS[t.type] || ArrowUpRight;
+  const meta = META[t.type] || { title: "transaction", color: "#ffffff" };
   const isPositive = t.type === "received" || t.type === "reward";
-  const amountColor = isPositive ? "text-[#00D09C]" : "text-white";
   const sign = isPositive ? "+" : t.type === "sent" || t.type === "bill" ? "-" : "";
 
   return (
     <div className="flex items-center gap-4 py-4 border-b border-white/5" data-testid={`txn-${t.id}`}>
-      <div className="w-11 h-11 rounded-full glass flex items-center justify-center shrink-0">
-        <Icon size={18} weight="bold" className={isPositive ? "text-[#00D09C]" : "text-white/80"} />
+      <div
+        className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+        style={{ background: `${meta.color}22`, border: `1px solid ${meta.color}44` }}
+      >
+        <Icon size={18} weight="bold" color={meta.color} />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm">{TITLE[t.type] || "Transaction"}</div>
+        <div className="text-sm font-bold lowercase">{meta.title}</div>
         <div className="text-xs text-white/50 truncate font-mono">
           {t.type === "received" || t.type === "sent"
             ? shortAddr(t.counterparty, 8, 6)
@@ -38,7 +41,7 @@ export default function TxnItem({ t }) {
       </div>
       <div className="text-right shrink-0">
         {t.amount_btc > 0 ? (
-          <div className={`font-mono text-sm font-semibold ${amountColor}`}>
+          <div className="font-mono text-sm font-bold" style={{ color: isPositive ? "#D4FF4F" : "#fff" }}>
             {sign}{fmtBTC(t.amount_btc, 6)} BTC
           </div>
         ) : (

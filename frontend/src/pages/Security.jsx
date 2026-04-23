@@ -15,7 +15,7 @@ export default function Security() {
 
   const toggleBio = async () => {
     const { data } = await api.post("/security/biometric/toggle");
-    toast.success(data.biometric_enabled ? "Biometric enabled" : "Biometric disabled");
+    toast.success(data.biometric_enabled ? "biometric enabled" : "biometric disabled");
     load();
   };
 
@@ -23,36 +23,45 @@ export default function Security() {
   const hasData = status !== null;
 
   return (
-    <div className="shell grain">
-      <Header title="Security" />
+    <div className="shell" style={{ background: "#0A0A0F" }}>
+      <Header title="security" />
       <div className="px-6">
-        {/* Security Score */}
+        {/* Security Score Hero */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl p-5 relative overflow-hidden"
+          className="rounded-[28px] p-6 relative overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, #1a1a1a, #0a0a0a)",
-            border: "1px solid rgba(212,175,55,0.2)",
+            background: "linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%)",
+            color: "#0A0A0F",
           }}
           data-testid="security-score"
         >
-          <div className="absolute -top-14 -right-14 w-48 h-48 rounded-full opacity-40 blur-3xl" style={{ background: "radial-gradient(#D4AF37, transparent 70%)" }} />
+          <div
+            className="absolute -top-14 -right-14 w-48 h-48 rounded-full opacity-40 blur-3xl"
+            style={{ background: "radial-gradient(#fff, transparent 70%)" }}
+          />
           <div className="relative">
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/50">security score</div>
+            <div className="text-[10px] tracking-[0.22em] uppercase font-bold opacity-70">security score</div>
             <div className="flex items-end gap-2 mt-1">
-              <div className="font-display text-5xl font-semibold tracking-tighter">{hasData ? score : "—"}</div>
-              <div className="text-white/40 text-sm pb-2">/ 100</div>
+              <div
+                className="tracking-[-0.04em]"
+                style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1 }}
+              >
+                {hasData ? score : "—"}
+              </div>
+              <div className="opacity-60 text-sm pb-3 font-semibold">/ 100</div>
             </div>
-            <div className="mt-3 h-2 rounded-full bg-white/5 overflow-hidden">
+            <div className="mt-3 h-2 rounded-full bg-black/15 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: hasData ? `${score}%` : 0 }}
                 transition={{ duration: 1.2 }}
-                className="h-full gold-gradient"
+                className="h-full"
+                style={{ background: "#0A0A0F" }}
               />
             </div>
-            <div className="font-serif-italic text-[11px] text-white/50 mt-2">
+            <div className="text-[12px] opacity-70 mt-2 font-bold uppercase tracking-wide">
               {!hasData ? "calculating…" : score >= 90 ? "fortress" : score >= 70 ? "strong" : score >= 40 ? "moderate" : "vulnerable"}
             </div>
           </div>
@@ -61,7 +70,8 @@ export default function Security() {
         <div className="mt-6 space-y-3">
           <Row
             testid="sec-backup"
-            icon={<ShieldCheck size={20} weight="fill" className={status?.seed_backed_up ? "text-[#00D09C]" : "text-[#FF7A3A]"} />}
+            icon={<ShieldCheck size={20} weight="fill" color={status?.seed_backed_up ? "#D4FF4F" : "#FF3E8A"} />}
+            color={status?.seed_backed_up ? "#D4FF4F" : "#FF3E8A"}
             title="recovery phrase"
             desc={status?.seed_backed_up ? "verified · your vault is recoverable" : "not yet verified — backup now"}
             warning={!status?.seed_backed_up}
@@ -69,31 +79,37 @@ export default function Security() {
           />
           <Toggle
             testid="sec-bio"
-            icon={<Fingerprint size={20} weight="fill" className="text-gold" />}
+            icon={<Fingerprint size={20} weight="fill" color="#34D8FF" />}
+            color="#34D8FF"
             title="biometric unlock"
-            desc="use your face or fingerprint"
+            desc="use face or fingerprint"
             value={status?.biometric_enabled || false}
             onChange={toggleBio}
           />
           <Row
             testid="sec-pin"
-            icon={<Key size={20} weight="fill" className="text-gold" />}
+            icon={<Key size={20} weight="fill" color="#6B5CFC" />}
+            color="#6B5CFC"
             title="change pin"
             desc="update your 6-digit entry code"
-            onClick={() => toast("Coming soon · demo")}
+            onClick={() => toast("coming soon · demo")}
           />
         </div>
 
-        <div className="mt-8 rounded-3xl p-5 glass" data-testid="security-tips">
-          <div className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-2">wisdom</div>
+        <div
+          className="mt-8 rounded-3xl p-5"
+          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          data-testid="security-tips"
+        >
+          <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] mb-2 font-bold">pro tip</div>
           <div
-            className="text-3xl text-white/90 leading-tight"
-            style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+            className="text-white"
+            style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em", lineHeight: 1 }}
           >
-            not your keys,<br />not your coins.
+            not your keys,<br /><span style={{ color: "#D4FF4F" }}>not your coins.</span>
           </div>
-          <p className="text-xs text-white/50 mt-3 leading-relaxed">
-            Your recovery phrase is your sovereignty. Store it offline, split it across locations, and never commit it to digital memory.
+          <p className="text-xs text-white/55 mt-3 leading-relaxed">
+            your recovery phrase is your sovereignty. store it offline, split it across locations, and never commit it to digital memory.
           </p>
         </div>
       </div>
@@ -101,19 +117,25 @@ export default function Security() {
   );
 }
 
-function Row({ icon, title, desc, onClick, warning, testid }) {
+function Row({ icon, title, desc, onClick, warning, testid, color }) {
   return (
     <motion.button
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       data-testid={testid}
-      className="w-full glass rounded-2xl p-4 flex items-center gap-3 text-left"
+      className="w-full rounded-2xl p-4 flex items-center gap-3 text-left"
+      style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
     >
-      <div className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center shrink-0">{icon}</div>
+      <div
+        className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+        style={{ background: `${color}22`, border: `1px solid ${color}44` }}
+      >
+        {icon}
+      </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold flex items-center gap-2">
+        <div className="text-sm font-bold flex items-center gap-2 lowercase">
           {title}
-          {warning && <Warning size={12} className="text-[#FF7A3A]" weight="fill" />}
+          {warning && <Warning size={12} color="#FF3E8A" weight="fill" />}
         </div>
         <div className="text-[11px] text-white/50 truncate">{desc}</div>
       </div>
@@ -122,17 +144,27 @@ function Row({ icon, title, desc, onClick, warning, testid }) {
   );
 }
 
-function Toggle({ icon, title, desc, value, onChange, testid }) {
+function Toggle({ icon, title, desc, value, onChange, testid, color }) {
   return (
-    <div className="glass rounded-2xl p-4 flex items-center gap-3" data-testid={testid}>
-      <div className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center shrink-0">{icon}</div>
+    <div
+      className="rounded-2xl p-4 flex items-center gap-3"
+      style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+      data-testid={testid}
+    >
+      <div
+        className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+        style={{ background: `${color}22`, border: `1px solid ${color}44` }}
+      >
+        {icon}
+      </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold">{title}</div>
+        <div className="text-sm font-bold lowercase">{title}</div>
         <div className="text-[11px] text-white/50">{desc}</div>
       </div>
       <button
         onClick={onChange}
-        className={`w-11 h-6 rounded-full transition-colors p-0.5 ${value ? "bg-[#D4AF37]" : "bg-white/10"}`}
+        className="w-11 h-6 rounded-full transition-colors p-0.5"
+        style={{ background: value ? "#D4FF4F" : "rgba(255,255,255,0.1)" }}
         data-testid={`${testid}-toggle`}
       >
         <motion.div

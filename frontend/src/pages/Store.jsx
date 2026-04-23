@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Storefront, Tag, ArrowRight } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import { api } from "../lib/api";
 import { fmtCoins } from "../lib/format";
 
-// Brand color mapping with image backdrops
+// Brand color mapping
 const BRAND_STYLES = {
-  "Amazon": { bg: "#FF9900", image: null, text: "#fff" },
-  "Starbucks": { bg: "#00704A", image: null, text: "#fff" },
-  "Uber": { bg: "#000", image: null, text: "#fff", border: "1px solid #444" },
-  "Dior": { bg: "#EADDC5", image: null, text: "#000" },
-  "Spotify": { bg: "#1DB954", image: null, text: "#000" },
-  "Nike": { bg: "#FF6B00", image: null, text: "#fff" },
-  "AirMiles": { bg: "#4A90E2", image: null, text: "#fff" },
-  "Mystery Box": { bg: "#6936D6", image: null, text: "#fff" },
+  "Amazon":      { bg: "#FF9900", text: "#fff" },
+  "Starbucks":   { bg: "#00704A", text: "#fff" },
+  "Uber":        { bg: "#0A0A0F", text: "#fff", border: "1px solid #444" },
+  "Dior":        { bg: "#EADDC5", text: "#000" },
+  "Spotify":     { bg: "#1DB954", text: "#000" },
+  "Nike":        { bg: "#FF6B00", text: "#fff" },
+  "AirMiles":    { bg: "#34D8FF", text: "#0A0A0F" },
+  "Mystery Box": { bg: "#6B5CFC", text: "#fff" },
 };
 
 export default function Store() {
@@ -34,6 +33,13 @@ export default function Store() {
 
   useEffect(() => { load(); }, []);
 
+  // Keep URL ?cat= in sync if user navigates here directly with a category
+  useEffect(() => {
+    const urlCat = searchParams.get("cat");
+    if (urlCat && urlCat !== cat) setCat(urlCat);
+    // eslint-disable-next-line
+  }, [searchParams]);
+
   const cats = [
     { k: "all", label: "all" },
     { k: "luxury", label: "luxury" },
@@ -47,35 +53,41 @@ export default function Store() {
 
   return (
     <Shell>
-      <div className="grain" />
       <div className="px-5 pt-10">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">satvault store</div>
+            <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">nova store</div>
             <h1
-              className="text-white leading-none mt-1 tracking-tight"
-              style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 44 }}
+              className="text-white mt-1 tracking-[-0.035em] leading-[0.95] lowercase"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 44 }}
             >
-              spend, lavishly.
+              spend,<br /><span style={{ color: "#D4FF4F" }}>brighter.</span>
             </h1>
-            <div className="text-white/50 text-sm mt-2 font-serif-italic">
-              from luxury goods to utility · your coins, your world.
+            <div className="text-white/55 text-sm mt-2 max-w-[260px]">
+              redeem coins for vouchers, gift cards and real products.
             </div>
           </div>
-          <div className="w-12 h-12 rounded-full glass flex items-center justify-center shrink-0">
-            <Storefront size={18} className="text-gold" />
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+            style={{ background: "#D4FF4F22", border: "1px solid #D4FF4F55" }}
+          >
+            <Storefront size={18} color="#D4FF4F" weight="bold" />
           </div>
         </div>
 
-        <div className="mt-4 glass rounded-2xl p-4 flex items-center gap-3" data-testid="store-balance">
-          <div className="w-10 h-10 rounded-full gold-gradient flex items-center justify-center">
-            <span className="font-bold text-black">$</span>
+        <div
+          className="mt-5 rounded-3xl p-4 flex items-center gap-3"
+          style={{ background: "linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%)", color: "#0A0A0F" }}
+          data-testid="store-balance"
+        >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#0A0A0F" }}>
+            <span className="font-bold text-[#D4FF4F]">$</span>
           </div>
           <div className="flex-1">
-            <div className="text-[9px] tracking-[0.22em] uppercase text-white/50">available</div>
-            <div className="font-display text-xl font-semibold">{fmtCoins(coins)} coins</div>
+            <div className="text-[9px] tracking-[0.2em] uppercase font-bold opacity-70">available</div>
+            <div className="font-display text-xl font-bold">{fmtCoins(coins)} coins</div>
           </div>
-          <Tag size={16} className="text-white/40" />
+          <Tag size={16} />
         </div>
 
         <div className="flex gap-2 mt-5 overflow-x-auto no-scrollbar">
@@ -84,9 +96,12 @@ export default function Store() {
               key={c.k}
               onClick={() => setCat(c.k)}
               data-testid={`store-cat-${c.k}`}
-              className={`px-4 py-2 rounded-full whitespace-nowrap text-[11px] lowercase tracking-wider transition-colors ${
-                cat === c.k ? "bg-white text-black font-semibold" : "glass text-white/60"
-              }`}
+              className="px-4 py-2 rounded-full whitespace-nowrap text-[11px] lowercase tracking-wider transition-colors font-bold"
+              style={
+                cat === c.k
+                  ? { background: "#D4FF4F", color: "#0A0A0F" }
+                  : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }
+              }
             >
               {c.label}
             </button>
@@ -105,33 +120,35 @@ export default function Store() {
                 whileTap={{ scale: 0.97 }}
                 whileHover={{ y: -2 }}
                 onClick={() => nav(`/store/${item.id}`)}
-                className="rounded-3xl overflow-hidden flex flex-col cursor-pointer"
-                style={{ background: "#121212", border: "1px solid rgba(255,255,255,0.05)" }}
+                className="rounded-[24px] overflow-hidden flex flex-col cursor-pointer"
+                style={{ background: "#141420", border: "1px solid rgba(255,255,255,0.06)" }}
                 data-testid={`store-item-${item.id}`}
               >
                 <div
                   className="h-32 flex items-center justify-center text-center px-3 relative overflow-hidden"
                   style={{ background: style.bg, color: style.text, border: style.border || "none" }}
                 >
-                  <div className="absolute inset-0 opacity-20 pointer-events-none"
+                  <div
+                    className="absolute inset-0 opacity-25 pointer-events-none"
                     style={{
                       backgroundImage:
-                        "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2) 0%, transparent 50%)",
-                    }} />
+                        "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2) 0%, transparent 50%)",
+                    }}
+                  />
                   <div className="relative">
                     <div
-                    className="text-2xl leading-none opacity-85 lowercase"
-                    style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
-                  >
-                    {item.brand.toLowerCase()}
-                  </div>
-                    <div className="text-[9px] tracking-[0.25em] uppercase mt-2 opacity-70">voucher</div>
+                      className="lowercase"
+                      style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 26, letterSpacing: "-0.03em" }}
+                    >
+                      {item.brand.toLowerCase()}
+                    </div>
+                    <div className="text-[9px] tracking-[0.22em] uppercase mt-2 opacity-70 font-bold">voucher</div>
                   </div>
                 </div>
                 <div className="p-3 flex-1 flex flex-col">
-                  <div className="text-xs font-semibold flex-1">{item.title}</div>
+                  <div className="text-xs font-bold flex-1">{item.title}</div>
                   <div className="flex items-center justify-between mt-3">
-                    <div className="text-gold font-mono text-sm font-semibold">{fmtCoins(item.cost)}</div>
+                    <div className="font-mono text-sm font-bold" style={{ color: "#D4FF4F" }}>{fmtCoins(item.cost)}</div>
                     <ArrowRight size={14} className="text-white/40" />
                   </div>
                 </div>

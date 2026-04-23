@@ -10,13 +10,19 @@ export default function Header({ title, onBack, right = null, subtitle }) {
         whileTap={{ scale: 0.9 }}
         onClick={() => (onBack ? onBack() : nav(-1))}
         data-testid="header-back"
-        className="w-10 h-10 rounded-full glass flex items-center justify-center"
+        className="w-10 h-10 rounded-full flex items-center justify-center"
+        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
         <ArrowLeft size={18} weight="bold" />
       </motion.button>
       <div className="flex-1">
-        <div className="font-display text-lg font-medium tracking-tight">{title}</div>
-        {subtitle && <div className="text-xs text-white/50">{subtitle}</div>}
+        <div
+          className="text-white lowercase tracking-[-0.02em]"
+          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 18 }}
+        >
+          {title}
+        </div>
+        {subtitle && <div className="text-xs text-white/50 lowercase">{subtitle}</div>}
       </div>
       {right}
     </div>

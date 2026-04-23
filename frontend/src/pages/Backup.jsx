@@ -13,7 +13,6 @@ export default function Backup() {
   const [phrase, setPhrase] = useState(initialPhrase || []);
   const [status, setStatus] = useState(null);
   const [step, setStep] = useState(initialPhrase ? 0 : -1); // -1 loading, 0 view, 1 verify, 3 already backed up
-  const [confirmed, setConfirmed] = useState(false);
   const [shuffled, setShuffled] = useState([]);
   const [picked, setPicked] = useState([]);
 
@@ -22,22 +21,21 @@ export default function Backup() {
       try {
         const { data: s } = await api.get("/security/status");
         setStatus(s);
-        if (initialPhrase) return; // already have it
+        if (initialPhrase) return;
         if (s.seed_backed_up) {
           setStep(3);
         } else {
-          // fetch the seed
           try {
             const { data } = await api.get("/security/seed");
             setPhrase(data.seed_phrase);
             setStep(0);
           } catch (e) {
-            toast.error("Couldn't load recovery phrase");
+            toast.error("couldn't load recovery phrase");
             setStep(3);
           }
         }
       } catch (e) {
-        toast.error("Could not load security status");
+        toast.error("could not load security status");
       }
     })();
   }, [initialPhrase]);
@@ -52,7 +50,7 @@ export default function Backup() {
 
   const copyPhrase = () => {
     navigator.clipboard.writeText(phrase.join(" "));
-    toast.success("Phrase copied — store offline");
+    toast.success("phrase copied — store offline");
   };
 
   const pick = (word, idx) => {
@@ -72,7 +70,7 @@ export default function Backup() {
         state: {
           kind: "backed_up",
           title: "vault fully secured",
-          subtitle: "your phrase is verified · phrase is now locked",
+          subtitle: "your phrase is verified · safely locked",
           amount: "+250 coins",
           secondary: "security score boosted",
           ctaLabel: "back to home",
@@ -80,39 +78,43 @@ export default function Backup() {
         },
       });
     } catch (e) {
-      toast.error("Order doesn't match. Try again.");
+      toast.error("order doesn't match. try again.");
       setPicked([]);
     }
   };
 
   return (
-    <div className="shell grain">
-      <Header title="Backup vault" />
+    <div className="shell" style={{ background: "#0A0A0F" }}>
+      <Header title="backup vault" />
       <div className="px-6 pb-20">
         <AnimatePresence mode="wait">
           {step === -1 && (
             <motion.div key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-16 text-center">
-              <div className="text-white/40 text-xs tracking-[0.25em] uppercase">loading recovery phrase…</div>
+              <div className="text-white/40 text-xs tracking-[0.22em] uppercase">loading recovery phrase…</div>
             </motion.div>
           )}
 
           {step === 0 && (
             <motion.div key="view" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="flex items-center gap-2 mb-2">
-                <ShieldCheck size={16} weight="fill" className="text-gold" />
-                <div className="text-[10px] tracking-[0.28em] uppercase text-white/50">recovery phrase</div>
+                <ShieldCheck size={16} weight="fill" color="#D4FF4F" />
+                <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">recovery phrase</div>
               </div>
               <h2
-                className="text-white/95 leading-none mb-3"
-                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 56 }}
+                className="text-white leading-[0.95] mb-3"
+                style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 48, letterSpacing: "-0.035em" }}
               >
-                twelve words.
+                twelve <span style={{ color: "#D4FF4F" }}>words.</span>
               </h2>
               <p className="text-white/55 text-sm leading-relaxed">
-                These are the <span className="font-serif-italic text-gold">keys to your kingdom</span>. Write them down. Never screenshot. Never share. Whoever has them, owns your bitcoin.
+                these are the <span className="font-bold" style={{ color: "#D4FF4F" }}>keys to your vault</span>. write them down. never screenshot. never share. whoever has them, owns your bitcoin.
               </p>
 
-              <div className="mt-6 glass rounded-3xl p-5" data-testid="seed-phrase-grid">
+              <div
+                className="mt-6 rounded-3xl p-5"
+                style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+                data-testid="seed-phrase-grid"
+              >
                 <div className="grid grid-cols-2 gap-3">
                   {phrase.map((w, i) => (
                     <motion.div
@@ -123,19 +125,27 @@ export default function Backup() {
                       className="flex items-center gap-2 py-2 border-b border-white/5"
                     >
                       <div className="text-[10px] font-mono text-white/30 w-5">{String(i + 1).padStart(2, "0")}</div>
-                      <div className="font-mono text-sm" data-testid={`seed-word-${i}`}>{w}</div>
+                      <div className="font-mono text-sm font-semibold" data-testid={`seed-word-${i}`}>{w}</div>
                     </motion.div>
                   ))}
                 </div>
-                <button onClick={copyPhrase} className="mt-4 w-full flex items-center justify-center gap-2 text-[10px] tracking-[0.25em] uppercase text-gold" data-testid="seed-copy">
+                <button
+                  onClick={copyPhrase}
+                  className="mt-4 w-full flex items-center justify-center gap-2 text-[11px] tracking-[0.2em] uppercase font-bold"
+                  style={{ color: "#D4FF4F" }}
+                  data-testid="seed-copy"
+                >
                   <Copy size={12} /> copy phrase
                 </button>
               </div>
 
-              <div className="mt-5 glass rounded-2xl p-4 flex gap-3">
-                <Warning size={16} weight="fill" className="text-[#FF7A3A] shrink-0 mt-0.5" />
-                <div className="text-xs text-white/70">
-                  <span className="font-serif-italic text-[#FF7A3A]">warning.</span> No one from SatVault will ever ask for these words. Screenshots may sync to the cloud — use pen & paper.
+              <div
+                className="mt-5 rounded-2xl p-4 flex gap-3"
+                style={{ background: "rgba(255,62,138,0.1)", border: "1px solid rgba(255,62,138,0.3)" }}
+              >
+                <Warning size={16} weight="fill" color="#FF3E8A" className="shrink-0 mt-0.5" />
+                <div className="text-xs text-white/80">
+                  <span className="font-bold" style={{ color: "#FF3E8A" }}>warning.</span> no one from nova will ever ask for these words. screenshots may sync to the cloud — use pen & paper.
                 </div>
               </div>
 
@@ -143,26 +153,30 @@ export default function Backup() {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setStep(1)}
                 data-testid="seed-verify-btn"
-                className="mt-6 w-full gold-gradient text-black font-semibold rounded-full py-4 uppercase tracking-[0.22em] text-sm"
+                className="mt-6 w-full font-bold rounded-full py-4 uppercase tracking-[0.16em] text-[12px]"
+                style={{ background: "#D4FF4F", color: "#0A0A0F" }}
               >
-                I wrote them down · verify
+                i wrote them down · verify
               </motion.button>
             </motion.div>
           )}
 
-          {step === 1 && !confirmed && (
+          {step === 1 && (
             <motion.div key="verify" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <div className="text-[10px] tracking-[0.28em] uppercase text-white/40">verify · step 2 of 2</div>
+              <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 font-bold">verify · step 2 of 2</div>
               <h2
-                className="text-white/95 leading-none mt-1 mb-2"
-                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 56 }}
+                className="text-white leading-[0.95] mt-1 mb-2"
+                style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 48, letterSpacing: "-0.035em" }}
               >
-                prove it.
+                prove <span style={{ color: "#D4FF4F" }}>it.</span>
               </h2>
-              <p className="text-white/55 text-sm">Tap the words in the <span className="font-serif-italic text-gold">correct order</span>.</p>
+              <p className="text-white/55 text-sm">tap the words in the <span className="font-bold" style={{ color: "#D4FF4F" }}>correct order</span>.</p>
 
-              <div className="mt-6 glass rounded-3xl p-4 min-h-[140px]">
-                <div className="text-[9px] tracking-[0.25em] uppercase text-white/30 mb-2">your order</div>
+              <div
+                className="mt-6 rounded-3xl p-4 min-h-[140px]"
+                style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="text-[9px] tracking-[0.2em] uppercase text-white/40 mb-2 font-bold">your order</div>
                 <div className="flex flex-wrap gap-2">
                   {picked.map((p, pi) => (
                     <motion.button
@@ -170,7 +184,8 @@ export default function Backup() {
                       initial={{ scale: 0.8 }}
                       animate={{ scale: 1 }}
                       onClick={() => unpick(p.idx)}
-                      className="px-3 py-1.5 rounded-full text-xs font-mono bg-[#D4AF37] text-black"
+                      className="px-3 py-1.5 rounded-full text-xs font-mono font-bold"
+                      style={{ background: "#D4FF4F", color: "#0A0A0F" }}
                       data-testid={`picked-${p.idx}`}
                     >
                       {pi + 1}. {p.word}
@@ -190,9 +205,12 @@ export default function Backup() {
                       disabled={!!isPicked}
                       onClick={() => pick(w, i)}
                       data-testid={`shuffled-${i}`}
-                      className={`py-2.5 rounded-xl text-xs font-mono transition-all ${
-                        isPicked ? "opacity-20 bg-white/5" : "glass hover:bg-white/10"
-                      }`}
+                      className="py-2.5 rounded-xl text-xs font-mono font-semibold transition-all"
+                      style={
+                        isPicked
+                          ? { opacity: 0.2, background: "rgba(255,255,255,0.05)" }
+                          : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                      }
                     >
                       {w}
                     </motion.button>
@@ -205,7 +223,8 @@ export default function Backup() {
                 disabled={picked.length !== 12}
                 onClick={verify}
                 data-testid="seed-confirm-btn"
-                className="mt-6 w-full gold-gradient disabled:opacity-30 text-black font-semibold rounded-full py-4 uppercase tracking-[0.22em] text-sm"
+                className="mt-6 w-full disabled:opacity-30 font-bold rounded-full py-4 uppercase tracking-[0.16em] text-[12px]"
+                style={{ background: "#D4FF4F", color: "#0A0A0F" }}
               >
                 confirm backup
               </motion.button>
@@ -213,42 +232,28 @@ export default function Backup() {
               <button
                 onClick={() => setStep(0)}
                 data-testid="seed-back-view"
-                className="mt-4 w-full text-[10px] tracking-[0.25em] uppercase text-white/40"
+                className="mt-4 w-full text-[10px] tracking-[0.22em] uppercase text-white/45 font-semibold"
               >
                 ← view phrase again
               </button>
             </motion.div>
           )}
 
-          {confirmed && (
-            <motion.div key="done" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center justify-center text-center pt-16">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
-                transition={{ type: "spring", duration: 1 }}
-                className="w-24 h-24 rounded-full gold-gradient flex items-center justify-center glow-gold"
-              >
-                <CheckCircle size={44} weight="fill" className="text-black" />
-              </motion.div>
-              <h2
-                className="mt-6 leading-none"
-                style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 60 }}
-              >
-                secured.
-              </h2>
-              <div className="text-white/60 text-sm mt-2">Your vault is fully backed up.</div>
-              <div className="text-gold text-xs mt-2 tracking-wider uppercase">+250 coins bonus</div>
-            </motion.div>
-          )}
-
           {step === 3 && (
             <motion.div key="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center pt-10">
-              <div className="w-16 h-16 mx-auto rounded-full bg-[#00D09C]/10 border border-[#00D09C]/30 flex items-center justify-center">
-                <CheckCircle size={22} weight="fill" className="text-[#00D09C]" />
+              <div
+                className="w-16 h-16 mx-auto rounded-full flex items-center justify-center"
+                style={{ background: "#D4FF4F22", border: "1px solid #D4FF4F55" }}
+              >
+                <CheckCircle size={22} weight="fill" color="#D4FF4F" />
               </div>
-              <h2 className="font-display text-2xl mt-4">vault secured</h2>
-              <p className="text-white/50 text-sm mt-2">Your recovery phrase is verified and backed up.</p>
-              <p className="font-serif-italic text-xs text-white/40 mt-4">the phrase is locked — as it should be.</p>
+              <h2
+                className="mt-4 text-white"
+                style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 32, letterSpacing: "-0.03em" }}
+              >
+                vault <span style={{ color: "#D4FF4F" }}>secured.</span>
+              </h2>
+              <p className="text-white/50 text-sm mt-2">your recovery phrase is verified and backed up.</p>
             </motion.div>
           )}
         </AnimatePresence>

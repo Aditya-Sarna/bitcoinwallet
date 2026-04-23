@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { UserCircle, Copy, SignOut, Bell, ShieldCheck, Question, Gift, CaretRight } from "@phosphor-icons/react";
+import { Copy, SignOut, Bell, ShieldCheck, Question, Gift, CaretRight } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import BitcoinScore from "../components/BitcoinScore";
+import Logo from "../components/Logo";
 import { api } from "../lib/api";
 import { shortAddr, fmtBTC, fmtCoins } from "../lib/format";
 
@@ -20,13 +21,13 @@ export default function Profile() {
 
   const copyReferral = () => {
     navigator.clipboard.writeText(wallet?.referral_code || "");
-    toast.success("Referral code copied");
+    toast.success("referral code copied");
   };
 
   const logout = async () => {
     try { await api.post("/auth/logout"); } catch {}
     localStorage.removeItem("btc_token");
-    toast.success("Signed out");
+    toast.success("signed out");
     nav("/lock");
   };
 
@@ -34,13 +35,14 @@ export default function Profile() {
     {
       Icon: ShieldCheck,
       label: "security & backup",
-      desc: security ? (security.seed_backed_up ? "fortress · phrase verified" : "action needed · backup phrase") : "—",
+      desc: security ? (security.seed_backed_up ? "verified · fully secured" : "action needed · backup phrase") : "—",
       warn: security && !security.seed_backed_up,
       testid: "profile-security",
       to: "/security",
+      color: "#D4FF4F",
     },
-    { Icon: Bell, label: "notifications", desc: "alerts & activity updates", testid: "profile-notifications" },
-    { Icon: Question, label: "help center", desc: "contact, faq, disputes", testid: "profile-help" },
+    { Icon: Bell, label: "notifications", desc: "alerts & activity updates", testid: "profile-notifications", color: "#34D8FF" },
+    { Icon: Question, label: "help center", desc: "contact, faq, disputes", testid: "profile-help", color: "#6B5CFC" },
   ];
 
   const memberSince = wallet?.created_at
@@ -49,17 +51,19 @@ export default function Profile() {
 
   return (
     <Shell>
-      <div className="grain" />
       <div className="px-5 pt-10">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full gold-gradient flex items-center justify-center glow-gold">
-            <UserCircle size={32} weight="fill" className="text-black" />
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center font-display text-2xl font-bold"
+            style={{ background: "linear-gradient(135deg, #FF3E8A 0%, #6B5CFC 100%)", color: "#fff" }}
+          >
+            {(wallet?.name || "N").charAt(0).toUpperCase()}
           </div>
           <div className="flex-1">
-            <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">the vault of</div>
+            <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">the vault of</div>
             <div
-              className="text-[36px] text-white leading-none mt-1.5 tracking-tight"
-              style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+              className="text-white mt-1 tracking-[-0.03em] leading-none lowercase"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 34 }}
               data-testid="profile-name"
             >
               {wallet?.name || "…"}
@@ -67,7 +71,9 @@ export default function Profile() {
             <div className="text-[10px] text-white/45 font-mono mt-1.5">{shortAddr(wallet?.btc_address, 8, 8)}</div>
           </div>
         </div>
-        <div className="text-[10px] text-white/30 mt-3" style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}>· member since {memberSince} ·</div>
+        <div className="text-[10px] text-white/35 mt-3 font-semibold uppercase tracking-[0.2em]">
+          member since {memberSince}
+        </div>
 
         <div className="grid grid-cols-3 gap-2 mt-5">
           <Stat label="balance" value={`${fmtBTC(wallet?.balance_btc, 4)}`} unit="BTC" />
@@ -75,50 +81,70 @@ export default function Profile() {
           <Stat label="streak" value={wallet?.streak} unit="days" />
         </div>
 
-        <div className="mt-5 glass rounded-3xl p-5">
+        <div
+          className="mt-5 rounded-3xl p-5"
+          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
           <BitcoinScore score={wallet?.btc_score || 742} />
         </div>
 
         {/* Referral */}
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="mt-5 rounded-3xl p-5 cursor-pointer"
-          style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.14), rgba(212,175,55,0.02))", border: "1px solid rgba(212,175,55,0.3)" }}
+          className="mt-5 rounded-[28px] p-5 cursor-pointer relative overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%)",
+            color: "#0A0A0F",
+          }}
           onClick={copyReferral}
           data-testid="profile-referral"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <Gift size={16} weight="fill" className="text-gold" />
-            <div className="text-[9px] tracking-[0.28em] uppercase text-gold">invite & earn</div>
-          </div>
-          <div
-            className="text-3xl text-white/90 leading-tight"
-            style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
-          >
-            share the secret.
-          </div>
-          <div className="text-xs text-white/60 mt-1">Earn <span className="text-gold font-semibold">500 coins</span> per friend who joins.</div>
-          <div className="flex items-center gap-2 bg-black/50 rounded-2xl p-3 mt-3">
-            <div className="flex-1 font-mono text-base tracking-[0.2em]" data-testid="profile-referral-code">{wallet?.referral_code || "—"}</div>
-            <Copy size={14} className="text-gold" />
+          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-40 blur-2xl"
+               style={{ background: "#fff" }} />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-2">
+              <Gift size={16} weight="fill" />
+              <div className="text-[10px] tracking-[0.22em] uppercase font-bold">invite & earn</div>
+            </div>
+            <div
+              className="leading-[0.95] tracking-[-0.035em]"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 32 }}
+            >
+              share nova.<br />earn together.
+            </div>
+            <div className="text-sm mt-2 opacity-80">
+              earn <span className="font-bold">500 coins</span> per friend who joins.
+            </div>
+            <div className="flex items-center gap-2 bg-black/15 rounded-2xl p-3 mt-3">
+              <div className="flex-1 font-mono text-base tracking-[0.2em] font-bold" data-testid="profile-referral-code">
+                {wallet?.referral_code || "—"}
+              </div>
+              <Copy size={14} />
+            </div>
           </div>
         </motion.div>
 
         {/* Items */}
-        <div className="mt-5 glass rounded-3xl overflow-hidden">
-          {items.map(({ Icon, label, desc, warn, testid, to }, i) => (
+        <div
+          className="mt-5 rounded-3xl overflow-hidden"
+          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          {items.map(({ Icon, label, desc, warn, testid, to, color }, i) => (
             <button
               key={label}
               data-testid={testid}
               className={`w-full flex items-center gap-3 p-4 text-left hover:bg-white/5 transition-colors ${i < items.length - 1 ? "border-b border-white/5" : ""}`}
-              onClick={() => (to ? nav(to) : toast("Coming soon"))}
+              onClick={() => (to ? nav(to) : toast("coming soon"))}
             >
-              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center relative">
-                <Icon size={16} className="text-gold" />
-                {warn && <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#FF7A3A]" />}
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center relative"
+                style={{ background: `${color}22`, border: `1px solid ${color}44` }}
+              >
+                <Icon size={16} color={color} weight="fill" />
+                {warn && <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#FF3E8A]" />}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm lowercase">{label}</div>
+                <div className="text-sm lowercase font-semibold">{label}</div>
                 <div className="text-[11px] text-white/45 truncate">{desc}</div>
               </div>
               <CaretRight size={14} className="text-white/30" />
@@ -130,16 +156,14 @@ export default function Profile() {
           whileTap={{ scale: 0.97 }}
           onClick={logout}
           data-testid="profile-logout"
-          className="mt-5 w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold tracking-wider uppercase text-white/60 hover:text-[#FF443A] border border-white/10"
+          className="mt-5 w-full flex items-center justify-center gap-2 py-3 rounded-full text-[12px] font-bold tracking-[0.16em] uppercase text-white/60 hover:text-[#FF3E8A] border border-white/10"
         >
           <SignOut size={14} /> sign out
         </motion.button>
 
-        <div
-          className="text-center text-2xl text-white/20 mt-6 pb-4"
-          style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
-        >
-          SatVault · the emergent bitcoin wallet
+        <div className="flex items-center justify-center gap-2 mt-6 pb-4 opacity-40">
+          <Logo size={16} />
+          <span className="text-[10px] tracking-[0.22em] uppercase font-semibold">nova · your bitcoin on steroids</span>
         </div>
       </div>
     </Shell>
@@ -148,9 +172,12 @@ export default function Profile() {
 
 function Stat({ label, value, unit }) {
   return (
-    <div className="glass rounded-2xl p-3 text-center">
-      <div className="text-[8px] tracking-[0.22em] uppercase text-white/40">{label}</div>
-      <div className="font-display text-base font-semibold mt-0.5">{value}</div>
+    <div
+      className="rounded-2xl p-3 text-center"
+      style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+    >
+      <div className="text-[8px] tracking-[0.2em] uppercase text-white/45 font-semibold">{label}</div>
+      <div className="font-display text-base font-bold mt-0.5">{value}</div>
       {unit && <div className="text-[9px] text-white/40 uppercase tracking-wider">{unit}</div>}
     </div>
   );

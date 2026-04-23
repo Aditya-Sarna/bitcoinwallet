@@ -168,7 +168,7 @@ function Avatar({ x, y, size, item, delay }) {
       {isLogo ? (
         <img src={item.logoUrl} alt="" className="w-full h-full rounded-full object-cover" />
       ) : (
-        <span style={{ fontFamily: "Instrument Serif, serif", fontSize: size * 0.45 }}>{item?.initial || "·"}</span>
+        <span style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: size * 0.45 }}>{item?.initial || "·"}</span>
       )}
     </motion.div>
   );

@@ -12,9 +12,9 @@ export default function BitcoinScore({ score = 742, max = 900 }) {
         <svg viewBox="0 0 160 90" className="w-full h-full">
           <defs>
             <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#9B7F2A" />
-              <stop offset="50%" stopColor="#D4AF37" />
-              <stop offset="100%" stopColor="#F0C850" />
+              <stop offset="0%" stopColor="#6B5CFC" />
+              <stop offset="50%" stopColor="#FF3E8A" />
+              <stop offset="100%" stopColor="#D4FF4F" />
             </linearGradient>
           </defs>
           <path
@@ -33,17 +33,27 @@ export default function BitcoinScore({ score = 742, max = 900 }) {
             initial={{ strokeDasharray: circumference, strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: offset }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            style={{ filter: "drop-shadow(0 0 8px rgba(212,175,55,0.5))" }}
+            style={{ filter: "drop-shadow(0 0 10px rgba(212,255,79,0.6))" }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
-          <div className="text-3xl font-display font-semibold tracking-tighter">{score}</div>
-          <div className="text-[9px] tracking-[0.25em] text-white/40 uppercase">/ {max}</div>
+          <div
+            className="text-white tracking-[-0.04em]"
+            style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 32, lineHeight: 1 }}
+          >
+            {score}
+          </div>
+          <div className="text-[9px] tracking-[0.22em] text-white/40 uppercase font-semibold">/ {max}</div>
         </div>
       </div>
       <div className="flex-1">
-        <div className="text-[10px] tracking-[0.22em] text-white/50 uppercase mb-1">Bitcoin score</div>
-        <div className="font-display text-lg font-medium">Elite</div>
+        <div className="text-[10px] tracking-[0.2em] text-[#D4FF4F] uppercase mb-1 font-bold">bitcoin score</div>
+        <div
+          className="text-white tracking-[-0.025em]"
+          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 22 }}
+        >
+          elite
+        </div>
         <div className="text-xs text-white/50 mt-0.5">above 92% of users</div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { QrCode, Keyboard, Image as ImageIcon, ArrowUpRight } from "@phosphor-icons/react";
+import { Keyboard, Image as ImageIcon, ArrowUpRight } from "@phosphor-icons/react";
 import Header from "../components/Header";
 
 export default function Scan() {
@@ -10,35 +10,35 @@ export default function Scan() {
   const [manual, setManual] = useState("");
 
   return (
-    <div className="shell grain">
-      <Header title="Scan & Pay" />
+    <div className="shell" style={{ background: "#0A0A0F" }}>
+      <Header title="scan & pay" />
       <div className="px-6">
-        <div className="text-[10px] tracking-[0.3em] uppercase text-white/40">scan any bitcoin QR</div>
+        <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">scan any bitcoin qr</div>
         <h2
-          className="text-white/95 leading-none mt-1 mb-4"
-          style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic", fontSize: 50 }}
+          className="text-white leading-[0.95] mt-1.5 mb-4"
+          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 44, letterSpacing: "-0.035em" }}
         >
-          point. tap. gone.
+          point. <span style={{ color: "#D4FF4F" }}>tap. gone.</span>
         </h2>
 
-        {/* Mock viewfinder */}
+        {/* Viewfinder */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative mx-auto rounded-[32px] overflow-hidden"
           style={{
             aspectRatio: "1 / 1",
-            background: "linear-gradient(135deg, #111, #000)",
-            border: "1px solid rgba(212,175,55,0.2)",
+            background: "linear-gradient(135deg, #141420, #0A0A0F)",
+            border: "1px solid rgba(212,255,79,0.25)",
           }}
           data-testid="scan-viewfinder"
         >
-          {/* Animated gradient "lens" */}
+          {/* Electric glows */}
           <div
-            className="absolute inset-0 opacity-30"
+            className="absolute inset-0 opacity-40"
             style={{
               background:
-                "radial-gradient(circle at 30% 30%, #F0C850 0%, transparent 40%), radial-gradient(circle at 70% 70%, #EC4899 0%, transparent 50%)",
+                "radial-gradient(circle at 30% 30%, #D4FF4F 0%, transparent 40%), radial-gradient(circle at 70% 70%, #FF3E8A 0%, transparent 50%)",
             }}
           />
 
@@ -55,8 +55,8 @@ export default function Scan() {
               style={{
                 top: c.top, left: c.left, right: c.right, bottom: c.bottom,
                 transform: `rotate(${c.rot}deg)`,
-                borderTop: "3px solid #D4AF37",
-                borderLeft: "3px solid #D4AF37",
+                borderTop: "3px solid #D4FF4F",
+                borderLeft: "3px solid #D4FF4F",
                 borderTopLeftRadius: 16,
               }}
             />
@@ -67,15 +67,18 @@ export default function Scan() {
             initial={{ y: "20%" }}
             animate={{ y: ["20%", "80%", "20%"] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute left-8 right-8 h-px"
+            className="absolute left-8 right-8 h-[2px]"
             style={{
-              background: "linear-gradient(90deg, transparent, #D4AF37, transparent)",
-              boxShadow: "0 0 24px rgba(212,175,55,0.8), 0 0 12px rgba(212,175,55,0.5)",
+              background: "linear-gradient(90deg, transparent, #D4FF4F, transparent)",
+              boxShadow: "0 0 24px rgba(212,255,79,0.9), 0 0 12px rgba(212,255,79,0.6)",
             }}
           />
 
           <div className="absolute inset-x-0 bottom-6 text-center">
-            <div className="inline-block px-4 py-2 rounded-full bg-black/50 backdrop-blur-md text-[10px] tracking-[0.3em] uppercase text-white/70">
+            <div
+              className="inline-block px-4 py-2 rounded-full text-[10px] tracking-[0.22em] uppercase font-bold"
+              style={{ background: "rgba(10,10,15,0.7)", backdropFilter: "blur(10px)", color: "#D4FF4F" }}
+            >
               demo · scanning simulated
             </div>
           </div>
@@ -84,9 +87,10 @@ export default function Scan() {
         <div className="grid grid-cols-2 gap-3 mt-5">
           <motion.button
             whileTap={{ scale: 0.96 }}
-            onClick={() => toast("Pick from gallery · demo")}
+            onClick={() => toast("pick from gallery · demo")}
             data-testid="scan-gallery"
-            className="glass rounded-2xl py-3 flex items-center justify-center gap-2 text-xs"
+            className="rounded-2xl py-3 flex items-center justify-center gap-2 text-xs font-bold"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
             <ImageIcon size={14} /> gallery
           </motion.button>
@@ -94,29 +98,30 @@ export default function Scan() {
             whileTap={{ scale: 0.96 }}
             onClick={() => document.getElementById("manual-input")?.focus()}
             data-testid="scan-manual"
-            className="glass rounded-2xl py-3 flex items-center justify-center gap-2 text-xs"
+            className="rounded-2xl py-3 flex items-center justify-center gap-2 text-xs font-bold"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
             <Keyboard size={14} /> manual
           </motion.button>
         </div>
 
-        {/* Manual paste */}
         <div className="mt-5">
-          <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-2">or paste address</div>
+          <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-2 font-bold">or paste address</div>
           <input
             id="manual-input"
             value={manual}
             onChange={(e) => setManual(e.target.value)}
             placeholder="bc1q…"
             data-testid="scan-manual-input"
-            className="w-full bg-transparent border-b-2 border-white/10 focus:border-[#D4AF37] outline-none text-sm font-mono py-2"
+            className="w-full bg-transparent border-b-2 border-white/10 focus:border-[#D4FF4F] outline-none text-sm font-mono py-2"
           />
           <motion.button
             whileTap={{ scale: 0.97 }}
             disabled={manual.length < 20}
             onClick={() => nav("/send", { state: { address: manual } })}
             data-testid="scan-continue"
-            className="mt-5 w-full gold-gradient disabled:opacity-30 text-black font-semibold rounded-full py-4 uppercase tracking-[0.22em] text-sm flex items-center justify-center gap-2"
+            className="mt-5 w-full disabled:opacity-30 font-bold rounded-full py-4 uppercase tracking-[0.16em] text-[12px] flex items-center justify-center gap-2"
+            style={{ background: "#D4FF4F", color: "#0A0A0F" }}
           >
             continue <ArrowUpRight size={14} weight="bold" />
           </motion.button>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Italianno&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 
 @tailwind base;
@@ -10,7 +10,7 @@ body {
   font-family: 'Manrope', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000;
+  background: #0A0A0F;
   color: #fff;
   overscroll-behavior: none;
 }
@@ -21,16 +21,13 @@ code, .font-mono {
 
 .font-display {
   font-family: 'Clash Display', 'Manrope', sans-serif;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
-.font-cursive {
-  font-family: 'Italianno', 'Instrument Serif', cursive;
-}
-
-.font-serif-italic {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
+/* legacy classes kept as no-ops / fallbacks to avoid broken references */
+.font-cursive, .font-serif-italic {
+  font-family: 'Clash Display', 'Manrope', sans-serif;
+  font-style: normal;
 }
 
 /* Hide scrollbars on mobile frame */
@@ -43,55 +40,87 @@ code, .font-mono {
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
-  opacity: 0.08;
+  opacity: 0.06;
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
-/* Glow */
+/* ========== NOVA electric theme tokens ========== */
+:root {
+  --nova-lime: #D4FF4F;
+  --nova-lime-soft: #E5FF7A;
+  --nova-pink: #FF3E8A;
+  --nova-indigo: #6B5CFC;
+  --nova-cyan: #34D8FF;
+  --nova-orange: #FF7A3A;
+  --nova-ink: #0A0A0F;
+  --nova-card: #141420;
+}
+
+/* legacy .gold-* classes remapped to electric palette so any leftover refs work */
 .glow-gold {
-  box-shadow: 0 0 60px rgba(212,175,55,0.25), inset 0 0 20px rgba(212,175,55,0.08);
+  box-shadow: 0 0 60px rgba(212,255,79,0.35), inset 0 0 20px rgba(212,255,79,0.12);
 }
-
-.text-gold {
-  color: #D4AF37;
-}
-.bg-gold { background: #D4AF37; }
-
+.text-gold { color: var(--nova-lime); }
+.bg-gold { background: var(--nova-lime); }
 .gold-gradient {
-  background: linear-gradient(135deg, #F0C850 0%, #D4AF37 50%, #9B7F2A 100%);
+  background: linear-gradient(135deg, var(--nova-lime) 0%, var(--nova-lime-soft) 60%, #FDFFB8 100%);
 }
+
+/* Nova-specific utilities */
+.nova-gradient-lime {
+  background: linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%);
+}
+.nova-gradient-pink {
+  background: linear-gradient(135deg, #FF3E8A 0%, #FF7A3A 100%);
+}
+.nova-gradient-indigo {
+  background: linear-gradient(135deg, #6B5CFC 0%, #A855F7 100%);
+}
+.nova-gradient-hero {
+  background: linear-gradient(135deg, #FF7A3A 0%, #FF3E8A 35%, #6B5CFC 70%, #34D8FF 100%);
+}
+.glow-lime { box-shadow: 0 0 48px rgba(212,255,79,0.5), inset 0 0 20px rgba(212,255,79,0.15); }
+.glow-pink { box-shadow: 0 0 48px rgba(255,62,138,0.45), inset 0 0 20px rgba(255,62,138,0.15); }
 
 .glass {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.035);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
-.hairline {
-  border: 1px solid rgba(255,255,255,0.08);
-}
+.hairline { border: 1px solid rgba(255,255,255,0.08); }
 
 /* PIN dot */
 .pin-dot {
   width: 16px; height: 16px; border-radius: 999px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.2);
   transition: all 0.2s ease;
 }
 .pin-dot.filled {
-  background: #D4AF37;
-  border-color: #F0C850;
-  box-shadow: 0 0 12px rgba(212,175,55,0.6);
+  background: var(--nova-lime);
+  border-color: var(--nova-lime-soft);
+  box-shadow: 0 0 14px rgba(212,255,79,0.8);
   transform: scale(1.08);
 }
 
-/* Ambient dust drift (quiet luxury motif) */
-@keyframes dust-float {
-  0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-  50% { transform: translate(8px, -14px) scale(1.1); opacity: 0.85; }
-  100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+/* Shell (mobile frame) */
+.shell {
+  max-width: 448px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  background: #0A0A0F;
+  overflow: hidden;
+}
+.pad-bottom { padding-bottom: 96px; }
+
+/* CRED-style dotted bg for onboarding */
+.dot-grid {
+  background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
 }
 
 /* ticker */
@@ -101,27 +130,37 @@ code, .font-mono {
 }
 .animate-ticker { animation: ticker 30s linear infinite; }
 
+/* Soft bg radial for Lock screen */
+.bg-radial-gold {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(212,255,79,0.18) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 85%, rgba(255,62,138,0.18) 0%, transparent 45%);
+  pointer-events: none;
+}
+
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 240 20% 5%;
     --foreground: 0 0% 100%;
-    --card: 0 0% 7%;
+    --card: 240 15% 10%;
     --card-foreground: 0 0% 100%;
-    --popover: 0 0% 7%;
+    --popover: 240 15% 10%;
     --popover-foreground: 0 0% 100%;
-    --primary: 45 72% 52%;
+    --primary: 73 100% 65%;
     --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 10%;
+    --secondary: 240 10% 14%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
+    --muted: 240 10% 14%;
     --muted-foreground: 0 0% 65%;
-    --accent: 0 0% 10%;
+    --accent: 330 100% 62%;
     --accent-foreground: 0 0% 100%;
     --destructive: 3 100% 62%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 45 72% 52%;
+    --ring: 73 100% 65%;
     --radius: 1rem;
   }
 }

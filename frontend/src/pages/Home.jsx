@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowUpRight, ArrowDownLeft, ShieldCheck, Gear, QrCode,
-  ForkKnife, Airplane, ShoppingBag, GameController, Heart, House as HouseIcon, DotsNine
+  ForkKnife, Airplane, ShoppingBag, GameController, Heart, House as HouseIcon, DotsNine, Lightning
 } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import PriceChart from "../components/PriceChart";
@@ -12,11 +12,13 @@ import TxnItem from "../components/TxnItem";
 import BalanceStatRow from "../components/BalanceStatRow";
 import ColorCardStack from "../components/ColorCardStack";
 import SplashCard from "../components/SplashCard";
+import { TreasureChest, GiftStack, BillEnvelope, ProductShelf, LaptopPrize } from "../components/Illustrations";
+import Logo from "../components/Logo";
 import { api } from "../lib/api";
 import { fmtUSD } from "../lib/format";
 
 const CATEGORIES = [
-  { k: "scan", Icon: QrCode, label: "scan", to: "/scan", color: "#fff", text: "#000" },
+  { k: "scan", Icon: QrCode, label: "scan", to: "/scan", active: true },
   { k: "food", Icon: ForkKnife, label: "food", to: "/store?cat=food" },
   { k: "travel", Icon: Airplane, label: "travel", to: "/store?cat=travel" },
   { k: "shop", Icon: ShoppingBag, label: "shop", to: "/store?cat=shopping" },
@@ -56,58 +58,67 @@ export default function Home() {
   const firstName = ((wallet?.name || cachedName) || "").split(" ")[0].toLowerCase();
 
   const actions = [
-    { label: "scan & pay", Icon: QrCode, to: "/scan", testid: "home-scan" },
-    { label: "send", Icon: ArrowUpRight, to: "/send", testid: "home-send" },
-    { label: "receive", Icon: ArrowDownLeft, to: "/receive", testid: "home-receive" },
-    { label: "history", Icon: DotsNine, to: "/transactions", testid: "home-history" },
+    { label: "scan", Icon: QrCode, to: "/scan", testid: "home-scan", color: "#D4FF4F" },
+    { label: "send", Icon: ArrowUpRight, to: "/send", testid: "home-send", color: "#FF3E8A" },
+    { label: "receive", Icon: ArrowDownLeft, to: "/receive", testid: "home-receive", color: "#34D8FF" },
+    { label: "history", Icon: DotsNine, to: "/transactions", testid: "home-history", color: "#6B5CFC" },
   ];
 
   return (
     <Shell>
-      <div className="grain" />
-      {/* Top bar · avatar + scan & pay chip + gear */}
+      {/* Top bar · avatar + wordmark + gear */}
       <div className="flex items-center justify-between px-5 pt-10 pb-2">
         <motion.button
           whileTap={{ scale: 0.94 }}
           onClick={() => nav("/profile")}
           data-testid="home-avatar"
-          className="w-11 h-11 rounded-full flex items-center justify-center font-display text-base font-semibold"
-          style={{ background: "linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%)", color: "#fff" }}
+          className="w-11 h-11 rounded-full flex items-center justify-center font-display text-base font-bold"
+          style={{ background: "linear-gradient(135deg, #FF3E8A 0%, #6B5CFC 100%)", color: "#fff" }}
         >
           {firstName?.charAt(0)?.toUpperCase() || "·"}
         </motion.button>
 
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => nav("/scan")}
-          data-testid="home-scan-chip"
-          className="flex items-center gap-2 rounded-full border border-white/15 px-3 py-2"
-        >
-          <QrCode size={14} weight="bold" />
-          <span className="text-[11px] lowercase">scan & pay</span>
-        </motion.button>
+        <div className="flex items-center gap-2">
+          <Logo size={22} />
+          <span
+            style={{
+              fontFamily: "Clash Display, sans-serif",
+              fontWeight: 700,
+              letterSpacing: "0.22em",
+              fontSize: 12,
+              color: "#fff",
+              textTransform: "uppercase",
+            }}
+          >
+            nova
+          </span>
+        </div>
 
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => nav("/security")}
           data-testid="home-security-btn"
-          className="w-11 h-11 rounded-full glass flex items-center justify-center relative"
+          className="w-11 h-11 rounded-full flex items-center justify-center relative"
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
         >
           <Gear size={16} className="text-white/80" />
           {security && !security.seed_backed_up && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF7A3A] animate-pulse" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF3E8A] animate-pulse" />
           )}
         </motion.button>
       </div>
 
       {/* Welcome greeting */}
       <div className="px-5 pt-3">
-        <div className="font-display text-[30px] lowercase leading-[1.1] tracking-tight" data-testid="home-greeting">
-          welcome, {firstName || (loading ? "…" : "member")}
+        <div
+          className="leading-[1.02] tracking-[-0.035em] lowercase text-white"
+          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 32 }}
+          data-testid="home-greeting"
+        >
+          welcome, <span style={{ color: "#D4FF4F" }}>{firstName || (loading ? "…" : "friend")}</span>
         </div>
-        <div className="text-white/50 text-[13px] mt-1 leading-snug">
-          welcome back to satvault<br />
-          <span className="font-serif-italic">we have great things planned for you</span>
+        <div className="text-white/50 text-[13px] mt-1.5 leading-snug font-medium">
+          let's make your bitcoin work harder today.
         </div>
       </div>
 
@@ -130,9 +141,9 @@ export default function Home() {
         loading={loading}
       />
 
-      {/* 4 Circular action buttons */}
+      {/* 4 circular action buttons */}
       <div className="grid grid-cols-4 gap-2 px-5 mt-3">
-        {actions.map(({ label, Icon, to, testid }, i) => (
+        {actions.map(({ label, Icon, to, testid, color }, i) => (
           <motion.button
             key={label}
             whileTap={{ scale: 0.88 }}
@@ -143,10 +154,13 @@ export default function Home() {
             data-testid={testid}
             className="flex flex-col items-center gap-1.5 py-2"
           >
-            <div className="w-14 h-14 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center">
-              <Icon size={20} weight="bold" className="text-white" />
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center"
+              style={{ background: `${color}22`, border: `1px solid ${color}44` }}
+            >
+              <Icon size={20} weight="bold" style={{ color }} />
             </div>
-            <div className="text-[10px] lowercase text-white/70">{label}</div>
+            <div className="text-[10px] lowercase text-white/80 font-semibold">{label}</div>
           </motion.button>
         ))}
       </div>
@@ -162,139 +176,190 @@ export default function Home() {
           data-testid="home-backup-banner"
           className="mx-5 mt-4 w-[calc(100%-2.5rem)] rounded-3xl p-4 flex items-center gap-3 text-left"
           style={{
-            background: "linear-gradient(135deg, rgba(255,122,58,0.18), rgba(255,122,58,0.02))",
-            border: "1px solid rgba(255,122,58,0.4)",
+            background: "linear-gradient(135deg, rgba(255,62,138,0.18), rgba(107,92,252,0.12))",
+            border: "1px solid rgba(255,62,138,0.4)",
           }}
         >
-          <div className="w-11 h-11 rounded-full bg-[#FF7A3A]/20 flex items-center justify-center">
-            <ShieldCheck size={18} weight="fill" className="text-[#FF7A3A]" />
+          <div className="w-11 h-11 rounded-full bg-[#FF3E8A]/20 flex items-center justify-center">
+            <ShieldCheck size={18} weight="fill" className="text-[#FF3E8A]" />
           </div>
           <div className="flex-1">
-            <div className="text-sm font-semibold">secure your vault</div>
-            <div className="text-[11px] text-white/60">backup your 12-word recovery phrase · <span className="text-[#FF7A3A] font-serif-italic">earn 250 coins</span></div>
+            <div className="text-sm font-bold lowercase">secure your vault</div>
+            <div className="text-[11px] text-white/60">back up your 12-word phrase · earn <span className="text-[#D4FF4F] font-bold">+250 coins</span></div>
           </div>
-          <div className="text-[11px] text-[#FF7A3A]">→</div>
+          <div className="text-[11px] text-[#FF3E8A] font-bold">→</div>
         </motion.button>
       )}
 
-      {/* Splash hero promo — editorial quiet luxury */}
+      {/* Hero splash — rewards */}
       <div className="px-5 mt-6">
         <SplashCard
           testid="splash-hero"
-          variant="editorial"
-          tone="oxblood"
-          eyebrow="morning brief"
-          index="04"
-          title={<>fortunes are not<br />made loudly.</>}
-          subtitle="a gentle reminder — your daily reward compounds quietly."
-          tag="claim"
-          height={240}
+          bg="#D4FF4F"
+          textColor="#0A0A0F"
+          ctaBg="#0A0A0F"
+          ctaText="#D4FF4F"
+          eyebrow="EARN UPTO"
+          title={<>10,000<br />coins daily.</>}
+          subtitle="spin · stack · spend. your daily reward awaits."
+          tag="spin now"
+          height={220}
+          illustration={<TreasureChest color="gold" size={150} />}
           onClick={() => nav("/rewards")}
         />
       </div>
 
-      {/* Category pills */}
+      {/* Category pills row */}
       <div className="px-5 mt-6">
-        <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-3">pay bills · earn quietly</div>
+        <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3 font-semibold">pay · earn · explore</div>
         <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-          {CATEGORIES.map((c, i) => (
+          {CATEGORIES.map((c) => (
             <motion.button
               key={c.k}
               whileTap={{ scale: 0.9 }}
               onClick={() => nav(c.to)}
               data-testid={`cat-${c.k}`}
-              className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                i === 0 ? "" : "border border-white/10 bg-white/[0.03]"
-              }`}
-              style={i === 0 ? { background: c.color || "#fff" } : {}}
+              className="shrink-0 flex flex-col items-center gap-1 min-w-[54px]"
             >
-              <c.Icon size={18} weight="bold" color={i === 0 ? "#000" : "#fff"} />
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={
+                  c.active
+                    ? { background: "#D4FF4F", color: "#000" }
+                    : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                }
+              >
+                <c.Icon size={18} weight="bold" color={c.active ? "#000" : "#fff"} />
+              </div>
+              <div className="text-[9px] lowercase text-white/60 font-semibold">{c.label}</div>
             </motion.button>
           ))}
         </div>
       </div>
 
-      {/* 2-up numeric bento */}
+      {/* 2-up vibrant bento */}
       <div className="px-5 mt-4 grid grid-cols-2 gap-3">
         <SplashCard
-          testid="bento-10k"
-          variant="numeric"
-          tone="brass"
-          index="i"
-          eyebrow="earn upto"
-          title="10,000"
-          subtitle="coins · daily spin"
-          tag="spin"
+          testid="bento-store"
+          bg="#FF3E8A"
+          textColor="#fff"
+          ctaBg="#fff"
+          ctaText="#FF3E8A"
+          eyebrow="THE STORE"
+          title={<>brands<br />you love.</>}
+          subtitle="amazon · nike · uber"
+          tag="shop"
           height={220}
-          onClick={() => nav("/rewards")}
+          size="sm"
+          illustration={<GiftStack size={110} />}
+          onClick={() => nav("/store")}
         />
         <SplashCard
-          testid="bento-100k"
-          variant="numeric"
-          tone="oxblood"
-          index="ii"
-          eyebrow="earn upto"
-          title="100,000"
-          subtitle="coins · mystery box"
+          testid="bento-mystery"
+          bg="#6B5CFC"
+          textColor="#fff"
+          ctaBg="#D4FF4F"
+          ctaText="#0A0A0F"
+          eyebrow="MYSTERY BOX"
+          title={<>upto<br />100,000.</>}
+          subtitle="coins inside"
           tag="unlock"
           height={220}
+          size="sm"
+          illustration={<LaptopPrize size={110} />}
           onClick={() => nav("/rewards")}
         />
       </div>
 
-      {/* Pay bills — editorial */}
+      {/* Pay bills splash */}
       <div className="px-5 mt-4">
         <SplashCard
           testid="bills-splash"
-          variant="editorial"
-          tone="slate"
-          eyebrow="rent · education · utilities"
-          index="02"
-          title={<>a quiet home for<br />all your payments.</>}
-          subtitle="one click · instantly settled in bitcoin."
-          tag="pay bills"
-          height={240}
+          bg="#FFEFC4"
+          textColor="#0A0A0F"
+          ctaBg="#0A0A0F"
+          ctaText="#FFEFC4"
+          eyebrow="RENT · BILLS · UTILITIES"
+          title={<>pay bills in<br />bitcoin.</>}
+          subtitle="one tap · instant · earn coins on every bill."
+          tag="pay now"
+          height={210}
+          illustration={<BillEnvelope size={120} />}
           onClick={() => nav("/bills")}
         />
       </div>
 
       {/* Live price + chart */}
-      <div className="mx-5 mt-6 glass rounded-3xl p-5" data-testid="chart-card">
+      <div
+        className="mx-5 mt-6 rounded-3xl p-5"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        data-testid="chart-card"
+      >
         <div className="flex items-center justify-between mb-1">
           <div>
-            <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">bitcoin · live</div>
-            <div className="font-display text-2xl font-medium mt-1" data-testid="btc-price-usd">
+            <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 font-semibold">bitcoin · live</div>
+            <div
+              className="text-white mt-1"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em" }}
+              data-testid="btc-price-usd"
+            >
               ${price ? fmtUSD(price.price_usd, 2) : "—"}
             </div>
           </div>
-          <div
-            className="text-2xl text-white/70 leading-none"
-            style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
-          >
-            the tape
+          <div className="w-10 h-10 rounded-full flex items-center justify-center"
+               style={{ background: "#D4FF4F22", border: "1px solid #D4FF4F55" }}>
+            <Lightning size={16} weight="fill" color="#D4FF4F" />
           </div>
         </div>
         <PriceChart />
       </div>
 
       {/* Bitcoin Score */}
-      <div className="mx-5 mt-5 glass rounded-3xl p-5" data-testid="score-card">
+      <div
+        className="mx-5 mt-5 rounded-3xl p-5"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        data-testid="score-card"
+      >
         <BitcoinScore score={wallet?.btc_score || 742} />
+      </div>
+
+      {/* Shop / Electronics splash */}
+      <div className="px-5 mt-5">
+        <SplashCard
+          testid="splash-shop"
+          bg="#34D8FF"
+          textColor="#0A0A0F"
+          ctaBg="#0A0A0F"
+          ctaText="#34D8FF"
+          eyebrow="SPEND COINS"
+          title={<>tech · style<br />on us.</>}
+          subtitle="redeem coins for real products · airpods, phones, more."
+          tag="redeem"
+          height={210}
+          illustration={<ProductShelf size={140} />}
+          onClick={() => nav("/store")}
+        />
       </div>
 
       {/* Recent activity */}
       <div className="mx-5 mt-6">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">recent</div>
+            <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 font-semibold">recent</div>
             <div
-              className="text-2xl text-white mt-0.5 leading-none"
-              style={{ fontFamily: "Instrument Serif, serif", fontStyle: "italic" }}
+              className="text-white mt-0.5 leading-none"
+              style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 22, letterSpacing: "-0.03em" }}
             >
-              your story.
+              your activity
             </div>
           </div>
-          <button onClick={() => nav("/transactions")} data-testid="home-see-all" className="text-[10px] tracking-[0.22em] uppercase text-white/60">all</button>
+          <button
+            onClick={() => nav("/transactions")}
+            data-testid="home-see-all"
+            className="text-[10px] tracking-[0.18em] uppercase text-white/60 font-semibold"
+          >
+            view all →
+          </button>
         </div>
         <div>
           {loading ? (

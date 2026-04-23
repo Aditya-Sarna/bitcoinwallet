@@ -70,18 +70,18 @@ export default function AmountWheel({ onPick, current }) {
       <div
         className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-[88px] rounded-2xl pointer-events-none"
         style={{
-          border: "1px solid rgba(212,175,55,0.4)",
-          background: "linear-gradient(180deg, rgba(212,175,55,0.06), transparent)",
+          border: "1px solid rgba(212,255,79,0.5)",
+          background: "linear-gradient(180deg, rgba(212,255,79,0.1), transparent)",
         }}
       />
       {/* Edge fade overlays */}
       <div
         className="absolute left-0 top-0 bottom-0 w-12 pointer-events-none z-10"
-        style={{ background: "linear-gradient(90deg, #000 0%, transparent 100%)" }}
+        style={{ background: "linear-gradient(90deg, #0A0A0F 0%, transparent 100%)" }}
       />
       <div
         className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none z-10"
-        style={{ background: "linear-gradient(-90deg, #000 0%, transparent 100%)" }}
+        style={{ background: "linear-gradient(-90deg, #0A0A0F 0%, transparent 100%)" }}
       />
 
       <div

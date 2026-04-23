@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Flame, Gift, Sparkle } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
+import SplashCard from "../components/SplashCard";
+import { TreasureChest, GiftStack } from "../components/Illustrations";
 import { api } from "../lib/api";
-import { fmtCoins } from "../lib/format";export default function Rewards() {
+import { fmtCoins } from "../lib/format";
+
+export default function Rewards() {
   const nav = useNavigate();
   const [daily, setDaily] = useState(null);
   const [claiming, setClaiming] = useState(false);
@@ -25,7 +29,7 @@ import { fmtCoins } from "../lib/format";export default function Rewards() {
         state: {
           kind: "claimed",
           title: `day ${data.streak} streak`,
-          subtitle: "keep it alive — bigger rewards await",
+          subtitle: "keep it alive — bigger rewards ahead",
           amount: `+${data.reward} coins`,
           secondary: `total · ${data.coins.toLocaleString()} coins`,
           ctaLabel: "back to home",
@@ -33,7 +37,7 @@ import { fmtCoins } from "../lib/format";export default function Rewards() {
         },
       });
     } catch (e) {
-      toast.error(e?.response?.data?.detail || "Try again");
+      toast.error(e?.response?.data?.detail || "try again");
     } finally {
       setClaiming(false);
     }
@@ -44,54 +48,76 @@ import { fmtCoins } from "../lib/format";export default function Rewards() {
 
   return (
     <Shell>
-      <div className="grain" />
       <div className="px-6 pt-10">
-        <div className="text-[10px] tracking-[0.3em] uppercase text-white/40">rewards center</div>
-        <h1 className="font-display text-4xl font-semibold tracking-tight mt-1">earn. unlock. flex.</h1>
+        <div className="text-[10px] tracking-[0.22em] uppercase text-[#D4FF4F] font-bold">rewards center</div>
+        <h1
+          className="text-white tracking-[-0.035em] leading-[0.95] mt-1"
+          style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 42 }}
+        >
+          earn. <span style={{ color: "#D4FF4F" }}>unlock. flex.</span>
+        </h1>
 
         {/* Coin balance hero */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 relative rounded-3xl p-6 overflow-hidden"
+          className="mt-6 relative rounded-[28px] p-6 overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, #1a1a1a, #000)",
-            border: "1px solid rgba(212,175,55,0.25)",
+            background: "linear-gradient(135deg, #D4FF4F 0%, #7CFF8A 100%)",
+            color: "#0A0A0F",
           }}
           data-testid="rewards-hero"
         >
-          <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full opacity-40 blur-3xl" style={{ background: "radial-gradient(#D4AF37, transparent 70%)" }} />
+          <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full opacity-40 blur-3xl"
+               style={{ background: "radial-gradient(#fff, transparent 70%)" }} />
           <div className="relative flex items-center gap-4">
             <motion.div
               animate={{ rotate: coinBurst ? [0, -15, 15, -8, 0] : 0, scale: coinBurst ? [1, 1.2, 1] : 1 }}
               transition={{ duration: 0.8 }}
-              className="w-16 h-16 rounded-full gold-gradient flex items-center justify-center glow-gold"
+              className="w-16 h-16 rounded-full flex items-center justify-center"
+              style={{ background: "#0A0A0F" }}
             >
-              <span className="text-black font-bold text-2xl">$</span>
+              <span className="font-bold text-2xl" style={{ color: "#D4FF4F" }}>$</span>
             </motion.div>
             <div className="flex-1">
-              <div className="text-[10px] tracking-[0.28em] uppercase text-white/50">your coins</div>
-              <div className="font-display text-4xl font-semibold" data-testid="rewards-coins">{fmtCoins(daily?.coins)}</div>
+              <div className="text-[10px] tracking-[0.22em] uppercase font-bold opacity-70">your coins</div>
+              <div
+                className="tracking-[-0.035em]"
+                style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 40, lineHeight: 1 }}
+                data-testid="rewards-coins"
+              >
+                {fmtCoins(daily?.coins)}
+              </div>
             </div>
           </div>
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => nav("/store")}
             data-testid="rewards-goto-store"
-            className="w-full gold-gradient text-black font-semibold rounded-full py-3 mt-5 uppercase tracking-[0.22em] text-xs"
+            className="w-full font-bold rounded-full py-3 mt-5 uppercase tracking-[0.16em] text-[12px]"
+            style={{ background: "#0A0A0F", color: "#D4FF4F" }}
           >
-            Redeem coins
+            redeem coins
           </motion.button>
         </motion.div>
 
         {/* Streak */}
-        <div className="mt-5 glass rounded-3xl p-5" data-testid="streak-card">
+        <div
+          className="mt-5 rounded-3xl p-5"
+          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+          data-testid="streak-card"
+        >
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-[10px] tracking-[0.25em] uppercase text-white/40">streak</div>
+              <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 font-bold">streak</div>
               <div className="flex items-end gap-2 mt-1">
-                <Flame size={24} weight="fill" className="text-[#FF7A3A]" />
-                <div className="font-display text-3xl font-semibold">{streak}</div>
+                <Flame size={24} weight="fill" color="#FF3E8A" />
+                <div
+                  className="text-white tracking-[-0.03em]"
+                  style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 30, lineHeight: 1 }}
+                >
+                  {streak}
+                </div>
                 <div className="text-white/50 text-sm pb-1">days</div>
               </div>
             </div>
@@ -100,19 +126,27 @@ import { fmtCoins } from "../lib/format";export default function Rewards() {
               disabled={!daily?.can_claim || claiming}
               onClick={claim}
               data-testid="rewards-claim-btn"
-              className={`px-5 py-2.5 rounded-full text-[11px] uppercase tracking-[0.22em] font-bold ${
+              className="px-5 py-2.5 rounded-full text-[11px] uppercase tracking-[0.16em] font-bold"
+              style={
                 daily?.can_claim
-                  ? "gold-gradient text-black"
-                  : "bg-white/5 text-white/40 cursor-not-allowed"
-              }`}
+                  ? { background: "#D4FF4F", color: "#0A0A0F" }
+                  : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", cursor: "not-allowed" }
+              }
             >
-              {claiming ? "…" : daily?.can_claim ? `Claim +${daily?.next_reward}` : "Claimed"}
+              {claiming ? "…" : daily?.can_claim ? `claim +${daily?.next_reward}` : "claimed"}
             </motion.button>
           </div>
           <div className="flex justify-between mt-5">
             {streakDays.map((on, i) => (
               <div key={i} className="flex flex-col items-center gap-1">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${on ? "gold-gradient text-black" : "bg-white/5 text-white/30"}`}>
+                <div
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold"
+                  style={
+                    on
+                      ? { background: "#D4FF4F", color: "#0A0A0F" }
+                      : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)" }
+                  }
+                >
                   {i + 1}
                 </div>
               </div>
@@ -122,45 +156,59 @@ import { fmtCoins } from "../lib/format";export default function Rewards() {
 
         {/* Bento grid */}
         <div className="grid grid-cols-2 gap-3 mt-5">
-          <Bento testid="bento-mystery" icon={<Gift size={18} weight="fill" className="text-gold" />} title="Mystery Box" subtitle="Spin to win up to 5,000 coins" onClick={() => toast("Coming soon")} />
-          <Bento testid="bento-referral" icon={<Sparkle size={18} weight="fill" className="text-gold" />} title="Invite Friends" subtitle="Earn 500 coins per friend" onClick={() => nav("/profile")} />
+          <SplashCard
+            testid="bento-mystery"
+            bg="#6B5CFC"
+            textColor="#fff"
+            ctaBg="#D4FF4F"
+            ctaText="#0A0A0F"
+            eyebrow="MYSTERY BOX"
+            title={<>spin to<br />win big.</>}
+            subtitle="upto 5,000 coins"
+            tag="spin"
+            height={200}
+            size="sm"
+            illustration={<TreasureChest color="purple" size={90} />}
+            onClick={() => toast("coming soon")}
+          />
+          <SplashCard
+            testid="bento-referral"
+            bg="#FF3E8A"
+            textColor="#fff"
+            ctaBg="#fff"
+            ctaText="#FF3E8A"
+            eyebrow="INVITE"
+            title={<>share &<br />earn 500.</>}
+            subtitle="per friend"
+            tag="invite"
+            height={200}
+            size="sm"
+            illustration={<GiftStack size={90} />}
+            onClick={() => nav("/profile")}
+          />
         </div>
 
         {/* How to earn */}
-        <div className="mt-6 glass rounded-3xl p-5">
-          <div className="text-[10px] tracking-[0.28em] uppercase text-white/40 mb-3">how to earn</div>
-          <Earn title="Send bitcoin" reward="+50" />
-          <Earn title="Pay bills with BTC" reward="+10/$1" />
-          <Earn title="Daily streak" reward="+100+" />
-          <Earn title="Refer a friend" reward="+500" last />
+        <div
+          className="mt-6 rounded-3xl p-5"
+          style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <div className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3 font-bold">how to earn</div>
+          <Earn title="send bitcoin" reward="+50" />
+          <Earn title="pay bills with BTC" reward="+10 / $1" />
+          <Earn title="daily streak" reward="+100+" />
+          <Earn title="refer a friend" reward="+500" last />
         </div>
       </div>
     </Shell>
   );
 }
 
-function Bento({ icon, title, subtitle, onClick, testid }) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      onClick={onClick}
-      data-testid={testid}
-      className="glass rounded-3xl p-4 text-left h-32 flex flex-col justify-between"
-    >
-      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">{icon}</div>
-      <div>
-        <div className="text-sm font-semibold">{title}</div>
-        <div className="text-[10px] text-white/50 mt-0.5">{subtitle}</div>
-      </div>
-    </motion.button>
-  );
-}
-
 function Earn({ title, reward, last }) {
   return (
     <div className={`flex items-center justify-between py-2.5 ${last ? "" : "border-b border-white/5"}`}>
-      <div className="text-sm">{title}</div>
-      <div className="text-gold font-mono text-sm">{reward}</div>
+      <div className="text-sm lowercase">{title}</div>
+      <div className="font-mono text-sm font-bold" style={{ color: "#D4FF4F" }}>{reward}</div>
     </div>
   );
 }
