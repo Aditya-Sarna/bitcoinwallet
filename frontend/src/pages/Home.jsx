@@ -18,6 +18,7 @@ export default function Home() {
   const [txns, setTxns] = useState([]);
   const [security, setSecurity] = useState(null);
   const [loading, setLoading] = useState(true);
+  const cachedName = typeof window !== "undefined" ? localStorage.getItem("btc_name") || "" : "";
 
   useEffect(() => {
     let alive = true;
@@ -38,7 +39,7 @@ export default function Home() {
   }, []);
 
   const fiatValue = wallet && price ? wallet.balance_btc * price.price_usd : 0;
-  const firstName = (wallet?.name || "").split(" ")[0].toLowerCase();
+  const firstName = ((wallet?.name || cachedName) || "").split(" ")[0].toLowerCase();
 
   const actions = [
     { label: "send", Icon: ArrowUpRight, to: "/send", testid: "home-send" },
@@ -73,7 +74,7 @@ export default function Home() {
       {/* Welcome greeting */}
       <div className="px-6 pt-4 pb-1">
         <div className="font-display text-[32px] lowercase leading-[1.05] tracking-tight" data-testid="home-greeting">
-          welcome, {loading ? "…" : firstName || "member"}
+          welcome, {firstName || (loading ? "…" : "member")}
         </div>
         <div className="text-white/45 text-sm mt-1 font-serif-italic">
           we have <span className="text-gold">great things</span> planned for you

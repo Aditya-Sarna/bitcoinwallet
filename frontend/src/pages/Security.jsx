@@ -19,7 +19,8 @@ export default function Security() {
     load();
   };
 
-  const score = status?.security_score || 0;
+  const score = status?.security_score;
+  const hasData = status !== null;
 
   return (
     <div className="shell grain">
@@ -40,19 +41,19 @@ export default function Security() {
           <div className="relative">
             <div className="text-[10px] tracking-[0.3em] uppercase text-white/50">security score</div>
             <div className="flex items-end gap-2 mt-1">
-              <div className="font-display text-5xl font-semibold tracking-tighter">{score}</div>
+              <div className="font-display text-5xl font-semibold tracking-tighter">{hasData ? score : "—"}</div>
               <div className="text-white/40 text-sm pb-2">/ 100</div>
             </div>
             <div className="mt-3 h-2 rounded-full bg-white/5 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${score}%` }}
+                animate={{ width: hasData ? `${score}%` : 0 }}
                 transition={{ duration: 1.2 }}
                 className="h-full gold-gradient"
               />
             </div>
             <div className="font-serif-italic text-[11px] text-white/50 mt-2">
-              {score >= 90 ? "fortress" : score >= 70 ? "strong" : score >= 40 ? "moderate" : "vulnerable"}
+              {!hasData ? "calculating…" : score >= 90 ? "fortress" : score >= 70 ? "strong" : score >= 40 ? "moderate" : "vulnerable"}
             </div>
           </div>
         </motion.div>
