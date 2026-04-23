@@ -1,34 +1,36 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* App-level styles */
+.App {
+  min-height: 100vh;
+  background: #000;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Shell (mobile container) */
+.shell {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  background: #000;
+  box-shadow: 0 0 120px rgba(212,175,55,0.06);
+  overflow: hidden;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.pad-bottom { padding-bottom: 120px; }
+
+/* Radial backgrounds */
+.bg-radial-gold::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Score gauge */
+.score-gauge-bg {
+  background: conic-gradient(from 180deg, #D4AF37, #F0C850, #9B7F2A, rgba(255,255,255,0.08) 60%);
 }

@@ -1,54 +1,63 @@
-import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
+import Onboarding from "./pages/Onboarding";
+import Lock from "./pages/Lock";
+import Home from "./pages/Home";
+import Send from "./pages/Send";
+import Receive from "./pages/Receive";
+import Transactions from "./pages/Transactions";
+import Rewards from "./pages/Rewards";
+import Store from "./pages/Store";
+import Profile from "./pages/Profile";
+import Bills from "./pages/Bills";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+function Guard({ children }) {
+  const token = localStorage.getItem("btc_token");
+  const walletId = localStorage.getItem("btc_wallet_id");
+  if (!walletId) return <Navigate to="/onboarding" replace />;
+  if (!token) return <Navigate to="/lock" replace />;
+  return children;
+}
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+function Entry() {
+  const token = localStorage.getItem("btc_token");
+  const walletId = localStorage.getItem("btc_wallet_id");
+  if (token) return <Navigate to="/home" replace />;
+  if (walletId) return <Navigate to="/lock" replace />;
+  return <Navigate to="/onboarding" replace />;
+}
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
+export default function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <Toaster
+          theme="dark"
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#121212",
+              border: "1px solid rgba(212,175,55,0.2)",
+              color: "#fff",
+            },
+          }}
+        />
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<Entry />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/lock" element={<Lock />} />
+          <Route path="/home" element={<Guard><Home /></Guard>} />
+          <Route path="/send" element={<Guard><Send /></Guard>} />
+          <Route path="/receive" element={<Guard><Receive /></Guard>} />
+          <Route path="/transactions" element={<Guard><Transactions /></Guard>} />
+          <Route path="/rewards" element={<Guard><Rewards /></Guard>} />
+          <Route path="/store" element={<Guard><Store /></Guard>} />
+          <Route path="/profile" element={<Guard><Profile /></Guard>} />
+          <Route path="/bills" element={<Guard><Bills /></Guard>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </div>
   );
 }
-
-export default App;
