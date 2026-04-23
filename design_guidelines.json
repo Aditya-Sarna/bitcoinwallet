@@ -1,0 +1,149 @@
+{
+  "theme": "dark",
+  "archetype": "5 (Jewel & Luxury)",
+  "app_type": "hybrid_fullstack",
+  "design_philosophy": "A highly kinetic, ultra-premium Bitcoin wallet inspired by CRED. It combines Neo-Brutalism (bold typography, oversized numbers) with Dark Luxury (deep blacks, glassmorphism, matte gold accents). Interactions should feel physical and rewarding, using gamification principles for everyday actions.",
+  "typography": {
+    "heading_font": "Clash Display",
+    "body_font": "Manrope",
+    "mono_font": "Space Grotesk",
+    "rules": {
+      "h1": "text-4xl sm:text-5xl font-semibold tracking-tighter uppercase",
+      "h2": "text-2xl sm:text-3xl font-medium tracking-tight",
+      "h3": "text-xl font-medium tracking-tight",
+      "body": "text-base leading-relaxed text-zinc-300",
+      "numbers": "font-mono tracking-tighter",
+      "labels": "text-xs font-semibold tracking-[0.2em] uppercase text-zinc-500"
+    }
+  },
+  "colors": {
+    "background": "#000000",
+    "surface": "#121212",
+    "surface_elevated": "#1A1A1A",
+    "primary": "#D4AF37",
+    "primary_hover": "#F0C850",
+    "secondary": "#27272A",
+    "text_primary": "#FFFFFF",
+    "text_secondary": "#A1A1AA",
+    "success": "#00D09C",
+    "danger": "#FF443A",
+    "border": "#27272A",
+    "glass": "bg-white/5 backdrop-blur-xl border border-white/10"
+  },
+  "layout": {
+    "container": "max-w-md mx-auto w-full min-h-screen bg-black text-white relative shadow-[0_0_80px_rgba(212,175,55,0.05)]",
+    "spacing_scale": "generous (p-6, p-8)",
+    "border_radius": "rounded-2xl for primary cards, rounded-full for buttons",
+    "navigation": "Bottom floating glassmorphic tab bar with glowing active states."
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#D4AF37] text-black font-semibold rounded-full py-4 px-8 uppercase tracking-widest hover:bg-[#F0C850] transition-colors shadow-[0_0_20px_rgba(212,175,55,0.3)]",
+      "secondary": "bg-[#1A1A1A] text-white border border-white/10 rounded-full py-4 px-8 hover:bg-[#27272A] transition-colors",
+      "icon": "rounded-full bg-white/5 backdrop-blur-md border border-white/10 p-3 hover:bg-white/10"
+    },
+    "cards": {
+      "default": "bg-[#121212] border border-white/5 rounded-3xl p-6",
+      "glass": "bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl",
+      "reward": "bg-gradient-to-br from-[#1A1A1A] to-[#121212] border border-[#D4AF37]/20 rounded-3xl p-6 relative overflow-hidden"
+    },
+    "inputs": {
+      "default": "bg-transparent border-b border-white/20 pb-2 text-2xl focus:border-[#D4AF37] focus:outline-none transition-colors w-full font-mono placeholder:text-white/20"
+    },
+    "pin_pad": {
+      "button": "w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-2xl font-mono hover:bg-white/5 active:scale-95 transition-all"
+    }
+  },
+  "motion": {
+    "page_transitions": "Slide up with opacity fade (Framer Motion)",
+    "micro_interactions": "Active scaling (scale 0.95 on press), glowing hover states",
+    "list_stagger": "Stagger children by 0.1s on load"
+  },
+  "pages_and_features": [
+    {
+      "name": "Splash / Lock Screen",
+      "description": "App entry point. Displays a glossy logo, followed by a biometric/PIN pad lock. Kinetic haptic animations on key press.",
+      "layout": "Flex column, centered. Oversized PIN display dots."
+    },
+    {
+      "name": "Dashboard (Home)",
+      "description": "The main wallet view. Shows total balance (Fiat + BTC), 24h change, and a CoinGecko powered price chart (Recharts/Visx). Features a 'Bitcoin Score' gauge (Credit Score style).",
+      "layout": "Hero balance at the top with large font. Chart integrated seamlessly into the background. Action grid (Send, Receive, Pay Bills) beneath it."
+    },
+    {
+      "name": "Send / Receive flows",
+      "description": "Drawer modals. Receive: Neon-styled QR code, tap to copy address. Send: Address input -> Amount -> Fee selector (Slow, Average, Fast) -> Swipe-to-confirm -> PIN verification.",
+      "layout": "Bottom-up progressive disclosure. Clean, distraction-free inputs."
+    },
+    {
+      "name": "Rewards Center",
+      "description": "CRED-style gamification. Users earn 'Satoshis' or 'BitCoins' for transactions. Daily streak tracker. A 'Claim' button with physics-based coin drop animations.",
+      "layout": "Bento grid of available rewards, streaks, and mystery boxes."
+    },
+    {
+      "name": "Rewards Store (Catalog)",
+      "description": "Marketplace to spend earned coins on brand vouchers.",
+      "layout": "Vertical list or carousel of visually rich, image-heavy voucher cards."
+    },
+    {
+      "name": "Transaction History & Activity",
+      "description": "List of sent, received, and rewards events.",
+      "layout": "Minimalist list with clear positive (green) and negative (white) amounts. Status indicators (Pending/Confirmed)."
+    }
+  ],
+  "libraries": {
+    "icons": "@phosphor-icons/react",
+    "charts": "recharts",
+    "animation": "framer-motion",
+    "routing": "react-router-dom",
+    "toast": "sonner"
+  },
+  "media": {
+    "premium_dark_bg": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/1a006557-4dea-4191-a4d6-f933a6b29d0e/images/a33c2a8df481d4165606394bc43eba6de7ae2fa5c41478c6cbbf984e26064731.png",
+      "description": "Abstract dark matte 3D geometric shapes with gold lighting",
+      "usage": "Background for Splash screen or Rewards hero section"
+    },
+    "metal_texture_bg": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/1a006557-4dea-4191-a4d6-f933a6b29d0e/images/37edac46c9e0b52c95734febc11ae79fdd4c9fd10c1e45a2056aaa984acc2134.png",
+      "description": "Luxurious black metal texture, carbon fiber",
+      "usage": "Card background for the 'Bitcoin Score' or Premium features"
+    },
+    "reward_coin": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/1a006557-4dea-4191-a4d6-f933a6b29d0e/images/fadcb7c9a0ebab94453c05f004c5e30884c86c1131607713e3faaa2e8dc9139a.png",
+      "description": "Glowing gold and bronze 3D coin",
+      "usage": "Iconography for the Rewards Center balance and claim buttons"
+    },
+    "lifestyle_1": {
+      "url": "https://images.unsplash.com/photo-1769641241120-f0dd8669b12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHw0fHxwcmVtaXVtJTIwbGlmZXN0eWxlJTIwZGFya3xlbnwwfHx8fDE3NzY5NTY0MDR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Black luxury suv parked in a dark garage",
+      "usage": "Voucher card image for automotive or luxury lifestyle brands"
+    },
+    "lifestyle_2": {
+      "url": "https://images.pexels.com/photos/7085777/pexels-photo-7085777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Sophisticated arrangement featuring a leather wallet, whiskey glass",
+      "usage": "Voucher card image for premium dining or lifestyle rewards"
+    },
+    "brand_logo_1": {
+      "url": "https://images.unsplash.com/photo-1759563871375-a728c4e7218d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBicmFuZCUyMGxvZ28lMjB3aGl0ZSUyMHRyYW5zcGFyZW50fGVufDB8fHx8MTc3Njk1NjQwM3ww&ixlib=rb-4.1.0&q=85",
+      "description": "Dior logo",
+      "usage": "Partner brand logo for rewards catalog"
+    },
+    "brand_logo_2": {
+      "url": "https://images.pexels.com/photos/27303231/pexels-photo-27303231.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Bentley logo",
+      "usage": "Partner brand logo for elite rewards catalog"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install and use 'framer-motion' heavily for all interactions (button presses, page mounts, bottom sheets).",
+    "Use '@phosphor-icons/react' (Duotone or Regular weight) for ultra-premium minimalist iconography.",
+    "For the Bitcoin Score gauge, use recharts 'RadialBarChart' or a custom SVG gauge with a golden gradient stroke.",
+    "Implement the layout as a mobile-sized container centered on desktop (max-w-md), but make it strictly 'app-like' with no browser scrolling (h-screen, overflow-hidden on body).",
+    "Do NOT use generic blue or purple gradients. Stick strictly to black, off-white, and matte gold.",
+    "Build a custom bottom navigation bar that floats above the content with backdrop-blur.",
+    "Add 'data-testid' to all buttons, inputs, tabs, and critical UI elements for testing.",
+    "For numbers (balances, BTC amounts), use a monospace font (like Space Grotesk) to align decimals perfectly.",
+    "Integrate the CoinGecko API (mocked if necessary) for the 1H/24H/7D/1Y chart. Use Recharts with a simple line chart, hiding axes, making it a pure 'sparkline' style."
+  ]
+}
