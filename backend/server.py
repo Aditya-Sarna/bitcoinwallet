@@ -336,6 +336,64 @@ async def rewards_claim(wallet=Depends(get_current_wallet)):
     })
     return {"reward": reward, "streak": new_streak, "coins": new_coins}
 
+# Mystery box — spin once every 2 hours, random reward
+MYSTERY_PRIZES = [
+    {"label": "tiny spark",   "coins": 50,    "weight": 35, "rarity": "common"},
+    {"label": "warm glow",    "coins": 150,   "weight": 25, "rarity": "common"},
+    {"label": "bright burst", "coins": 500,   "weight": 18, "rarity": "uncommon"},
+    {"label": "star shower",  "coins": 1250,  "weight": 12, "rarity": "rare"},
+    {"label": "supernova",    "coins": 3500,  "weight": 7,  "rarity": "epic"},
+    {"label": "cosmic jackpot", "coins": 10000, "weight": 3, "rarity": "legendary"},
+]
+
+@api_router.get("/rewards/mystery/status")
+async def rewards_mystery_status(wallet=Depends(get_current_wallet)):
+    last = wallet.get("last_mystery")
+    can_spin = True
+    if last:
+        last_dt = datetime.fromisoformat(last)
+        if datetime.now(timezone.utc) - last_dt < timedelta(hours=2):
+            can_spin = False
+    return {"can_spin": can_spin, "coins": wallet.get("coins", 0)}
+
+@api_router.post("/rewards/mystery")
+async def rewards_mystery(wallet=Depends(get_current_wallet)):
+    import random
+    last = wallet.get("last_mystery")
+    if last:
+        last_dt = datetime.fromisoformat(last)
+        if datetime.now(timezone.utc) - last_dt < timedelta(hours=2):
+            raise HTTPException(status_code=400, detail="Mystery box cooling down")
+
+    # Weighted random pick
+    weights = [p["weight"] for p in MYSTERY_PRIZES]
+    prize = random.choices(MYSTERY_PRIZES, weights=weights, k=1)[0]
+
+    new_coins = wallet.get("coins", 0) + prize["coins"]
+    await db.wallets.update_one(
+        {"id": wallet["id"]},
+        {"$set": {"coins": new_coins, "last_mystery": now_iso()}}
+    )
+    await db.transactions.insert_one({
+        "id": str(uuid.uuid4()),
+        "wallet_id": wallet["id"],
+        "type": "reward",
+        "amount_btc": 0,
+        "counterparty": f"Mystery Box · {prize['label']}",
+        "txid": "",
+        "status": "confirmed",
+        "confirmations": 1,
+        "fee_btc": 0,
+        "note": f"+{prize['coins']} coins · {prize['rarity']}",
+        "created_at": now_iso(),
+    })
+    return {
+        "prize": prize["label"],
+        "coins_earned": prize["coins"],
+        "rarity": prize["rarity"],
+        "coins": new_coins,
+    }
+
 # Static rewards store catalog
 STORE_ITEMS = [
     {"id": "amz-500", "brand": "Amazon", "title": "$5 Amazon Voucher", "cost": 2500, "category": "shopping", "color": "#FF9900"},
