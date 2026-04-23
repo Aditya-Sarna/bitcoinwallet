@@ -419,6 +419,27 @@ async def bills_pay(body: BillBody, wallet=Depends(get_current_wallet)):
     return {"ok": True, "amount_btc": amount_btc, "new_balance": new_balance}
 
 # ---------- Security / Backup ----------
+@api_router.get("/security/seed")
+async def get_seed(authorization: Optional[str] = Header(None)):
+    """Returns seed phrase ONCE if not yet backed up. After verification, it's inaccessible."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing token")
+    token = authorization.replace("Bearer ", "", 1)
+    session = await db.sessions.find_one({"token": token}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    wallet = await db.wallets.find_one({"id": session["wallet_id"]}, {"_id": 0})
+    if not wallet:
+        raise HTTPException(status_code=404, detail="Wallet not found")
+    if wallet.get("seed_backed_up"):
+        raise HTTPException(status_code=400, detail="Already backed up. Phrase is locked for safety.")
+    # Legacy wallets from iteration 1 may not have seed_phrase; generate one and persist
+    seed = wallet.get("seed_phrase")
+    if not seed:
+        seed = generate_seed_phrase()
+        await db.wallets.update_one({"id": wallet["id"]}, {"$set": {"seed_phrase": seed}})
+    return {"seed_phrase": seed}
+
 @api_router.get("/security/status")
 async def security_status(wallet=Depends(get_current_wallet)):
     return {

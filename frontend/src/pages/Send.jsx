@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Header from "../components/Header";
 import PinPad from "../components/PinPad";
@@ -16,8 +16,9 @@ const TIERS = [
 
 export default function Send() {
   const nav = useNavigate();
+  const loc = useLocation();
   const [step, setStep] = useState(0); // 0 form, 1 pin, 2 success
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(loc.state?.address || "");
   const [amount, setAmount] = useState("");
   const [tier, setTier] = useState("average");
   const [pin, setPin] = useState("");

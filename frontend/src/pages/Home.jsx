@@ -1,15 +1,29 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowUpRight, ArrowDownLeft, Receipt, ShieldCheck, QrCode, GridFour, Gear } from "@phosphor-icons/react";
+import {
+  ArrowUpRight, ArrowDownLeft, Receipt, ShieldCheck, Gear, QrCode,
+  ForkKnife, Airplane, ShoppingBag, GameController, Heart, House as HouseIcon, DotsNine
+} from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import PriceChart from "../components/PriceChart";
 import BitcoinScore from "../components/BitcoinScore";
 import TxnItem from "../components/TxnItem";
-import ChipRow from "../components/ChipRow";
-import CardStack from "../components/CardStack";
+import BalanceStatRow from "../components/BalanceStatRow";
+import ColorCardStack from "../components/ColorCardStack";
+import SplashCard, { BitcoinIllustration, ChestIllustration, BillIllustration } from "../components/SplashCard";
 import { api } from "../lib/api";
 import { fmtUSD } from "../lib/format";
+
+const CATEGORIES = [
+  { k: "scan", Icon: QrCode, label: "scan", to: "/scan", color: "#fff", text: "#000" },
+  { k: "food", Icon: ForkKnife, label: "food" },
+  { k: "travel", Icon: Airplane, label: "travel" },
+  { k: "shop", Icon: ShoppingBag, label: "shop" },
+  { k: "play", Icon: GameController, label: "play" },
+  { k: "health", Icon: Heart, label: "health" },
+  { k: "rent", Icon: HouseIcon, label: "rent" },
+];
 
 export default function Home() {
   const nav = useNavigate();
@@ -42,27 +56,42 @@ export default function Home() {
   const firstName = ((wallet?.name || cachedName) || "").split(" ")[0].toLowerCase();
 
   const actions = [
+    { label: "scan & pay", Icon: QrCode, to: "/scan", testid: "home-scan" },
     { label: "send", Icon: ArrowUpRight, to: "/send", testid: "home-send" },
     { label: "receive", Icon: ArrowDownLeft, to: "/receive", testid: "home-receive" },
-    { label: "pay", Icon: Receipt, to: "/bills", testid: "home-bills" },
-    { label: "more", Icon: GridFour, to: "/rewards", testid: "home-more" },
+    { label: "more", Icon: DotsNine, to: "/rewards", testid: "home-more" },
   ];
 
   return (
     <Shell>
       <div className="grain" />
-      {/* Top bar · chip row + gear */}
-      <div className="flex items-center justify-between px-5 pt-10 pb-3">
-        <ChipRow
-          coins={wallet?.coins || 0}
-          gems={wallet?.gems || 0}
-          vouchers={wallet?.vouchers || 0}
-        />
+      {/* Top bar · avatar + scan & pay chip + gear */}
+      <div className="flex items-center justify-between px-5 pt-10 pb-2">
+        <motion.button
+          whileTap={{ scale: 0.94 }}
+          onClick={() => nav("/profile")}
+          data-testid="home-avatar"
+          className="w-11 h-11 rounded-full flex items-center justify-center font-display text-base font-semibold"
+          style={{ background: "linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%)", color: "#fff" }}
+        >
+          {firstName?.charAt(0)?.toUpperCase() || "·"}
+        </motion.button>
+
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => nav("/scan")}
+          data-testid="home-scan-chip"
+          className="flex items-center gap-2 rounded-full border border-white/15 px-3 py-2"
+        >
+          <QrCode size={14} weight="bold" />
+          <span className="text-[11px] lowercase">scan & pay</span>
+        </motion.button>
+
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => nav("/security")}
           data-testid="home-security-btn"
-          className="w-10 h-10 rounded-full glass flex items-center justify-center relative"
+          className="w-11 h-11 rounded-full glass flex items-center justify-center relative"
         >
           <Gear size={16} className="text-white/80" />
           {security && !security.seed_backed_up && (
@@ -72,17 +101,28 @@ export default function Home() {
       </div>
 
       {/* Welcome greeting */}
-      <div className="px-6 pt-4 pb-1">
-        <div className="font-display text-[32px] lowercase leading-[1.05] tracking-tight" data-testid="home-greeting">
+      <div className="px-5 pt-3">
+        <div className="font-display text-[30px] lowercase leading-[1.1] tracking-tight" data-testid="home-greeting">
           welcome, {firstName || (loading ? "…" : "member")}
         </div>
-        <div className="text-white/45 text-sm mt-1 font-serif-italic">
-          we have <span className="text-gold">great things</span> planned for you
+        <div className="text-white/50 text-[13px] mt-1 leading-snug">
+          welcome back to satvault<br />
+          <span className="font-serif-italic">we have great things planned for you</span>
         </div>
       </div>
 
-      {/* Card stack */}
-      <CardStack
+      {/* Balance / coins / gems / vouchers row */}
+      <div className="px-5 mt-5">
+        <BalanceStatRow
+          balance={wallet?.balance_btc || 0}
+          coins={wallet?.coins || 0}
+          gems={wallet?.gems || 0}
+          vouchers={wallet?.vouchers || 0}
+        />
+      </div>
+
+      {/* Colorful card stack */}
+      <ColorCardStack
         name={wallet?.name}
         balance={wallet?.balance_btc}
         fiat={fiatValue}
@@ -90,33 +130,33 @@ export default function Home() {
         loading={loading}
       />
 
-      {/* Actions */}
-      <div className="grid grid-cols-4 gap-2 px-5 mt-4">
+      {/* 4 Circular action buttons */}
+      <div className="grid grid-cols-4 gap-2 px-5 mt-3">
         {actions.map(({ label, Icon, to, testid }, i) => (
           <motion.button
             key={label}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.88 }}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.04 }}
+            transition={{ delay: 0.35 + i * 0.04 }}
             onClick={() => nav(to)}
             data-testid={testid}
             className="flex flex-col items-center gap-1.5 py-2"
           >
-            <div className="w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center">
-              <Icon size={18} weight="bold" className="text-white/90" />
+            <div className="w-14 h-14 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center">
+              <Icon size={20} weight="bold" className="text-white" />
             </div>
-            <div className="text-[10px] lowercase text-white/60">{label}</div>
+            <div className="text-[10px] lowercase text-white/70">{label}</div>
           </motion.button>
         ))}
       </div>
 
-      {/* Backup banner (if not backed up) */}
+      {/* Backup banner */}
       {security && !security.seed_backed_up && (
         <motion.button
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => nav("/backup")}
           data-testid="home-backup-banner"
@@ -137,8 +177,86 @@ export default function Home() {
         </motion.button>
       )}
 
+      {/* Splash hero promo */}
+      <div className="px-5 mt-6">
+        <SplashCard
+          testid="splash-apple"
+          eyebrow="today's bounty"
+          title={<>like winning<br />an entire<br />bitcoin stack</>}
+          bg="#E8DCC0"
+          textColor="#000"
+          accent="#000"
+          tag="claim now"
+          illustration={<BitcoinIllustration size={100} />}
+          onClick={() => nav("/rewards")}
+        />
+      </div>
+
+      {/* Category pills */}
+      <div className="px-5 mt-5">
+        <div className="text-[9px] tracking-[0.28em] uppercase text-white/40 mb-3">pay bills and win cashback</div>
+        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+          {CATEGORIES.map((c, i) => (
+            <motion.button
+              key={c.k}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => c.to ? nav(c.to) : nav("/bills")}
+              data-testid={`cat-${c.k}`}
+              className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
+                i === 0 ? "" : "border border-white/10 bg-white/[0.03]"
+              }`}
+              style={i === 0 ? { background: c.color || "#fff" } : {}}
+            >
+              <c.Icon size={18} weight="bold" color={i === 0 ? "#000" : "#fff"} />
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* 2-up bento: earn upto */}
+      <div className="px-5 mt-4 grid grid-cols-2 gap-3">
+        <SplashCard
+          testid="bento-chest-yellow"
+          eyebrow="earn upto"
+          title="10,000 coins"
+          bg="#F7B733"
+          textColor="#000"
+          accent="#000"
+          tag="spin"
+          illustration={<ChestIllustration color="#FDE68A" accent="#92400E" size={82} />}
+          onClick={() => nav("/rewards")}
+        />
+        <SplashCard
+          testid="bento-chest-pink"
+          eyebrow="earn upto"
+          title="100,000 coins"
+          bg="#EC4899"
+          textColor="#fff"
+          accent="#fff"
+          tag="unlock"
+          illustration={<ChestIllustration color="#FBCFE8" accent="#831843" size={82} />}
+          onClick={() => nav("/rewards")}
+        />
+      </div>
+
+      {/* Pay bills big card */}
+      <div className="px-5 mt-4">
+        <SplashCard
+          testid="bills-splash"
+          eyebrow="rent and education"
+          title="home for all your payments"
+          subtitle="one click away. with instant settlements."
+          bg="#E0F2E9"
+          textColor="#0F172A"
+          accent="#0F172A"
+          tag="view bills"
+          illustration={<BillIllustration size={92} />}
+          onClick={() => nav("/bills")}
+        />
+      </div>
+
       {/* Live price + chart */}
-      <div className="mx-5 mt-5 glass rounded-3xl p-5" data-testid="chart-card">
+      <div className="mx-5 mt-6 glass rounded-3xl p-5" data-testid="chart-card">
         <div className="flex items-center justify-between mb-1">
           <div>
             <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">bitcoin · live</div>
@@ -156,41 +274,13 @@ export default function Home() {
         <BitcoinScore score={wallet?.btc_score || 742} />
       </div>
 
-      {/* Rewards teaser cards — colorful bento */}
-      <div className="px-5 mt-6">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">for you</div>
-            <div className="font-cursive text-3xl text-white mt-0.5 leading-none">the daily drop.</div>
-          </div>
-          <button onClick={() => nav("/rewards")} data-testid="home-rewards-link" className="text-[10px] tracking-[0.22em] uppercase text-gold">see all</button>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <TeaserCard
-            testid="teaser-apple"
-            color="#EADDC5"
-            textColor="#000"
-            eyebrow="today's bounty"
-            title="win an entire apple store"
-            tag="claim now →"
-            onClick={() => nav("/rewards")}
-          />
-          <TeaserCard
-            testid="teaser-amazon"
-            color="#6936D6"
-            textColor="#fff"
-            eyebrow="gift card"
-            title="amazon · win ₹1,000"
-            tag="play →"
-            onClick={() => nav("/store")}
-          />
-        </div>
-      </div>
-
-      {/* Recent */}
+      {/* Recent activity */}
       <div className="mx-5 mt-6">
         <div className="flex items-center justify-between mb-2">
-          <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">recent activity</div>
+          <div>
+            <div className="text-[9px] tracking-[0.28em] uppercase text-white/40">recent</div>
+            <div className="font-cursive text-3xl text-white mt-0.5 leading-none">your story.</div>
+          </div>
           <button onClick={() => nav("/transactions")} data-testid="home-see-all" className="text-[10px] tracking-[0.22em] uppercase text-gold">all</button>
         </div>
         <div>
@@ -204,21 +294,5 @@ export default function Home() {
         </div>
       </div>
     </Shell>
-  );
-}
-
-function TeaserCard({ color, textColor, eyebrow, title, tag, onClick, testid }) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      onClick={onClick}
-      data-testid={testid}
-      className="rounded-3xl p-4 text-left overflow-hidden relative h-44 flex flex-col justify-between"
-      style={{ background: color, color: textColor }}
-    >
-      <div className="text-[9px] tracking-[0.22em] uppercase opacity-70">{eyebrow}</div>
-      <div className="font-serif-italic text-lg leading-tight">{title}</div>
-      <div className="text-[10px] tracking-[0.22em] uppercase font-semibold">{tag}</div>
-    </motion.button>
   );
 }

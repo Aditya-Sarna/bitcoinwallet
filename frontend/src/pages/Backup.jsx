@@ -12,16 +12,34 @@ export default function Backup() {
   const initialPhrase = loc.state?.seedPhrase;
   const [phrase, setPhrase] = useState(initialPhrase || []);
   const [status, setStatus] = useState(null);
-  const [step, setStep] = useState(initialPhrase ? 0 : 2); // 0 view, 1 verify, 2 already-status
+  const [step, setStep] = useState(initialPhrase ? 0 : -1); // -1 loading, 0 view, 1 verify, 3 already backed up
   const [confirmed, setConfirmed] = useState(false);
   const [shuffled, setShuffled] = useState([]);
   const [picked, setPicked] = useState([]);
 
   useEffect(() => {
-    api.get("/security/status").then((r) => {
-      setStatus(r.data);
-      if (!initialPhrase) setStep(r.data.seed_backed_up ? 3 : 2);
-    });
+    (async () => {
+      try {
+        const { data: s } = await api.get("/security/status");
+        setStatus(s);
+        if (initialPhrase) return; // already have it
+        if (s.seed_backed_up) {
+          setStep(3);
+        } else {
+          // fetch the seed
+          try {
+            const { data } = await api.get("/security/seed");
+            setPhrase(data.seed_phrase);
+            setStep(0);
+          } catch (e) {
+            toast.error("Couldn't load recovery phrase");
+            setStep(3);
+          }
+        }
+      } catch (e) {
+        toast.error("Could not load security status");
+      }
+    })();
   }, [initialPhrase]);
 
   useEffect(() => {
@@ -52,7 +70,7 @@ export default function Backup() {
       await api.post("/security/seed/verify", { words });
       setConfirmed(true);
       toast.success("Backup verified · +250 coins bonus");
-      setTimeout(() => nav("/home"), 2500);
+      setTimeout(() => nav("/home"), 2200);
     } catch (e) {
       toast.error("Order doesn't match. Try again.");
       setPicked([]);
@@ -64,13 +82,19 @@ export default function Backup() {
       <Header title="Backup vault" />
       <div className="px-6 pb-20">
         <AnimatePresence mode="wait">
+          {step === -1 && (
+            <motion.div key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-16 text-center">
+              <div className="text-white/40 text-xs tracking-[0.25em] uppercase">loading recovery phrase…</div>
+            </motion.div>
+          )}
+
           {step === 0 && (
             <motion.div key="view" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="flex items-center gap-2 mb-2">
                 <ShieldCheck size={16} weight="fill" className="text-gold" />
                 <div className="text-[10px] tracking-[0.28em] uppercase text-white/50">recovery phrase</div>
               </div>
-              <h2 className="font-cursive text-5xl text-white/90 leading-none mb-3">twelve words.</h2>
+              <h2 className="font-cursive text-6xl text-white/95 leading-none mb-3">twelve words.</h2>
               <p className="text-white/55 text-sm leading-relaxed">
                 These are the <span className="font-serif-italic text-gold">keys to your kingdom</span>. Write them down. Never screenshot. Never share. Whoever has them, owns your bitcoin.
               </p>
@@ -82,7 +106,7 @@ export default function Backup() {
                       key={i}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.05 * i }}
+                      transition={{ delay: 0.04 * i }}
                       className="flex items-center gap-2 py-2 border-b border-white/5"
                     >
                       <div className="text-[10px] font-mono text-white/30 w-5">{String(i + 1).padStart(2, "0")}</div>
@@ -116,13 +140,13 @@ export default function Backup() {
           {step === 1 && !confirmed && (
             <motion.div key="verify" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="text-[10px] tracking-[0.28em] uppercase text-white/40">verify · step 2 of 2</div>
-              <h2 className="font-cursive text-5xl text-white/90 leading-none mt-1 mb-2">prove it.</h2>
+              <h2 className="font-cursive text-6xl text-white/95 leading-none mt-1 mb-2">prove it.</h2>
               <p className="text-white/55 text-sm">Tap the words in the <span className="font-serif-italic text-gold">correct order</span>.</p>
 
               <div className="mt-6 glass rounded-3xl p-4 min-h-[140px]">
                 <div className="text-[9px] tracking-[0.25em] uppercase text-white/30 mb-2">your order</div>
                 <div className="flex flex-wrap gap-2">
-                  {picked.map((p) => (
+                  {picked.map((p, pi) => (
                     <motion.button
                       key={p.idx}
                       initial={{ scale: 0.8 }}
@@ -131,7 +155,7 @@ export default function Backup() {
                       className="px-3 py-1.5 rounded-full text-xs font-mono bg-[#D4AF37] text-black"
                       data-testid={`picked-${p.idx}`}
                     >
-                      {picked.indexOf(p) + 1}. {p.word}
+                      {pi + 1}. {p.word}
                     </motion.button>
                   ))}
                   {picked.length === 0 && <div className="text-white/30 text-xs">pick words below…</div>}
@@ -145,7 +169,7 @@ export default function Backup() {
                     <motion.button
                       key={i}
                       whileTap={{ scale: 0.92 }}
-                      disabled={isPicked}
+                      disabled={!!isPicked}
                       onClick={() => pick(w, i)}
                       data-testid={`shuffled-${i}`}
                       className={`py-2.5 rounded-xl text-xs font-mono transition-all ${
@@ -167,6 +191,14 @@ export default function Backup() {
               >
                 confirm backup
               </motion.button>
+
+              <button
+                onClick={() => setStep(0)}
+                data-testid="seed-back-view"
+                className="mt-4 w-full text-[10px] tracking-[0.25em] uppercase text-white/40"
+              >
+                ← view phrase again
+              </button>
             </motion.div>
           )}
 
@@ -180,22 +212,9 @@ export default function Backup() {
               >
                 <CheckCircle size={44} weight="fill" className="text-black" />
               </motion.div>
-              <h2 className="font-cursive text-5xl mt-6">secured.</h2>
+              <h2 className="font-cursive text-6xl mt-6">secured.</h2>
               <div className="text-white/60 text-sm mt-2">Your vault is fully backed up.</div>
               <div className="text-gold text-xs mt-2 tracking-wider uppercase">+250 coins bonus</div>
-            </motion.div>
-          )}
-
-          {step === 2 && !initialPhrase && (
-            <motion.div key="status-not" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center pt-10">
-              <div className="w-16 h-16 mx-auto rounded-full bg-[#FF7A3A]/10 border border-[#FF7A3A]/30 flex items-center justify-center">
-                <Warning size={22} weight="fill" className="text-[#FF7A3A]" />
-              </div>
-              <h2 className="font-display text-2xl mt-4">Not backed up</h2>
-              <p className="text-white/50 text-sm mt-2 max-w-xs mx-auto">
-                Your recovery phrase was shown once at signup. For demo, you can regenerate a new one below.
-              </p>
-              <p className="text-[10px] text-white/30 mt-4 font-serif-italic">in production, this screen would only show the phrase at signup.</p>
             </motion.div>
           )}
 
@@ -206,6 +225,7 @@ export default function Backup() {
               </div>
               <h2 className="font-display text-2xl mt-4">vault secured</h2>
               <p className="text-white/50 text-sm mt-2">Your recovery phrase is verified and backed up.</p>
+              <p className="font-serif-italic text-xs text-white/40 mt-4">the phrase is locked — as it should be.</p>
             </motion.div>
           )}
         </AnimatePresence>
