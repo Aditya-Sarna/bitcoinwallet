@@ -44,9 +44,23 @@ export default function Send() {
         amount_btc: parseFloat(amount),
         fee_tier: tier,
       });
-      setResult(data);
-      setStep(2);
-      toast.success("Transaction broadcasted");
+      nav("/success", {
+        state: {
+          kind: "sent",
+          title: "transaction broadcasted",
+          subtitle: `+${data.coins_earned} reward coins earned`,
+          amount: `${fmtBTC(parseFloat(amount), 8)} BTC`,
+          secondary: `≈ $${fmtUSD(parseFloat(amount) * price, 2)}`,
+          lines: [
+            { label: "to", value: `${address.slice(0, 10)}…${address.slice(-6)}` },
+            { label: "network fee", value: `${fmtBTC(fee, 8)} BTC` },
+            { label: "total", value: `${fmtBTC(totalBTC, 8)} BTC` },
+            { label: "txid", value: `${data.transaction.txid.slice(0, 12)}…` },
+          ],
+          ctaLabel: "back to home",
+          secondaryCta: { label: "view all transactions", to: "/transactions" },
+        },
+      });
     } catch (e) {
       toast.error(e?.response?.data?.detail || "Failed to send");
       setPin("");

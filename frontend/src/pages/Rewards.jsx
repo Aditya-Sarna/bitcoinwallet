@@ -5,9 +5,7 @@ import { toast } from "sonner";
 import { Flame, Gift, Sparkle } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import { api } from "../lib/api";
-import { fmtCoins } from "../lib/format";
-
-export default function Rewards() {
+import { fmtCoins } from "../lib/format";export default function Rewards() {
   const nav = useNavigate();
   const [daily, setDaily] = useState(null);
   const [claiming, setClaiming] = useState(false);
@@ -22,8 +20,18 @@ export default function Rewards() {
       const { data } = await api.post("/rewards/claim");
       setCoinBurst(true);
       setTimeout(() => setCoinBurst(false), 1400);
-      toast.success(`+${data.reward} coins · Day ${data.streak} streak`);
       await load();
+      nav("/success", {
+        state: {
+          kind: "claimed",
+          title: `day ${data.streak} streak`,
+          subtitle: "keep it alive — bigger rewards await",
+          amount: `+${data.reward} coins`,
+          secondary: `total · ${data.coins.toLocaleString()} coins`,
+          ctaLabel: "back to home",
+          secondaryCta: { label: "spend in store", to: "/store" },
+        },
+      });
     } catch (e) {
       toast.error(e?.response?.data?.detail || "Try again");
     } finally {

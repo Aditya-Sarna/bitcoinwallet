@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Lightning, WifiHigh, Phone, DropHalf, House as HouseIcon, CheckCircle } from "@phosphor-icons/react";
+import { Lightning, WifiHigh, Phone, DropHalf, House as HouseIcon } from "@phosphor-icons/react";
 import Header from "../components/Header";
 import { api } from "../lib/api";
 import { fmtBTC, fmtUSD } from "../lib/format";
@@ -15,12 +16,12 @@ const BILLERS = [
 ];
 
 export default function Bills() {
+  const nav = useNavigate();
   const [biller, setBiller] = useState("Electricity");
   const [account, setAccount] = useState("");
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(null);
 
   useEffect(() => {
     api.get("/market/price").then((r) => setPrice(r.data.price_usd));
@@ -35,8 +36,23 @@ export default function Bills() {
         account,
         amount_usd: parseFloat(amount),
       });
-      setDone(data);
-      toast.success(`Paid · -${fmtBTC(data.amount_btc, 8)} BTC`);
+      nav("/success", {
+        state: {
+          kind: "paid",
+          title: `${biller} bill settled`,
+          subtitle: `account · ${account}`,
+          amount: `$${fmtUSD(parseFloat(amount), 2)}`,
+          secondary: `${fmtBTC(data.amount_btc, 8)} BTC`,
+          lines: [
+            { label: "biller", value: biller },
+            { label: "account", value: account },
+            { label: "btc spent", value: `${fmtBTC(data.amount_btc, 8)}` },
+            { label: "new balance", value: `${fmtBTC(data.new_balance, 8)} BTC` },
+          ],
+          ctaLabel: "back to home",
+          secondaryCta: { label: "pay another bill", to: "/bills" },
+        },
+      });
     } catch (e) {
       toast.error(e?.response?.data?.detail || "Payment failed");
     } finally {
@@ -44,28 +60,8 @@ export default function Bills() {
     }
   };
 
-  if (done) {
-    return (
-      <div className="shell grain">
-        <Header title="Paid" />
-        <div className="flex flex-col items-center justify-center px-6 pt-10 text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-24 h-24 rounded-full gold-gradient flex items-center justify-center glow-gold">
-            <CheckCircle size={44} weight="fill" className="text-black" />
-          </motion.div>
-          <h2 className="font-display text-3xl mt-4">bill paid</h2>
-          <div className="text-white/60 text-sm mt-2">{biller} · {account}</div>
-          <div className="font-display text-2xl mt-4">${fmtUSD(parseFloat(amount), 2)}</div>
-          <div className="text-xs text-white/50 font-mono mt-1">{fmtBTC(done.amount_btc, 8)} BTC</div>
-          <button
-            onClick={() => { setDone(null); setAmount(""); setAccount(""); }}
-            data-testid="bills-done-btn"
-            className="mt-8 gold-gradient text-black rounded-full px-6 py-3 text-xs uppercase tracking-[0.22em] font-semibold"
-          >
-            pay another bill
-          </button>
-        </div>
-      </div>
-    );
+  if (false) {
+    return null;
   }
 
   return (

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Storefront, ShoppingBag, Tag } from "@phosphor-icons/react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Storefront, Tag, ArrowRight } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import { api } from "../lib/api";
 import { fmtCoins } from "../lib/format";
@@ -21,10 +21,10 @@ const BRAND_STYLES = {
 
 export default function Store() {
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
   const [items, setItems] = useState([]);
   const [coins, setCoins] = useState(0);
-  const [cat, setCat] = useState("all");
-  const [redeemed, setRedeemed] = useState(null);
+  const [cat, setCat] = useState(searchParams.get("cat") || "all");
 
   const load = () =>
     api.get("/rewards/store").then((r) => {
@@ -33,18 +33,6 @@ export default function Store() {
     });
 
   useEffect(() => { load(); }, []);
-
-  const redeem = async (item) => {
-    if (coins < item.cost) return toast.error("Not enough coins");
-    try {
-      const { data } = await api.post("/rewards/redeem", { item_id: item.id });
-      setCoins(data.coins);
-      setRedeemed(data.redemption);
-      toast.success(`${item.brand} unlocked · ${data.redemption.code}`);
-    } catch (e) {
-      toast.error(e?.response?.data?.detail || "Failed");
-    }
-  };
 
   const cats = [
     { k: "all", label: "all" },
@@ -110,7 +98,9 @@ export default function Store() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="rounded-3xl overflow-hidden flex flex-col"
+                whileHover={{ y: -2 }}
+                onClick={() => nav(`/store/${item.id}`)}
+                className="rounded-3xl overflow-hidden flex flex-col cursor-pointer"
                 style={{ background: "#121212", border: "1px solid rgba(255,255,255,0.05)" }}
                 data-testid={`store-item-${item.id}`}
               >
@@ -118,14 +108,13 @@ export default function Store() {
                   className="h-32 flex items-center justify-center text-center px-3 relative overflow-hidden"
                   style={{ background: style.bg, color: style.text, border: style.border || "none" }}
                 >
-                  {/* Subtle pattern overlay */}
                   <div className="absolute inset-0 opacity-20 pointer-events-none"
                     style={{
                       backgroundImage:
                         "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2) 0%, transparent 50%)",
                     }} />
                   <div className="relative">
-                    <div className="font-cursive text-3xl leading-none opacity-80">{item.brand.toLowerCase()}</div>
+                    <div className="font-cursive text-3xl leading-none opacity-85">{item.brand.toLowerCase()}</div>
                     <div className="text-[9px] tracking-[0.25em] uppercase mt-2 opacity-70">voucher</div>
                   </div>
                 </div>
@@ -133,38 +122,13 @@ export default function Store() {
                   <div className="text-xs font-semibold flex-1">{item.title}</div>
                   <div className="flex items-center justify-between mt-3">
                     <div className="text-gold font-mono text-sm font-semibold">{fmtCoins(item.cost)}</div>
-                    <button
-                      onClick={() => redeem(item)}
-                      data-testid={`store-redeem-${item.id}`}
-                      disabled={coins < item.cost}
-                      className="px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-white/5 text-white disabled:opacity-30 hover:bg-[#D4AF37] hover:text-black transition-colors"
-                    >
-                      redeem
-                    </button>
+                    <ArrowRight size={14} className="text-white/40" />
                   </div>
                 </div>
               </motion.div>
             );
           })}
         </div>
-
-        {redeemed && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-6 rounded-3xl p-5"
-            style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.04))", border: "1px solid rgba(212,175,55,0.4)" }}
-            data-testid="redeemed-card"
-          >
-            <div className="flex items-center gap-2">
-              <ShoppingBag size={16} weight="fill" className="text-gold" />
-              <div className="text-[9px] tracking-[0.3em] uppercase text-gold">last redeemed</div>
-            </div>
-            <div className="font-cursive text-3xl mt-1">{redeemed.title}</div>
-            <div className="text-xs text-white/60 mt-1">{redeemed.brand}</div>
-            <div className="mt-3 font-mono text-lg tracking-widest bg-black/50 rounded-xl p-3 text-center">{redeemed.code}</div>
-          </motion.div>
-        )}
       </div>
     </Shell>
   );

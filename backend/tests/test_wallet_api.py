@@ -310,3 +310,40 @@ class TestSecurity:
     def test_security_requires_auth(self, session):
         r = session.get(f"{API}/security/status")
         assert r.status_code == 401
+
+
+# ---------- GET /api/security/seed (iteration 3) ----------
+class TestGetSeed:
+    @pytest.fixture(scope="class")
+    def seed_wallet(self):
+        s = requests.Session()
+        s.headers.update({"Content-Type": "application/json"})
+        r = s.post(f"{API}/auth/register", json={"name": "TEST_SeedGet", "pin": "778899"}, timeout=15)
+        assert r.status_code == 200
+        data = r.json()
+        headers = {"Authorization": f"Bearer {data['token']}", "Content-Type": "application/json"}
+        return {"session": s, "data": data, "headers": headers}
+
+    def test_get_seed_returns_phrase(self, seed_wallet):
+        r = seed_wallet["session"].get(f"{API}/security/seed", headers=seed_wallet["headers"])
+        assert r.status_code == 200, r.text
+        d = r.json()
+        assert "seed_phrase" in d
+        assert isinstance(d["seed_phrase"], list) and len(d["seed_phrase"]) == 12
+        # Must match the seed returned at register time
+        assert d["seed_phrase"] == seed_wallet["data"]["seed_phrase"]
+
+    def test_get_seed_requires_auth(self, session):
+        r = session.get(f"{API}/security/seed")
+        assert r.status_code == 401
+
+    def test_get_seed_blocked_after_backup(self, seed_wallet):
+        # Verify seed (marks backed up)
+        seed = seed_wallet["data"]["seed_phrase"]
+        r_v = seed_wallet["session"].post(
+            f"{API}/security/seed/verify", json={"words": seed}, headers=seed_wallet["headers"]
+        )
+        assert r_v.status_code == 200
+        # Now GET should return 400
+        r = seed_wallet["session"].get(f"{API}/security/seed", headers=seed_wallet["headers"])
+        assert r.status_code == 400

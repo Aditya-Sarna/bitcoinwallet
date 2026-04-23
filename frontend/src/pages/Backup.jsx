@@ -68,9 +68,17 @@ export default function Backup() {
     const words = picked.map((p) => p.word);
     try {
       await api.post("/security/seed/verify", { words });
-      setConfirmed(true);
-      toast.success("Backup verified · +250 coins bonus");
-      setTimeout(() => nav("/home"), 2200);
+      nav("/success", {
+        state: {
+          kind: "backed_up",
+          title: "vault fully secured",
+          subtitle: "your phrase is verified · phrase is now locked",
+          amount: "+250 coins",
+          secondary: "security score boosted",
+          ctaLabel: "back to home",
+          secondaryCta: { label: "view security", to: "/security" },
+        },
+      });
     } catch (e) {
       toast.error("Order doesn't match. Try again.");
       setPicked([]);

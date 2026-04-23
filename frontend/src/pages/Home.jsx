@@ -17,12 +17,12 @@ import { fmtUSD } from "../lib/format";
 
 const CATEGORIES = [
   { k: "scan", Icon: QrCode, label: "scan", to: "/scan", color: "#fff", text: "#000" },
-  { k: "food", Icon: ForkKnife, label: "food" },
-  { k: "travel", Icon: Airplane, label: "travel" },
-  { k: "shop", Icon: ShoppingBag, label: "shop" },
-  { k: "play", Icon: GameController, label: "play" },
-  { k: "health", Icon: Heart, label: "health" },
-  { k: "rent", Icon: HouseIcon, label: "rent" },
+  { k: "food", Icon: ForkKnife, label: "food", to: "/store?cat=food" },
+  { k: "travel", Icon: Airplane, label: "travel", to: "/store?cat=travel" },
+  { k: "shop", Icon: ShoppingBag, label: "shop", to: "/store?cat=shopping" },
+  { k: "play", Icon: GameController, label: "play", to: "/store?cat=entertainment" },
+  { k: "health", Icon: Heart, label: "health", to: "/bills" },
+  { k: "rent", Icon: HouseIcon, label: "rent", to: "/bills" },
 ];
 
 export default function Home() {
@@ -59,7 +59,7 @@ export default function Home() {
     { label: "scan & pay", Icon: QrCode, to: "/scan", testid: "home-scan" },
     { label: "send", Icon: ArrowUpRight, to: "/send", testid: "home-send" },
     { label: "receive", Icon: ArrowDownLeft, to: "/receive", testid: "home-receive" },
-    { label: "more", Icon: DotsNine, to: "/rewards", testid: "home-more" },
+    { label: "history", Icon: DotsNine, to: "/transactions", testid: "home-history" },
   ];
 
   return (
@@ -200,7 +200,7 @@ export default function Home() {
             <motion.button
               key={c.k}
               whileTap={{ scale: 0.9 }}
-              onClick={() => c.to ? nav(c.to) : nav("/bills")}
+              onClick={() => nav(c.to)}
               data-testid={`cat-${c.k}`}
               className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
                 i === 0 ? "" : "border border-white/10 bg-white/[0.03]"
