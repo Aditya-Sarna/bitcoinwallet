@@ -21,16 +21,25 @@ const COPY = {
 export default function Success() {
   const nav = useNavigate();
   const loc = useLocation();
-  const state = loc.state || {};
-  const kind = state.kind || "sent";
-  const meta = COPY[kind] || COPY.sent;
-  const Icon = meta.Icon;
-
+  const state = loc.state || null;
   const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    if (!state) {
+      nav("/home", { replace: true });
+    }
+  }, [state, nav]);
+
   useEffect(() => {
     const t = setTimeout(() => setShowConfetti(true), 250);
     return () => clearTimeout(t);
   }, []);
+
+  if (!state) return null;
+
+  const kind = state.kind || "sent";
+  const meta = COPY[kind] || COPY.sent;
+  const Icon = meta.Icon;
 
   return (
     <div className="shell grain relative overflow-hidden" data-testid="success-screen">
