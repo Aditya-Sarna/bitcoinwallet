@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { Copy, SignOut, Bell, ShieldCheck, Question, Gift, CaretRight } from "@phosphor-icons/react";
 import Shell from "../components/Shell";
 import BitcoinScore from "../components/BitcoinScore";
-import ThemeToggle from "../components/ThemeToggle";
 import Logo from "../components/Logo";
 import { api } from "../lib/api";
 import { shortAddr, fmtBTC, fmtCoins } from "../lib/format";
@@ -75,7 +74,6 @@ export default function Profile() {
             </div>
             <div className="text-[10px] font-mono mt-1.5" style={{ color: "var(--ink-3)" }}>{shortAddr(wallet?.btc_address, 8, 8)}</div>
           </div>
-          <ThemeToggle size={40} />
         </div>
         <div className="text-[10px] text-white/35 mt-3 font-semibold uppercase tracking-[0.2em]">
           member since {memberSince}
@@ -169,7 +167,7 @@ export default function Profile() {
 
         <div className="flex items-center justify-center gap-2 mt-6 pb-4 opacity-40">
           <Logo size={16} />
-          <span className="text-[10px] tracking-[0.22em] uppercase font-semibold">nova · your bitcoin on steroids</span>
+          <span className="text-[10px] tracking-[0.22em] uppercase font-semibold">nova · bitcoin, elevated</span>
         </div>
       </div>
     </Shell>

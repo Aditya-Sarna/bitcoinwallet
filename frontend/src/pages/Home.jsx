@@ -12,7 +12,6 @@ import TxnItem from "../components/TxnItem";
 import BalanceStatRow from "../components/BalanceStatRow";
 import AbstractBalanceArt from "../components/AbstractBalanceArt";
 import SplashCard from "../components/SplashCard";
-import ThemeToggle from "../components/ThemeToggle";
 import { TreasureChest, GiftStack, BillEnvelope, ProductShelf, LaptopPrize } from "../components/Illustrations";
 import Logo from "../components/Logo";
 import { api } from "../lib/api";
@@ -96,7 +95,6 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle size={36} />
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => nav("/security")}
@@ -228,7 +226,7 @@ export default function Home() {
           tag="spin now"
           height={220}
           illustration={<TreasureChest color="gold" size={150} />}
-          onClick={() => nav("/rewards")}
+          onClick={() => nav("/spin")}
         />
       </div>
 

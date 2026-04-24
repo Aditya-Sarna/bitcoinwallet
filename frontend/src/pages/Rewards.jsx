@@ -169,7 +169,7 @@ export default function Rewards() {
             height={200}
             size="sm"
             illustration={<TreasureChest color="purple" size={90} />}
-            onClick={() => toast("coming soon")}
+            onClick={() => nav("/spin")}
           />
           <SplashCard
             testid="bento-referral"

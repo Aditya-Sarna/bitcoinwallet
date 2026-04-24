@@ -158,6 +158,14 @@ export default function Backup() {
               >
                 i wrote them down · verify
               </motion.button>
+
+              <button
+                onClick={() => nav("/")}
+                data-testid="seed-skip-demo"
+                className="mt-3 w-full text-center text-[11px] text-white/35 hover:text-white/55 transition-colors"
+              >
+                skip for demo
+              </button>
             </motion.div>
           )}
 

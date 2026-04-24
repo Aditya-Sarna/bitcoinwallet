@@ -58,23 +58,12 @@ export default function StoreItem() {
     setLoading(true);
     try {
       const { data } = await api.post("/rewards/redeem", { item_id: item.id });
-      nav("/success", {
+      nav("/redeemed", {
         state: {
-          kind: "redeemed",
+          brand: item.brand,
           title: item.title,
-          subtitle: item.brand,
-          amount: data.redemption.code,
-          secondary: `-${fmtCoins(item.cost)} coins · new balance ${fmtCoins(data.coins)}`,
-          receiverInitial: item.brand.charAt(0).toUpperCase(),
-          lines: [
-            { label: "brand", value: item.brand },
-            { label: "voucher", value: item.title },
-            { label: "code", value: data.redemption.code },
-            { label: "coins spent", value: fmtCoins(item.cost) },
-          ],
-          ctaLabel: "back to store",
-          ctaTo: "/store",
-          secondaryCta: { label: "view profile", to: "/profile" },
+          code: data.redemption.code,
+          coinsSpent: fmtCoins(item.cost),
         },
       });
     } catch (e) {

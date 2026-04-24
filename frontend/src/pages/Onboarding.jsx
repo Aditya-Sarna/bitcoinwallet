@@ -101,7 +101,7 @@ export default function Onboarding() {
                   <div className="flex items-start justify-between">
                     <Logo size={46} primary="#D4FF4F" secondary="#FFFFFF" />
                     <div className="text-[10px] tracking-[0.22em] uppercase text-white font-bold opacity-80">
-                      the new way <br /> to hold bitcoin
+                      bitcoin payments <br /> elevated
                     </div>
                   </div>
 
@@ -110,14 +110,14 @@ export default function Onboarding() {
                       className="text-white leading-[0.88] tracking-[-0.04em]"
                       style={{ fontFamily: "Clash Display, sans-serif", fontWeight: 700, fontSize: 72 }}
                     >
-                      your<br />
-                      <span style={{ color: "#D4FF4F" }}>bitcoin.</span><br />
-                      on steroids.
+                      pay.<br />
+                      <span style={{ color: "#D4FF4F" }}>receive.</span><br />
+                      elevated.
                     </h1>
                     <div className="flex items-center gap-2 mt-4">
                       <Lightning size={14} weight="fill" className="text-white" />
                       <div className="text-[11px] uppercase tracking-[0.2em] text-white/90 font-semibold">
-                        rewards · stores · instant settles
+                        instant · borderless · yours
                       </div>
                     </div>
                   </div>
