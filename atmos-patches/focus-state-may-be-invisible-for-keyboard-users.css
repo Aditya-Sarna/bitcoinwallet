@@ -1,0 +1,5 @@
+/* Atmos patch — Focus state may be invisible for keyboard users
+   Adds a high-contrast focus ring across every interactive element.
+*/
+
+button,a,input,textarea,select{outline:2px solid #0071E3 !important;outline-offset:2px !important;}
